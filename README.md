@@ -22,3 +22,46 @@ Screen Shots
 ------------
 
 ![Project Overview](https://wakatime.com/static/img/ScreenShots/ScreenShot-2014-10-29.png)
+
+## Development instructions
+
+> For development purposes only.
+
+Install NPM dependencies:
+
+```
+npm install
+```
+
+Install Bower dependencies:
+
+```
+bower install
+```
+
+Run Gulp once:
+
+```
+gulp
+```
+
+Run Gulp and monitor changes:
+
+```
+gulp watch
+```
+
+### Load unpacked in Chrome
+
+1. Go to `Settings` -> `Extensions`
+2. Enable `Developer mode`
+3. Click `Load unpacked extension...`
+4. Select repository directory
+
+> This is how is a example layout design for first phase.
+
+![First SC](./sc_1.png)
+
+### Issues
+
+- Currently Elixir can only run one Browserify task at a time. (I will create a new Browserify task for this)
