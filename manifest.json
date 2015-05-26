@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "WakaTime",
+  "version": "1.0.0",
+  "description": "Get stats about your website debugging, research, documentation, etc.",
+  "icons": {
+    "16": "graphics/wakatime-logo-16.png",
+    "48": "graphics/wakatime-logo-48.png",
+    "128": "graphics/wakatime-logo-128.png"
+  },
+  "permissions": [
+    "alarms",
+    "tabs"
+  ],
+  "background": {
+    "scripts": [
+      "public/js/events.js"
+    ],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "graphics/wakatime-logo-19.png",
+      "38": "graphics/wakatime-logo-38.png"
+    },
+    "default_title": "WakaTime",
+    "default_popup": "popup.html"
+  }
+}
