@@ -2,6 +2,8 @@
 global.jQuery = require('jquery');
 require('bootstrap');
 
+var $ = require('jquery');
+
 // Saves options to chrome.storage.sync.
 function save_options(e) {
   e.preventDefault();
@@ -14,16 +16,17 @@ function save_options(e) {
     blacklist: blacklist
   }, function() {
     // Update status to let user know options were saved.
-    var status = document.getElementById('status');
-    status.style.display = 'block';
-    status.innerHTML = '<strong>Well done!</strong> Options have been saved.';
+    var status = $('#status');
+    status.html('<strong>Well done!</strong> Options have been saved.');
 
-    //TODO: This is a nice place for fade in and fade out...
-    
-    setTimeout(function() {
-      status.textContent = '';
-      status.style.display = 'none';
-    }, 1500);
+    status.fadeIn(1500, function() {
+      setTimeout(function() {
+        status.fadeOut(1500, function() {
+          status.html('');
+        });
+      }, 750);
+    });
+
   });
 }
 
