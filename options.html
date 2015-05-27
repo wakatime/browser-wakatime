@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WakaTime options</title>
+
+    <link href="public/css/app.css" rel="stylesheet">
+  </head>
+  <body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div id="status" class="alert alert-success">
+          <!-- <strong>Well done!</strong> Options have been saved. -->
+        </div>
+
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="blacklist" class="col-lg-2 control-label">Blacklist</label>
+            <div class="col-lg-10">
+              <textarea class="form-control" rows="3" id="blacklist" placeholder="http://google.com"></textarea>
+              <span class="help-block">Sites that you don't want to show in your reports. <br />One line per site.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="theme" class="col-lg-2 control-label">Theme</label>
+            <div class="col-lg-10">
+              <select class="form-control" id="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+              <button id="save" type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="public/js/options.js"></script>
+  </body>
+</html>
