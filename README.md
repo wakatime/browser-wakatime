@@ -62,6 +62,8 @@ gulp watch
 
 ![First SC](./sc_1.png)
 
+![Options SC](./sc_2-options.png)
+
 ### Issues
 
 - Currently Elixir can only run one Browserify task at a time. (I will create a new Browserify task for this)
