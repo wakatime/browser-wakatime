@@ -10,7 +10,8 @@
   },
   "permissions": [
     "alarms",
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "background": {
     "scripts": [
@@ -25,5 +26,9 @@
     },
     "default_title": "WakaTime",
     "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
   }
 }

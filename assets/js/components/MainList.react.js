@@ -7,11 +7,22 @@ class MainList extends React.Component
 
     }
 
+    _openOptionsPage()
+    {
+      if (chrome.runtime.openOptionsPage) {
+        // New way to open options pages, if supported (Chrome 42+).
+        chrome.runtime.openOptionsPage();
+      } else {
+        // Reasonable fallback.
+        window.open(chrome.runtime.getURL('options.html'));
+      }
+    }
+
     render()
     {
         return(
             <div className="list-group">
-                <a href="#" className="list-group-item">
+                <a href="#" className="list-group-item" onClick={this._openOptionsPage}>
                     Options
                 </a>
                 <a href="#" className="list-group-item">
