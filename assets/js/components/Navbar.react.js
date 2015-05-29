@@ -3,7 +3,6 @@ var React = require('react');
 class Navbar extends React.Component{
 
     render() {
-
         return (
             <nav className="navbar navbar-default" role="navigation">
                 <div className="container-fluid">
@@ -19,10 +18,6 @@ class Navbar extends React.Component{
                     </div>
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
-                            <li>
-                                <a href="#">Singed in as Mark Otto</a>
-                            </li>
-
                             <li className="dropdown">
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     <i className="fa fa-fw fa-info"></i>
