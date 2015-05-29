@@ -17,11 +17,13 @@ Installation
 
 5. Use in conjunction with [other WakaTime plugins](https://wakatime.com/plugins).
 
+## Screenshots
 
-Screen Shots
-------------
+![SC closed](./sc_3_closed.png)
 
-![Project Overview](https://wakatime.com/static/img/ScreenShots/ScreenShot-2014-10-29.png)
+![SC open](./sc_3_open.png)
+
+![Options SC](./sc_2-options.png)
 
 ## Development instructions
 
@@ -57,12 +59,6 @@ gulp watch
 2. Enable `Developer mode`
 3. Click `Load unpacked extension...`
 4. Select repository directory
-
-> This is how is a example layout design for first phase.
-
-![First SC](./sc_1.png)
-
-![Options SC](./sc_2-options.png)
 
 ### Issues
 
