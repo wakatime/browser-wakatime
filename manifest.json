@@ -9,6 +9,8 @@
     "128": "graphics/wakatime-logo-128.png"
   },
   "permissions": [
+    "https://wakatime.com/api/v1/users/current",
+    "https://wakatime.com/logout",
     "alarms",
     "tabs",
     "storage"
