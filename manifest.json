@@ -13,7 +13,8 @@
     "https://wakatime.com/logout",
     "alarms",
     "tabs",
-    "storage"
+    "storage",
+    "idle"
   ],
   "background": {
     "scripts": [

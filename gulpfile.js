@@ -19,7 +19,7 @@ elixir(function (mix) {
     mix.copy('vendor/bower_components/font-awesome/less', 'assets/less/font-awesome');
     mix.copy('vendor/bower_components/font-awesome/fonts', 'public/fonts');
     mix.less('app.less');
-    mix.browserify('app.js', null, 'assets/js');
-    //mix.browserify('events.js', 'public/js/events.js', 'assets/js');
+    //mix.browserify('app.js', null, 'assets/js');
+    mix.browserify('events.js', 'public/js/events.js', 'assets/js');
     //mix.browserify('options.js', 'public/js/options.js', 'assets/js');
 });
