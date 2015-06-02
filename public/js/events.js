@@ -83,6 +83,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var UrlHelper = require('./UrlHelper');
 
+var currentTimestamp = require('./helpers/currentTimestamp');
+
 var WakaTime = (function () {
     function WakaTime() {
         _classCallCheck(this, WakaTime);
@@ -133,7 +135,7 @@ var WakaTime = (function () {
                     var data = {
                         entity: domain,
                         type: 'domain',
-                        time: Math.round(new Date().getTime() / 1000),
+                        time: currentTimestamp(),
                         is_debugging: false
                     };
 
@@ -142,6 +144,15 @@ var WakaTime = (function () {
                     console.log('sending entity with type url');
 
                     // Send entity in heartbeat
+
+                    var data = {
+                        entity: entity,
+                        type: 'url',
+                        time: currentTimestamp(),
+                        is_debugging: false
+                    };
+
+                    console.log(data);
                 }
             });
         }
@@ -154,4 +165,17 @@ exports['default'] = WakaTime;
 module.exports = exports['default'];
 //default
 
-},{"./UrlHelper":2}]},{},[1]);
+},{"./UrlHelper":2,"./helpers/currentTimestamp":4}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports["default"] = function () {
+    return Math.round(new Date().getTime() / 1000);
+};
+
+module.exports = exports["default"];
+
+},{}]},{},[1]);

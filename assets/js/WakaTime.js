@@ -1,5 +1,7 @@
 var UrlHelper = require('./UrlHelper');
 
+var currentTimestamp = require('./helpers/currentTimestamp');
+
 class WakaTime {
 
     detectionIntervalInSeconds = 60; //default
@@ -44,7 +46,7 @@ class WakaTime {
                 var data = {
                     entity: domain,
                     type: 'domain',
-                    time: Math.round((new Date()).getTime() / 1000),
+                    time: currentTimestamp(),
                     is_debugging: false
                 };
 
@@ -56,6 +58,15 @@ class WakaTime {
                 console.log('sending entity with type url');
 
                 // Send entity in heartbeat
+
+                var data = {
+                    entity: entity,
+                    type: 'url',
+                    time: currentTimestamp(),
+                    is_debugging: false
+                };
+
+                console.log(data);
             }
 
         });
