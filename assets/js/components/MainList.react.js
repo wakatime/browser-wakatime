@@ -1,7 +1,5 @@
 var React = require('react');
 
-var md5 = require('blueimp-md5').md5;
-
 class MainList extends React.Component
 {
     componentDidMount()
@@ -50,14 +48,12 @@ class MainList extends React.Component
         var signedInAs = () => {
             if(this.props.loggedIn === true)
             {
-                var src = "https://secure.gravatar.com/avatar/" + md5(this.props.user.email) + "/?s=48";
-
                 return (
                     <div className="panel panel-default">
                         <div className="panel-body">
                             <div className="row">
                                 <div className="col-xs-2">
-                                    <img className="img-circle" src={src} />
+                                    <img className="img-circle" width="48" height="48" src={this.props.user.photo} />
                                 </div>
                                 <div className="col-xs-10">
                                     Signed in as <b>{this.props.user.full_name}</b><br />
