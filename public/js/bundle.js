@@ -181,7 +181,7 @@ var WakaTime = (function () {
 
                     console.log(payload);
 
-                    _this3.sendAjaxRequestToApi(payload);
+                    //this.sendAjaxRequestToApi(payload);
                 } else if (loggingType == 'url') {
                     console.log('sending entity with type url');
 
@@ -191,7 +191,7 @@ var WakaTime = (function () {
 
                     console.log(payload);
 
-                    _this3.sendAjaxRequestToApi(payload);
+                    //this.sendAjaxRequestToApi(payload);
                 }
             });
         }

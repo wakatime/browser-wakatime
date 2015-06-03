@@ -100,6 +100,12 @@ var WakaTime = (function () {
 
     _createClass(WakaTime, [{
         key: 'checkAuth',
+
+        /**
+         * Checks if the user is logged in.
+         *
+         * @return $.promise()
+         */
         value: function checkAuth() {
             var _this = this;
 
@@ -124,6 +130,13 @@ var WakaTime = (function () {
         }
     }, {
         key: 'recordHeartbeat',
+
+        /**
+         * Depending on various factors detects the current active tab URL or domain,
+         * and sends it to WakaTime for logging.
+         *
+         * @return null
+         */
         value: function recordHeartbeat() {
             var _this2 = this;
 
@@ -131,22 +144,15 @@ var WakaTime = (function () {
 
                 if (data !== false) {
 
-                    console.log('user is logged id.');
                     // User is logged in.
+                    // Change extension icon to default color.
                     changeExtensionIcon();
-
-                    console.log('recording heartbeat.');
 
                     chrome.idle.queryState(_this2.detectionIntervalInSeconds, function (newState) {
 
-                        console.log(newState);
-
                         if (newState === 'active') {
-
                             // Get current tab URL.
                             chrome.tabs.query({ active: true }, function (tabs) {
-                                console.log(tabs[0].url);
-
                                 _this2.sendHeartbeat(tabs[0].url);
                             });
                         }
@@ -154,17 +160,22 @@ var WakaTime = (function () {
                 } else {
 
                     // User is not logged in.
+                    // Change extension icon to red color.
                     changeExtensionIcon('red');
-
-                    console.log('user is not logged id.');
-
-                    //TODO: Redirect user to wakatime login page.
-                    //
                 }
             });
         }
     }, {
         key: '_preparePayload',
+
+        /**
+         * Creates payload for the heartbeat and returns it as JSON.
+         *
+         * @param  string entity
+         * @param  string type 'domain' or 'url'
+         * @param  boolean debug  = false
+         * @return JSON
+         */
         value: function _preparePayload(entity, type) {
             var debug = arguments[2] === undefined ? false : arguments[2];
 
@@ -177,6 +188,12 @@ var WakaTime = (function () {
         }
     }, {
         key: '_getLoggingType',
+
+        /**
+         * Returns a promise with logging type variable.
+         *
+         * @return $.promise
+         */
         value: function _getLoggingType() {
             var deferredObject = $.Deferred();
 
@@ -190,17 +207,22 @@ var WakaTime = (function () {
         }
     }, {
         key: 'sendHeartbeat',
+
+        /**
+         * Given the entity and logging type it creates a payload and
+         * sends an ajax post request to the API.
+         *
+         * @param  string entity
+         * @return null
+         */
         value: function sendHeartbeat(entity) {
             var _this3 = this;
 
             this._getLoggingType().done(function (loggingType) {
 
+                // Get only the domain from the entity.
+                // And send that in heartbeat
                 if (loggingType == 'domain') {
-                    console.log('sending entity with type domain');
-
-                    // Get only the domain from the entity.
-                    // And send that in heartbeat
-                    console.log(UrlHelper.getDomainFromUrl(entity));
 
                     var domain = UrlHelper.getDomainFromUrl(entity);
 
@@ -208,22 +230,28 @@ var WakaTime = (function () {
 
                     console.log(payload);
 
-                    _this3.sendAjaxRequestToApi(payload);
-                } else if (loggingType == 'url') {
-                    console.log('sending entity with type url');
-
-                    // Send entity in heartbeat
-
+                    //this.sendAjaxRequestToApi(payload);
+                }
+                // Send entity in heartbeat
+                else if (loggingType == 'url') {
                     var payload = _this3._preparePayload(entity, 'url');
 
                     console.log(payload);
 
-                    _this3.sendAjaxRequestToApi(payload);
+                    //this.sendAjaxRequestToApi(payload);
                 }
             });
         }
     }, {
         key: 'sendAjaxRequestToApi',
+
+        /**
+         * Sends AJAX request with payload to the heartbeat API as JSON.
+         *
+         * @param  JSON payload
+         * @param  string method  = 'POST'
+         * @return $.promise
+         */
         value: function sendAjaxRequestToApi(payload) {
             var _this4 = this;
 
@@ -294,14 +322,19 @@ function changeExtensionIcon() {
 module.exports = exports['default'];
 
 },{}],5:[function(require,module,exports){
+/**
+ * Returns UNIX timestamp
+ * 
+ * @return integer
+ */
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 exports["default"] = function () {
-    return Math.round(new Date().getTime() / 1000);
+  return Math.round(new Date().getTime() / 1000);
 };
 
 module.exports = exports["default"];

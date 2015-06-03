@@ -15,6 +15,11 @@ class WakaTime {
 
     currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
 
+    /**
+     * Checks if the user is logged in.
+     *
+     * @return $.promise()
+     */
     checkAuth()
     {
         var deferredObject = $.Deferred();
@@ -38,29 +43,28 @@ class WakaTime {
         return deferredObject.promise();
     }
 
+    /**
+     * Depending on various factors detects the current active tab URL or domain,
+     * and sends it to WakaTime for logging.
+     *
+     * @return null
+     */
     recordHeartbeat()
     {
         this.checkAuth().done(data => {
 
             if(data !== false){
 
-                console.log('user is logged id.');
                 // User is logged in.
+                // Change extension icon to default color.
                 changeExtensionIcon();
-
-                console.log('recording heartbeat.');
 
                 chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
 
-                    console.log(newState);
-
                     if(newState === 'active')
                     {
-
                         // Get current tab URL.
                         chrome.tabs.query({active: true}, (tabs) => {
-                            console.log(tabs[0].url);
-
                             this.sendHeartbeat(tabs[0].url);
                         });
                     }
@@ -70,16 +74,20 @@ class WakaTime {
             else {
 
                 // User is not logged in.
+                // Change extension icon to red color.
                 changeExtensionIcon('red');
-
-                console.log('user is not logged id.');
-
-                //TODO: Redirect user to wakatime login page.
-                //
             }
         });
     }
 
+    /**
+     * Creates payload for the heartbeat and returns it as JSON.
+     *
+     * @param  string entity
+     * @param  string type 'domain' or 'url'
+     * @param  boolean debug  = false
+     * @return JSON
+     */
     _preparePayload(entity, type, debug = false)
     {
         return JSON.stringify({
@@ -90,6 +98,11 @@ class WakaTime {
         });
     }
 
+    /**
+     * Returns a promise with logging type variable.
+     *
+     * @return $.promise
+     */
     _getLoggingType()
     {
         var deferredObject = $.Deferred();
@@ -103,16 +116,20 @@ class WakaTime {
         return deferredObject.promise();
     }
 
+    /**
+     * Given the entity and logging type it creates a payload and
+     * sends an ajax post request to the API.
+     *
+     * @param  string entity
+     * @return null
+     */
     sendHeartbeat(entity)
     {
         this._getLoggingType().done((loggingType) => {
 
+            // Get only the domain from the entity.
+            // And send that in heartbeat
             if(loggingType == 'domain') {
-                console.log('sending entity with type domain');
-
-                // Get only the domain from the entity.
-                // And send that in heartbeat
-                console.log(UrlHelper.getDomainFromUrl(entity));
 
                 var domain = UrlHelper.getDomainFromUrl(entity);
 
@@ -120,24 +137,28 @@ class WakaTime {
 
                 console.log(payload);
 
-                this.sendAjaxRequestToApi(payload);
+                //this.sendAjaxRequestToApi(payload);
 
             }
+            // Send entity in heartbeat
             else if (loggingType == 'url') {
-                console.log('sending entity with type url');
-
-                // Send entity in heartbeat
-
                 var payload = this._preparePayload(entity, 'url');
 
                 console.log(payload);
 
-                this.sendAjaxRequestToApi(payload);
+                //this.sendAjaxRequestToApi(payload);
             }
 
         });
     }
 
+    /**
+     * Sends AJAX request with payload to the heartbeat API as JSON.
+     *
+     * @param  JSON payload
+     * @param  string method  = 'POST'
+     * @return $.promise
+     */
     sendAjaxRequestToApi(payload, method = 'POST') {
 
         var deferredObject = $.Deferred();
