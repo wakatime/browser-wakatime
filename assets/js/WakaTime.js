@@ -1,5 +1,7 @@
 var UrlHelper = require('./UrlHelper');
 
+var $ = require('jquery');
+
 var currentTimestamp = require('./helpers/currentTimestamp');
 
 class WakaTime {
@@ -7,6 +9,8 @@ class WakaTime {
     detectionIntervalInSeconds = 60; //default
 
     loggingType = 'domain'; //default
+
+    heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
 
     recordHeartbeat()
     {
@@ -28,13 +32,34 @@ class WakaTime {
         })
     }
 
-    sendHeartbeat(entity)
+    _preparePayload(entity, type, debug = false)
     {
+        return {
+            entity: entity,
+            type: type,
+            time: currentTimestamp(),
+            is_debugging: debug
+        };
+    }
+
+    _getLoggingType()
+    {
+        var deferredObject = $.Deferred();
+
         chrome.storage.sync.get({
             loggingType: this.loggingType
         }, function(items) {
+            deferredObject.resolve(items.loggingType);
+        });
 
-            if(items.loggingType == 'domain') {
+        return deferredObject.promise();
+    }
+
+    sendHeartbeat(entity)
+    {
+        this._getLoggingType().done((loggingType) => {
+
+            if(loggingType == 'domain') {
                 console.log('sending entity with type domain');
 
                 // Get only the domain from the entity.
@@ -43,33 +68,52 @@ class WakaTime {
 
                 var domain = UrlHelper.getDomainFromUrl(entity);
 
-                var data = {
-                    entity: domain,
-                    type: 'domain',
-                    time: currentTimestamp(),
-                    is_debugging: false
-                };
+                var payload = this._preparePayload(domain, 'domain');
 
-                console.log(data);
+                console.log(payload);
 
+                this.sendAjaxRequestToApi(payload);
 
             }
-            else if (items.loggingType == 'url') {
+            else if (loggingType == 'url') {
                 console.log('sending entity with type url');
 
                 // Send entity in heartbeat
 
-                var data = {
-                    entity: entity,
-                    type: 'url',
-                    time: currentTimestamp(),
-                    is_debugging: false
-                };
+                var payload = this._preparePayload(entity, 'url');
 
-                console.log(data);
+                console.log(payload);
+
+                this.sendAjaxRequestToApi(payload);
             }
 
         });
+    }
+
+    sendAjaxRequestToApi(payload, method = 'POST') {
+
+        var deferredObject = $.Deferred();
+
+        $.ajax({
+            url: this.heartbeatApiUrl,
+            dataType: 'json',
+            method: method,
+            data: payload,
+            success: (response) =>  {
+
+                deferredObject.resolve(this);
+
+            },
+            error: (xhr, status, err) => {
+
+                console.error(this.heartbeatApiUrl, status, err.toString());
+
+                deferredObject.resolve(this);
+
+            }
+        });
+
+        return deferredObject.promise();
     }
 
 }

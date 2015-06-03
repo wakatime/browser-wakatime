@@ -11,6 +11,7 @@
   "permissions": [
     "https://wakatime.com/api/v1/users/current",
     "https://wakatime.com/logout",
+    "https://wakatime.com/api/v1/users/current/heartbeats",
     "alarms",
     "tabs",
     "storage",
