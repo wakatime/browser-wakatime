@@ -3,6 +3,7 @@ var UrlHelper = require('./UrlHelper');
 var $ = require('jquery');
 
 var currentTimestamp = require('./helpers/currentTimestamp');
+var changeExtensionIcon = require('./helpers/changeExtensionIcon');
 
 class WakaTime {
 
@@ -12,34 +13,81 @@ class WakaTime {
 
     heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
 
+    currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
+
+    checkAuth()
+    {
+        var deferredObject = $.Deferred();
+
+        $.ajax({
+            url: this.currentUserApiUrl,
+            dataType: 'json',
+            success: (data) =>  {
+
+                deferredObject.resolve(data.data);
+
+            },
+            error: (xhr, status, err) => {
+
+                console.error(this.currentUserApiUrl, status, err.toString());
+
+                deferredObject.resolve(false);
+            }
+        });
+
+        return deferredObject.promise();
+    }
+
     recordHeartbeat()
     {
-        console.log('recording heartbeat.');
+        this.checkAuth().done(data => {
 
-        chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
+            if(data !== false){
 
-            console.log(newState);
+                console.log('user is logged id.');
+                // User is logged in.
+                changeExtensionIcon();
 
-            if(newState === 'active')
-            {
-                // Get current tab URL.
-                chrome.tabs.query({active: true}, (tabs) => {
-                    console.log(tabs[0].url);
+                console.log('recording heartbeat.');
 
-                    this.sendHeartbeat(tabs[0].url);
+                chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
+
+                    console.log(newState);
+
+                    if(newState === 'active')
+                    {
+
+                        // Get current tab URL.
+                        chrome.tabs.query({active: true}, (tabs) => {
+                            console.log(tabs[0].url);
+
+                            this.sendHeartbeat(tabs[0].url);
+                        });
+                    }
                 });
+
             }
-        })
+            else {
+
+                // User is not logged in.
+                changeExtensionIcon('red');
+
+                console.log('user is not logged id.');
+
+                //TODO: Redirect user to wakatime login page.
+                //
+            }
+        });
     }
 
     _preparePayload(entity, type, debug = false)
     {
-        return {
+        return JSON.stringify({
             entity: entity,
             type: type,
             time: currentTimestamp(),
             is_debugging: debug
-        };
+        });
     }
 
     _getLoggingType()
@@ -97,6 +145,7 @@ class WakaTime {
         $.ajax({
             url: this.heartbeatApiUrl,
             dataType: 'json',
+            contentType: 'application/json',
             method: method,
             data: payload,
             success: (response) =>  {
