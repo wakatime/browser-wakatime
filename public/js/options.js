@@ -8,16 +8,28 @@ require('bootstrap');
 
 var $ = require('jquery');
 
+function detectCheckedRadio(name) {
+  for (var i = 0; i < document.getElementsByName(name).length; i++) {
+    var button = document.getElementsByName(name)[i];
+
+    if (button.checked === true) {
+      return button.value;
+    }
+  }
+}
+
 // Saves options to chrome.storage.sync.
 function save_options(e) {
   e.preventDefault();
 
   var theme = document.getElementById('theme').value;
   var blacklist = document.getElementById('blacklist').value;
+  var loggingType = detectCheckedRadio('loggingType');
 
   chrome.storage.sync.set({
     theme: theme,
-    blacklist: blacklist
+    blacklist: blacklist,
+    loggingType: loggingType
   }, function () {
     // Update status to let user know options were saved.
     var status = $('#status');
@@ -39,10 +51,12 @@ function restore_options() {
   // Use default value color = 'red' and likesColor = true.
   chrome.storage.sync.get({
     theme: 'light',
-    blacklist: ''
+    blacklist: '',
+    loggingType: 'domain'
   }, function (items) {
     document.getElementById('theme').value = items.theme;
     document.getElementById('blacklist').value = items.blacklist;
+    document.getElementById(items.loggingType + 'Type').checked = true;
   });
 }
 

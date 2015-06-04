@@ -6,10 +6,10 @@ var MainList = require('./MainList.react');
 
 var changeExtensionIcon = require('../helpers/changeExtensionIcon');
 
+var WakaTimeOriginal = require('../WakaTime');
+
 class WakaTime extends React.Component
 {
-    currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
-
     logoutUserUrl = 'https://wakatime.com/logout';
 
     state = {
@@ -34,7 +34,9 @@ class WakaTime extends React.Component
         }
       });
 
-      this.checkAuth().done(data => {
+      var wakatime = new WakaTimeOriginal;
+
+      wakatime.checkAuth().done(data => {
 
           if(data !== false){
 
@@ -59,29 +61,6 @@ class WakaTime extends React.Component
           }
       });
 
-    }
-
-    checkAuth()
-    {
-        var deferredObject = $.Deferred();
-
-        $.ajax({
-            url: this.currentUserApiUrl,
-            dataType: 'json',
-            success: (data) =>  {
-
-                deferredObject.resolve(data.data);
-
-            },
-            error: (xhr, status, err) => {
-
-                console.error(this.currentUserApiUrl, status, err.toString());
-
-                deferredObject.resolve(false);
-            }
-        });
-
-        return deferredObject.promise();
     }
 
     logoutUser()
