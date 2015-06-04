@@ -1,13 +1,3 @@
-// What to do when the event page first loads?
-//
-// Functional style
-//
-// 1. Run a function every 2 mins DONE
-// 2. Check if the user is active (not idle)
-// If the user is active, get the current active tab URL
-// and send heartbeat to wakatime.
-//
-
 var WakaTime = require('./WakaTime');
 
 /**
@@ -22,7 +12,7 @@ function resolveAlarm(alarm) {
     // window.setTimeout on old chrome versions.
     if (alarm && alarm.name == 'heartbeatAlarm') {
 
-        console.log('heartbeatAlarm triggered');
+        console.log('recording a heartbeat - alarm triggered');
 
         var wakatime = new WakaTime;
 
@@ -34,4 +24,44 @@ function resolveAlarm(alarm) {
 chrome.alarms.onAlarm.addListener(resolveAlarm);
 
 // Create a new alarm for heartbeats.
-chrome.alarms.create('heartbeatAlarm', {periodInMinutes: 1});
+chrome.alarms.create('heartbeatAlarm', {periodInMinutes: 2});
+
+/**
+ * Whenever a active tab is changed it records a heartbeat with that tab url.
+ */
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+
+    chrome.tabs.get(activeInfo.tabId, function(tab) {
+
+            console.log('recording a heartbeat - active tab changed');
+
+            var wakatime = new WakaTime;
+
+            wakatime.recordHeartbeat();
+    });
+
+});
+
+/**
+ * Whenever any tab is updated it checks if the updated tab is the tab that is
+ * currently active and if it is, then it records a heartbeat.
+ */
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+
+    if(changeInfo.status === 'complete')
+    {
+        // Get current tab URL.
+        chrome.tabs.query({active: true}, (tabs) => {
+            // If tab updated is the same as active tab
+            if(tabId == tabs[0].id)
+            {
+                console.log('recording a heartbeat - tab updated');
+
+                var wakatime = new WakaTime;
+
+                wakatime.recordHeartbeat();
+            }
+        });
+    }
+
+});

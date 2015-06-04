@@ -137,7 +137,7 @@ class WakaTime {
 
                 console.log(payload);
 
-                //this.sendAjaxRequestToApi(payload);
+                this.sendAjaxRequestToApi(payload);
 
             }
             // Send entity in heartbeat
@@ -146,7 +146,7 @@ class WakaTime {
 
                 console.log(payload);
 
-                //this.sendAjaxRequestToApi(payload);
+                this.sendAjaxRequestToApi(payload);
             }
 
         });
