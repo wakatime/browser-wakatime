@@ -44,6 +44,38 @@ class MainList extends React.Component {
             );
         };
 
+        // If logging is enabled, display that info to user
+        var loggingStatus = () => {
+            if(this.props.loggingEnabled === true && this.props.loggedIn === true)
+            {
+                return (
+                    <div className="panel panel-default">
+                        <div className="panel-body">
+                            <div className="row">
+                                <div className="col-xs-12">
+                                    <a href="#" onClick={this.props.disableLogging} className="btn btn-danger btn-lg btn-block">Disable logging</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+            else
+            {
+                return (
+                    <div className="panel panel-default">
+                        <div className="panel-body">
+                            <div className="row">
+                                <div className="col-xs-12">
+                                    <a href="#" onClick={this.props.enableLogging} className="btn btn-success btn-lg btn-block">Enable logging</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
         var signedInAs = () => {
             if (this.props.loggedIn === true) {
                 return (
@@ -54,12 +86,13 @@ class MainList extends React.Component {
                                     <img className="img-circle" width="48" height="48" src={this.props.user.photo} />
                                 </div>
                                 <div className="col-xs-10">
-                                    Signed in as
+                                    Signed in as&nbsp;
                                     <b>{this.props.user.full_name}</b>
                                     <br />
                                     {this.props.user.email}
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 );
@@ -70,6 +103,8 @@ class MainList extends React.Component {
             <div>
 
                 {signedInAs()}
+
+                {loggingStatus()}
 
                 <div className="list-group">
                     <a href="#" className="list-group-item" onClick={this._openOptionsPage}>

@@ -129,6 +129,10 @@ var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
 
 var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
 
+var _libsDevtoolsDetectJs = require('./libs/devtools-detect.js');
+
+var _libsDevtoolsDetectJs2 = _interopRequireDefault(_libsDevtoolsDetectJs);
+
 var WakaTime = (function () {
     function WakaTime() {
         _classCallCheck(this, WakaTime);
@@ -183,17 +187,23 @@ var WakaTime = (function () {
 
                 if (data !== false) {
 
-                    // User is logged in.
-                    // Change extension icon to default color.
-                    (0, _helpersChangeExtensionIconJs2['default'])();
+                    chrome.storage.sync.get({
+                        loggingEnabled: false
+                    }, function (items) {
+                        if (items.loggingEnabled === true) {
+                            (0, _helpersChangeExtensionIconJs2['default'])();
 
-                    chrome.idle.queryState(_this2.detectionIntervalInSeconds, function (newState) {
+                            chrome.idle.queryState(_this2.detectionIntervalInSeconds, function (newState) {
 
-                        if (newState === 'active') {
-                            // Get current tab URL.
-                            chrome.tabs.query({ active: true }, function (tabs) {
-                                _this2.sendHeartbeat(tabs[0].url);
+                                if (newState === 'active') {
+                                    // Get current tab URL.
+                                    chrome.tabs.query({ active: true }, function (tabs) {
+                                        _this2.sendHeartbeat(tabs[0].url);
+                                    });
+                                }
                             });
+                        } else {
+                            (0, _helpersChangeExtensionIconJs2['default'])('red');
                         }
                     });
                 } else {
@@ -259,6 +269,9 @@ var WakaTime = (function () {
             var _this3 = this;
 
             var payload = null;
+
+            // TODO: Detect if devTools are open
+            console.log(_libsDevtoolsDetectJs2['default'].open);
 
             this._getLoggingType().done(function (loggingType) {
 
@@ -332,7 +345,7 @@ module.exports = exports['default'];
 
 //default
 
-},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"jquery":6}],4:[function(require,module,exports){
+},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"./libs/devtools-detect.js":6,"jquery":7}],4:[function(require,module,exports){
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white' and ''.
@@ -347,15 +360,37 @@ exports['default'] = changeExtensionIcon;
 function changeExtensionIcon() {
     var color = arguments[0] === undefined ? '' : arguments[0];
 
+    var path = null;
+
     if (color !== '') {
         color = '-' + color;
+
+        path = './graphics/wakatime-logo-48' + color + '.png';
+
+        chrome.browserAction.setIcon({
+            path: path
+        });
     }
 
-    var path = './graphics/wakatime-logo-48' + color + '.png';
+    if (color === '') {
+        chrome.storage.sync.get({
+            theme: 'light'
+        }, function (items) {
+            if (items.theme == 'light') {
+                path = './graphics/wakatime-logo-48.png';
 
-    chrome.browserAction.setIcon({
-        path: path
-    });
+                chrome.browserAction.setIcon({
+                    path: path
+                });
+            } else {
+                path = './graphics/wakatime-logo-48-white.png';
+
+                chrome.browserAction.setIcon({
+                    path: path
+                });
+            }
+        });
+    }
 }
 
 module.exports = exports['default'];
@@ -377,6 +412,49 @@ exports["default"] = function () {
 module.exports = exports["default"];
 
 },{}],6:[function(require,module,exports){
+/*!
+	devtools-detect
+	Detect if DevTools is open
+	https://github.com/sindresorhus/devtools-detect
+	by Sindre Sorhus
+	MIT License
+*/
+'use strict';
+
+(function () {
+	'use strict';
+	var devtools = { open: false };
+	var threshold = 160;
+	var emitEvent = function emitEvent(state) {
+		window.dispatchEvent(new CustomEvent('devtoolschange', {
+			detail: {
+				open: state
+			}
+		}));
+	};
+
+	setInterval(function () {
+		if (window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized || window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+			if (!devtools.open) {
+				emitEvent(true);
+			}
+			devtools.open = true;
+		} else {
+			if (devtools.open) {
+				emitEvent(false);
+			}
+			devtools.open = false;
+		}
+	}, 500);
+
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = devtools;
+	} else {
+		window.devtools = devtools;
+	}
+})();
+
+},{}],7:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/

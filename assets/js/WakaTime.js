@@ -2,6 +2,7 @@ import UrlHelper from './UrlHelper.js';
 import $ from 'jquery';
 import currentTimestamp from './helpers/currentTimestamp.js';
 import changeExtensionIcon from './helpers/changeExtensionIcon.js';
+import devtools from './libs/devtools-detect.js';
 
 class WakaTime {
 
@@ -49,20 +50,26 @@ class WakaTime {
 
             if (data !== false) {
 
-                // User is logged in.
-                // Change extension icon to default color.
-                changeExtensionIcon();
+                chrome.storage.sync.get({
+                    loggingEnabled: false
+                }, (items) => {
+                    if (items.loggingEnabled === true) {
+                        changeExtensionIcon();
 
-                chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
+                        chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
 
-                    if (newState === 'active') {
-                        // Get current tab URL.
-                        chrome.tabs.query({active: true}, (tabs) => {
-                            this.sendHeartbeat(tabs[0].url);
+                            if (newState === 'active') {
+                                // Get current tab URL.
+                                chrome.tabs.query({active: true}, (tabs) => {
+                                    this.sendHeartbeat(tabs[0].url);
+                                });
+                            }
                         });
                     }
+                    else {
+                        changeExtensionIcon('red');
+                    }
                 });
-
             }
             else {
 
@@ -119,6 +126,9 @@ class WakaTime {
     sendHeartbeat(entity) {
 
         var payload = null;
+
+        // TODO: Detect if devTools are open
+        console.log(devtools.open);
 
         this._getLoggingType().done((loggingType) => {
 

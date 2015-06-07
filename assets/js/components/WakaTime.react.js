@@ -14,26 +14,29 @@ class WakaTime extends React.Component {
             email: null,
             photo: null
         },
-        loggedIn: false
+        loggedIn: false,
+        loggingEnabled: false
     };
 
     componentDidMount() {
-        chrome.storage.sync.get({
-            theme: 'light'
-        }, function (items) {
-            if (items.theme == 'light') {
-                changeExtensionIcon();
-            }
-            else {
-                changeExtensionIcon('white');
-            }
-        });
 
         var wakatime = new WakaTimeOriginal;
 
         wakatime.checkAuth().done(data => {
 
             if (data !== false) {
+
+                chrome.storage.sync.get({
+                    loggingEnabled: false
+                }, (items) => {
+                    this.setState({loggingEnabled: items.loggingEnabled});
+                    if (items.loggingEnabled === true) {
+                        changeExtensionIcon();
+                    }
+                    else {
+                        changeExtensionIcon('red');
+                    }
+                });
 
                 this.setState({
                     user: {
@@ -43,8 +46,6 @@ class WakaTime extends React.Component {
                     },
                     loggedIn: true
                 });
-
-                changeExtensionIcon();
             }
             else {
                 changeExtensionIcon('red');
@@ -84,11 +85,36 @@ class WakaTime extends React.Component {
                     email: null,
                     photo: null
                 },
-                loggedIn: false
+                loggedIn: false,
+                loggingEnabled: false
             });
 
             changeExtensionIcon('red');
 
+        });
+    }
+
+    _disableLogging() {
+        this.setState({
+            loggingEnabled: false
+        });
+
+        changeExtensionIcon('red');
+
+        chrome.storage.sync.set({
+            loggingEnabled: false
+        });
+    }
+
+    _enableLogging() {
+        this.setState({
+            loggingEnabled: true
+        });
+
+        changeExtensionIcon();
+
+        chrome.storage.sync.set({
+            loggingEnabled: true
         });
     }
 
@@ -99,7 +125,13 @@ class WakaTime extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
-                            <MainList user={this.state.user} logoutUser={this._logoutUser.bind(this)} loggedIn={this.state.loggedIn} />
+                            <MainList
+                                disableLogging={this._disableLogging.bind(this)}
+                                enableLogging={this._enableLogging.bind(this)}
+                                loggingEnabled={this.state.loggingEnabled}
+                                user={this.state.user}
+                                logoutUser={this._logoutUser.bind(this)}
+                                loggedIn={this.state.loggedIn} />
                         </div>
                     </div>
                 </div>
