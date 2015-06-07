@@ -19,7 +19,7 @@ Installation
 
 ## Screenshots
 
-![SC closed](./screenshots/sc_3_closed.png)
+![SC closed](./screenshots/sc_3_open.png)
 
 ![SC open](./screenshots/sc_5-logging-green.png)
 
