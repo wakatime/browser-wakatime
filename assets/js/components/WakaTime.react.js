@@ -1,15 +1,11 @@
-var React = require("react");
-var $ = require('jquery');
+import React from "react";
+import $ from 'jquery';
+import NavBar from './NavBar.react.js';
+import MainList from './MainList.react.js';
+import changeExtensionIcon from '../helpers/changeExtensionIcon.js';
+import WakaTimeOriginal from '../WakaTime.js';
 
-var NavBar = require('./NavBar.react');
-var MainList = require('./MainList.react');
-
-var changeExtensionIcon = require('../helpers/changeExtensionIcon');
-
-var WakaTimeOriginal = require('../WakaTime');
-
-class WakaTime extends React.Component
-{
+class WakaTime extends React.Component {
     logoutUserUrl = 'https://wakatime.com/logout';
 
     state = {
@@ -21,56 +17,49 @@ class WakaTime extends React.Component
         loggedIn: false
     };
 
-    componentDidMount()
-    {
-      chrome.storage.sync.get({
-        theme: 'light'
-      }, function(items) {
-        if(items.theme == 'light') {
-          changeExtensionIcon();
-        }
-        else {
-          changeExtensionIcon('white');
-        }
-      });
+    componentDidMount() {
+        chrome.storage.sync.get({
+            theme: 'light'
+        }, function (items) {
+            if (items.theme == 'light') {
+                changeExtensionIcon();
+            }
+            else {
+                changeExtensionIcon('white');
+            }
+        });
 
-      var wakatime = new WakaTimeOriginal;
+        var wakatime = new WakaTimeOriginal;
 
-      wakatime.checkAuth().done(data => {
+        wakatime.checkAuth().done(data => {
 
-          if(data !== false){
+            if (data !== false) {
 
-              this.setState({
-                  user: {
-                      full_name: data.full_name,
-                      email: data.email,
-                      photo: data.photo
-                  },
-                  loggedIn: true
-              });
+                this.setState({
+                    user: {
+                        full_name: data.full_name,
+                        email: data.email,
+                        photo: data.photo
+                    },
+                    loggedIn: true
+                });
 
-              changeExtensionIcon();
-
-          }
-          else {
-
-              changeExtensionIcon('red');
-
-              //TODO: Redirect user to wakatime login page.
-              //
-          }
-      });
+                changeExtensionIcon();
+            }
+            else {
+                changeExtensionIcon('red');
+            }
+        });
 
     }
 
-    logoutUser()
-    {
+    logoutUser() {
         var deferredObject = $.Deferred();
 
         $.ajax({
             url: this.logoutUserUrl,
             method: 'GET',
-            success: () =>  {
+            success: () => {
 
                 deferredObject.resolve(this);
 
@@ -86,8 +75,7 @@ class WakaTime extends React.Component
         return deferredObject.promise();
     }
 
-    _logoutUser()
-    {
+    _logoutUser() {
         this.logoutUser().done(() => {
 
             this.setState({
@@ -104,9 +92,8 @@ class WakaTime extends React.Component
         });
     }
 
-    render()
-    {
-        return(
+    render() {
+        return (
             <div>
                 <NavBar />
                 <div className="container">

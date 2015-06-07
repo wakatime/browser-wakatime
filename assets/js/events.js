@@ -1,4 +1,4 @@
-var WakaTime = require('./WakaTime');
+import WakaTime from "./WakaTime.js";
 
 /**
  * Whenever an alarms sets off, this function
@@ -29,15 +29,15 @@ chrome.alarms.create('heartbeatAlarm', {periodInMinutes: 2});
 /**
  * Whenever a active tab is changed it records a heartbeat with that tab url.
  */
-chrome.tabs.onActivated.addListener(function(activeInfo) {
+chrome.tabs.onActivated.addListener(function (activeInfo) {
 
-    chrome.tabs.get(activeInfo.tabId, function(tab) {
+    chrome.tabs.get(activeInfo.tabId, function (tab) {
 
-            console.log('recording a heartbeat - active tab changed');
+        console.log('recording a heartbeat - active tab changed');
 
-            var wakatime = new WakaTime;
+        var wakatime = new WakaTime;
 
-            wakatime.recordHeartbeat();
+        wakatime.recordHeartbeat();
     });
 
 });
@@ -46,15 +46,13 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
  * Whenever any tab is updated it checks if the updated tab is the tab that is
  * currently active and if it is, then it records a heartbeat.
  */
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
-    if(changeInfo.status === 'complete')
-    {
+    if (changeInfo.status === 'complete') {
         // Get current tab URL.
         chrome.tabs.query({active: true}, (tabs) => {
             // If tab updated is the same as active tab
-            if(tabId == tabs[0].id)
-            {
+            if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
 
                 var wakatime = new WakaTime;

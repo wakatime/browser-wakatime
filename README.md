@@ -19,11 +19,11 @@ Installation
 
 ## Screenshots
 
-![SC closed](./sc_3_closed.png)
+![SC closed](./screenshots/sc_3_closed.png)
 
-![SC open](./sc_3_open.png)
+![SC open](./screenshots/sc_3_open.png)
 
-![Options SC](./sc_2-options.png)
+![Options SC](./screenshots/sc_4-options.png)
 
 ## Development instructions
 
@@ -55,10 +55,11 @@ gulp watch
 
 ### Load unpacked in Chrome
 
-1. Go to `Settings` -> `Extensions`
-2. Enable `Developer mode`
-3. Click `Load unpacked extension...`
-4. Select repository directory
+1. Clone repository to disk
+2. Go to `Settings` -> `Extensions`
+3. Enable `Developer mode`
+4. Click `Load unpacked extension...`
+5. Select repository directory
 
 ### Issues
 

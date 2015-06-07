@@ -3,16 +3,23 @@
 /* This is a fix for Bootstrap requiring jQuery */
 'use strict';
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _componentsWakaTimeReactJs = require('./components/WakaTime.react.js');
+
+var _componentsWakaTimeReactJs2 = _interopRequireDefault(_componentsWakaTimeReactJs);
+
 global.jQuery = require('jquery');
 require('bootstrap');
 
-var React = require('react');
-var WakaTime = require('./components/WakaTime.react');
-
-React.render(React.createElement(WakaTime, null), document.getElementById('wakatime'));
+_react2['default'].render(_react2['default'].createElement(_componentsWakaTimeReactJs2['default'], null), document.getElementById('wakatime'));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/WakaTime.react":6,"bootstrap":9,"jquery":22,"react":178}],2:[function(require,module,exports){
+},{"./components/WakaTime.react.js":6,"bootstrap":9,"jquery":22,"react":178}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52,14 +59,25 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var UrlHelper = require('./UrlHelper');
+var _UrlHelperJs = require('./UrlHelper.js');
 
-var $ = require('jquery');
+var _UrlHelperJs2 = _interopRequireDefault(_UrlHelperJs);
 
-var currentTimestamp = require('./helpers/currentTimestamp');
-var changeExtensionIcon = require('./helpers/changeExtensionIcon');
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _helpersCurrentTimestampJs = require('./helpers/currentTimestamp.js');
+
+var _helpersCurrentTimestampJs2 = _interopRequireDefault(_helpersCurrentTimestampJs);
+
+var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
+
+var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
 
 var WakaTime = (function () {
     function WakaTime() {
@@ -73,12 +91,18 @@ var WakaTime = (function () {
 
     _createClass(WakaTime, [{
         key: 'checkAuth',
+
+        /**
+         * Checks if the user is logged in.
+         *
+         * @returns {*}
+         */
         value: function checkAuth() {
             var _this = this;
 
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
-            $.ajax({
+            _jquery2['default'].ajax({
                 url: this.currentUserApiUrl,
                 dataType: 'json',
                 success: function success(data) {
@@ -97,6 +121,11 @@ var WakaTime = (function () {
         }
     }, {
         key: 'recordHeartbeat',
+
+        /**
+         * Depending on various factors detects the current active tab URL or domain,
+         * and sends it to WakaTime for logging.
+         */
         value: function recordHeartbeat() {
             var _this2 = this;
 
@@ -104,22 +133,15 @@ var WakaTime = (function () {
 
                 if (data !== false) {
 
-                    console.log('user is logged id.');
                     // User is logged in.
-                    changeExtensionIcon();
-
-                    console.log('recording heartbeat.');
+                    // Change extension icon to default color.
+                    (0, _helpersChangeExtensionIconJs2['default'])();
 
                     chrome.idle.queryState(_this2.detectionIntervalInSeconds, function (newState) {
 
-                        console.log(newState);
-
                         if (newState === 'active') {
-
                             // Get current tab URL.
                             chrome.tabs.query({ active: true }, function (tabs) {
-                                console.log(tabs[0].url);
-
                                 _this2.sendHeartbeat(tabs[0].url);
                             });
                         }
@@ -127,31 +149,44 @@ var WakaTime = (function () {
                 } else {
 
                     // User is not logged in.
-                    changeExtensionIcon('red');
-
-                    console.log('user is not logged id.');
-
-                    //TODO: Redirect user to wakatime login page.
-                    //
+                    // Change extension icon to red color.
+                    (0, _helpersChangeExtensionIconJs2['default'])('red');
                 }
             });
         }
     }, {
         key: '_preparePayload',
+
+        /**
+         * Creates payload for the heartbeat and returns it as JSON.
+         *
+         * @param entity
+         * @param type
+         * @param debug
+         * @returns {*}
+         * @private
+         */
         value: function _preparePayload(entity, type) {
             var debug = arguments[2] === undefined ? false : arguments[2];
 
             return JSON.stringify({
                 entity: entity,
                 type: type,
-                time: currentTimestamp(),
+                time: (0, _helpersCurrentTimestampJs2['default'])(),
                 is_debugging: debug
             });
         }
     }, {
         key: '_getLoggingType',
+
+        /**
+         * Returns a promise with logging type variable.
+         *
+         * @returns {*}
+         * @private
+         */
         value: function _getLoggingType() {
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
             chrome.storage.sync.get({
                 loggingType: this.loggingType
@@ -163,48 +198,60 @@ var WakaTime = (function () {
         }
     }, {
         key: 'sendHeartbeat',
+
+        /**
+         * Given the entity and logging type it creates a payload and
+         * sends an ajax post request to the API.
+         *
+         * @param entity
+         */
         value: function sendHeartbeat(entity) {
             var _this3 = this;
 
+            var payload = null;
+
             this._getLoggingType().done(function (loggingType) {
 
+                // Get only the domain from the entity.
+                // And send that in heartbeat
                 if (loggingType == 'domain') {
-                    console.log('sending entity with type domain');
 
-                    // Get only the domain from the entity.
-                    // And send that in heartbeat
-                    console.log(UrlHelper.getDomainFromUrl(entity));
+                    var domain = _UrlHelperJs2['default'].getDomainFromUrl(entity);
 
-                    var domain = UrlHelper.getDomainFromUrl(entity);
-
-                    var payload = _this3._preparePayload(domain, 'domain');
+                    payload = _this3._preparePayload(domain, 'domain');
 
                     console.log(payload);
 
-                    //this.sendAjaxRequestToApi(payload);
-                } else if (loggingType == 'url') {
-                    console.log('sending entity with type url');
-
-                    // Send entity in heartbeat
-
-                    var payload = _this3._preparePayload(entity, 'url');
+                    _this3.sendAjaxRequestToApi(payload);
+                }
+                // Send entity in heartbeat
+                else if (loggingType == 'url') {
+                    payload = _this3._preparePayload(entity, 'url');
 
                     console.log(payload);
 
-                    //this.sendAjaxRequestToApi(payload);
+                    _this3.sendAjaxRequestToApi(payload);
                 }
             });
         }
     }, {
         key: 'sendAjaxRequestToApi',
+
+        /**
+         * Sends AJAX request with payload to the heartbeat API as JSON.
+         *
+         * @param payload
+         * @param method
+         * @returns {*}
+         */
         value: function sendAjaxRequestToApi(payload) {
             var _this4 = this;
 
             var method = arguments[1] === undefined ? 'POST' : arguments[1];
 
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
-            $.ajax({
+            _jquery2['default'].ajax({
                 url: this.heartbeatApiUrl,
                 dataType: 'json',
                 contentType: 'application/json',
@@ -235,7 +282,7 @@ module.exports = exports['default'];
 
 //default
 
-},{"./UrlHelper":2,"./helpers/changeExtensionIcon":7,"./helpers/currentTimestamp":8,"jquery":22}],4:[function(require,module,exports){
+},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":7,"./helpers/currentTimestamp.js":8,"jquery":22}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -244,11 +291,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var React = require('react');
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
 
 var MainList = (function (_React$Component) {
     function MainList() {
@@ -282,64 +333,64 @@ var MainList = (function (_React$Component) {
 
             var loginLogoutButton = function loginLogoutButton() {
                 if (_this.props.loggedIn === true) {
-                    return React.createElement(
+                    return _react2['default'].createElement(
                         'div',
                         null,
-                        React.createElement(
+                        _react2['default'].createElement(
                             'a',
                             { target: '_blank', href: 'https://wakatime.com/settings/rules', className: 'list-group-item' },
-                            React.createElement('i', { className: 'fa fa-fw fa-filter' }),
-                            ' Custom Rules'
+                            _react2['default'].createElement('i', { className: 'fa fa-fw fa-filter' }),
+                            'Custom Rules'
                         ),
-                        React.createElement(
+                        _react2['default'].createElement(
                             'a',
                             { target: '_blank', href: 'https://wakatime.com/dashboard', className: 'list-group-item' },
-                            React.createElement('i', { className: 'fa fa-fw fa-tachometer' }),
-                            ' Dashboard'
+                            _react2['default'].createElement('i', { className: 'fa fa-fw fa-tachometer' }),
+                            'Dashboard'
                         ),
-                        React.createElement(
+                        _react2['default'].createElement(
                             'a',
                             { href: '#', className: 'list-group-item', onClick: _this.props.logoutUser },
-                            React.createElement('i', { className: 'fa fa-fw fa-sign-out' }),
-                            ' Logout'
+                            _react2['default'].createElement('i', { className: 'fa fa-fw fa-sign-out' }),
+                            'Logout'
                         )
                     );
                 }
 
-                return React.createElement(
+                return _react2['default'].createElement(
                     'a',
                     { target: '_blank', href: 'https://wakatime.com/login', className: 'list-group-item' },
-                    React.createElement('i', { className: 'fa fa-fw fa-sign-in' }),
-                    ' Login'
+                    _react2['default'].createElement('i', { className: 'fa fa-fw fa-sign-in' }),
+                    'Login'
                 );
             };
 
             var signedInAs = function signedInAs() {
                 if (_this.props.loggedIn === true) {
-                    return React.createElement(
+                    return _react2['default'].createElement(
                         'div',
                         { className: 'panel panel-default' },
-                        React.createElement(
+                        _react2['default'].createElement(
                             'div',
                             { className: 'panel-body' },
-                            React.createElement(
+                            _react2['default'].createElement(
                                 'div',
                                 { className: 'row' },
-                                React.createElement(
+                                _react2['default'].createElement(
                                     'div',
                                     { className: 'col-xs-2' },
-                                    React.createElement('img', { className: 'img-circle', width: '48', height: '48', src: _this.props.user.photo })
+                                    _react2['default'].createElement('img', { className: 'img-circle', width: '48', height: '48', src: _this.props.user.photo })
                                 ),
-                                React.createElement(
+                                _react2['default'].createElement(
                                     'div',
                                     { className: 'col-xs-10' },
-                                    'Signed in as ',
-                                    React.createElement(
+                                    'Signed in as',
+                                    _react2['default'].createElement(
                                         'b',
                                         null,
                                         _this.props.user.full_name
                                     ),
-                                    React.createElement('br', null),
+                                    _react2['default'].createElement('br', null),
                                     _this.props.user.email
                                 )
                             )
@@ -348,18 +399,18 @@ var MainList = (function (_React$Component) {
                 }
             };
 
-            return React.createElement(
+            return _react2['default'].createElement(
                 'div',
                 null,
                 signedInAs(),
-                React.createElement(
+                _react2['default'].createElement(
                     'div',
                     { className: 'list-group' },
-                    React.createElement(
+                    _react2['default'].createElement(
                         'a',
                         { href: '#', className: 'list-group-item', onClick: this._openOptionsPage },
-                        React.createElement('i', { className: 'fa fa-fw fa-cogs' }),
-                        ' Options'
+                        _react2['default'].createElement('i', { className: 'fa fa-fw fa-cogs' }),
+                        'Options'
                     ),
                     loginLogoutButton()
                 )
@@ -368,7 +419,7 @@ var MainList = (function (_React$Component) {
     }]);
 
     return MainList;
-})(React.Component);
+})(_react2['default'].Component);
 
 exports['default'] = MainList;
 module.exports = exports['default'];
@@ -382,11 +433,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var React = require("react");
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
 
 var Navbar = (function (_React$Component) {
     function Navbar() {
@@ -402,68 +457,68 @@ var Navbar = (function (_React$Component) {
     _createClass(Navbar, [{
         key: "render",
         value: function render() {
-            return React.createElement(
+            return _react2["default"].createElement(
                 "nav",
                 { className: "navbar navbar-default", role: "navigation" },
-                React.createElement(
+                _react2["default"].createElement(
                     "div",
                     { className: "container-fluid" },
-                    React.createElement(
+                    _react2["default"].createElement(
                         "div",
                         { className: "navbar-header" },
-                        React.createElement(
+                        _react2["default"].createElement(
                             "button",
                             { type: "button", className: "navbar-toggle collapsed", "data-toggle": "collapse", "data-target": "#bs-example-navbar-collapse-1" },
-                            React.createElement(
+                            _react2["default"].createElement(
                                 "span",
                                 { className: "sr-only" },
                                 "Toggle navigation"
                             ),
-                            React.createElement("i", { className: "fa fa-fw fa-cogs" })
+                            _react2["default"].createElement("i", { className: "fa fa-fw fa-cogs" })
                         ),
-                        React.createElement(
+                        _react2["default"].createElement(
                             "a",
                             { target: "_blank", className: "navbar-brand", href: "https://wakatime.com" },
                             "WakaTime",
-                            React.createElement("img", { src: "graphics/wakatime-logo-48.png" })
+                            _react2["default"].createElement("img", { src: "graphics/wakatime-logo-48.png" })
                         )
                     ),
-                    React.createElement(
+                    _react2["default"].createElement(
                         "div",
                         { className: "collapse navbar-collapse", id: "bs-example-navbar-collapse-1" },
-                        React.createElement(
+                        _react2["default"].createElement(
                             "ul",
                             { className: "nav navbar-nav" },
-                            React.createElement(
+                            _react2["default"].createElement(
                                 "li",
                                 { className: "dropdown" },
-                                React.createElement(
+                                _react2["default"].createElement(
                                     "a",
                                     { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-expanded": "false" },
-                                    React.createElement("i", { className: "fa fa-fw fa-info" }),
+                                    _react2["default"].createElement("i", { className: "fa fa-fw fa-info" }),
                                     "About",
-                                    React.createElement("span", { className: "caret" })
+                                    _react2["default"].createElement("span", { className: "caret" })
                                 ),
-                                React.createElement(
+                                _react2["default"].createElement(
                                     "ul",
                                     { className: "dropdown-menu", role: "menu" },
-                                    React.createElement(
+                                    _react2["default"].createElement(
                                         "li",
                                         null,
-                                        React.createElement(
+                                        _react2["default"].createElement(
                                             "a",
                                             { target: "_blank", href: "https://github.com/wakatime/chrome-wakatime/issues" },
-                                            React.createElement("i", { className: "fa fa-fw fa-bug" }),
+                                            _react2["default"].createElement("i", { className: "fa fa-fw fa-bug" }),
                                             "Report an Issue"
                                         )
                                     ),
-                                    React.createElement(
+                                    _react2["default"].createElement(
                                         "li",
                                         null,
-                                        React.createElement(
+                                        _react2["default"].createElement(
                                             "a",
                                             { target: "_blank", href: "https://github.com/wakatime/chrome-wakatime" },
-                                            React.createElement("i", { className: "fa fa-fw fa-github" }),
+                                            _react2["default"].createElement("i", { className: "fa fa-fw fa-github" }),
                                             "View on GitHub"
                                         )
                                     )
@@ -477,7 +532,7 @@ var Navbar = (function (_React$Component) {
     }]);
 
     return Navbar;
-})(React.Component);
+})(_react2["default"].Component);
 
 exports["default"] = Navbar;
 module.exports = exports["default"];
@@ -491,19 +546,35 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var React = require('react');
-var $ = require('jquery');
+var _react = require('react');
 
-var NavBar = require('./NavBar.react');
-var MainList = require('./MainList.react');
+var _react2 = _interopRequireDefault(_react);
 
-var changeExtensionIcon = require('../helpers/changeExtensionIcon');
+var _jquery = require('jquery');
 
-var WakaTimeOriginal = require('../WakaTime');
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _NavBarReactJs = require('./NavBar.react.js');
+
+var _NavBarReactJs2 = _interopRequireDefault(_NavBarReactJs);
+
+var _MainListReactJs = require('./MainList.react.js');
+
+var _MainListReactJs2 = _interopRequireDefault(_MainListReactJs);
+
+var _helpersChangeExtensionIconJs = require('../helpers/changeExtensionIcon.js');
+
+var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
+
+var _WakaTimeJs = require('../WakaTime.js');
+
+var _WakaTimeJs2 = _interopRequireDefault(_WakaTimeJs);
 
 var WakaTime = (function (_React$Component) {
     function WakaTime() {
@@ -535,13 +606,13 @@ var WakaTime = (function (_React$Component) {
                 theme: 'light'
             }, function (items) {
                 if (items.theme == 'light') {
-                    changeExtensionIcon();
+                    (0, _helpersChangeExtensionIconJs2['default'])();
                 } else {
-                    changeExtensionIcon('white');
+                    (0, _helpersChangeExtensionIconJs2['default'])('white');
                 }
             });
 
-            var wakatime = new WakaTimeOriginal();
+            var wakatime = new _WakaTimeJs2['default']();
 
             wakatime.checkAuth().done(function (data) {
 
@@ -556,13 +627,9 @@ var WakaTime = (function (_React$Component) {
                         loggedIn: true
                     });
 
-                    changeExtensionIcon();
+                    (0, _helpersChangeExtensionIconJs2['default'])();
                 } else {
-
-                    changeExtensionIcon('red');
-
-                    //TODO: Redirect user to wakatime login page.
-                    //
+                    (0, _helpersChangeExtensionIconJs2['default'])('red');
                 }
             });
         }
@@ -571,9 +638,9 @@ var WakaTime = (function (_React$Component) {
         value: function logoutUser() {
             var _this2 = this;
 
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
-            $.ajax({
+            _jquery2['default'].ajax({
                 url: this.logoutUserUrl,
                 method: 'GET',
                 success: function success() {
@@ -606,26 +673,26 @@ var WakaTime = (function (_React$Component) {
                     loggedIn: false
                 });
 
-                changeExtensionIcon('red');
+                (0, _helpersChangeExtensionIconJs2['default'])('red');
             });
         }
     }, {
         key: 'render',
         value: function render() {
-            return React.createElement(
+            return _react2['default'].createElement(
                 'div',
                 null,
-                React.createElement(NavBar, null),
-                React.createElement(
+                _react2['default'].createElement(_NavBarReactJs2['default'], null),
+                _react2['default'].createElement(
                     'div',
                     { className: 'container' },
-                    React.createElement(
+                    _react2['default'].createElement(
                         'div',
                         { className: 'row' },
-                        React.createElement(
+                        _react2['default'].createElement(
                             'div',
                             { className: 'col-md-12' },
-                            React.createElement(MainList, { user: this.state.user, logoutUser: this._logoutUser.bind(this), loggedIn: this.state.loggedIn })
+                            _react2['default'].createElement(_MainListReactJs2['default'], { user: this.state.user, logoutUser: this._logoutUser.bind(this), loggedIn: this.state.loggedIn })
                         )
                     )
                 )
@@ -634,18 +701,15 @@ var WakaTime = (function (_React$Component) {
     }]);
 
     return WakaTime;
-})(React.Component);
+})(_react2['default'].Component);
 
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"../WakaTime":3,"../helpers/changeExtensionIcon":7,"./MainList.react":4,"./NavBar.react":5,"jquery":22,"react":178}],7:[function(require,module,exports){
+},{"../WakaTime.js":3,"../helpers/changeExtensionIcon.js":7,"./MainList.react.js":4,"./NavBar.react.js":5,"jquery":22,"react":178}],7:[function(require,module,exports){
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white' and ''.
- *
- * @param  string color = ''
- * @return null
  */
 'use strict';
 
@@ -671,14 +735,17 @@ function changeExtensionIcon() {
 module.exports = exports['default'];
 
 },{}],8:[function(require,module,exports){
+/**
+ * Returns UNIX timestamp
+ */
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 exports["default"] = function () {
-    return Math.round(new Date().getTime() / 1000);
+  return Math.round(new Date().getTime() / 1000);
 };
 
 module.exports = exports["default"];
