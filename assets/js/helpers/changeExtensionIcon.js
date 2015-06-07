@@ -1,13 +1,10 @@
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white' and ''.
- *
- * @param  string color = ''
- * @return null
  */
 export default function changeExtensionIcon(color = '') {
 
-    if(color !== ''){
+    if (color !== '') {
         color = '-' + color;
     }
 

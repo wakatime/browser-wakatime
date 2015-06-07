@@ -1,6 +1,6 @@
-var React = require('react');
+import React from 'react';
 
-class Navbar extends React.Component{
+class Navbar extends React.Component {
 
     render() {
         return (

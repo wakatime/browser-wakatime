@@ -3,61 +3,65 @@
 /* This is a fix for Bootstrap requiring jQuery */
 'use strict';
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 global.jQuery = require('jquery');
 require('bootstrap');
 
-var $ = require('jquery');
-
 function detectCheckedRadio(name) {
-  for (var i = 0; i < document.getElementsByName(name).length; i++) {
-    var button = document.getElementsByName(name)[i];
+    for (var i = 0; i < document.getElementsByName(name).length; i++) {
+        var button = document.getElementsByName(name)[i];
 
-    if (button.checked === true) {
-      return button.value;
+        if (button.checked === true) {
+            return button.value;
+        }
     }
-  }
 }
 
 // Saves options to chrome.storage.sync.
 function save_options(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  var theme = document.getElementById('theme').value;
-  var blacklist = document.getElementById('blacklist').value;
-  var loggingType = detectCheckedRadio('loggingType');
+    var theme = document.getElementById('theme').value;
+    var blacklist = document.getElementById('blacklist').value;
+    var loggingType = detectCheckedRadio('loggingType');
 
-  chrome.storage.sync.set({
-    theme: theme,
-    blacklist: blacklist,
-    loggingType: loggingType
-  }, function () {
-    // Update status to let user know options were saved.
-    var status = $('#status');
-    status.html('<strong>Well done!</strong> Options have been saved.');
+    chrome.storage.sync.set({
+        theme: theme,
+        blacklist: blacklist,
+        loggingType: loggingType
+    }, function () {
+        // Update status to let user know options were saved.
+        var status = (0, _jquery2['default'])('#status');
+        status.html('<strong>Well done!</strong> Options have been saved.');
 
-    status.fadeIn(1500, function () {
-      setTimeout(function () {
-        status.fadeOut(1500, function () {
-          status.html('');
+        status.fadeIn(1500, function () {
+            setTimeout(function () {
+                status.fadeOut(1500, function () {
+                    status.html('');
+                });
+            }, 750);
         });
-      }, 750);
     });
-  });
 }
 
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 function restore_options() {
-  // Use default value color = 'red' and likesColor = true.
-  chrome.storage.sync.get({
-    theme: 'light',
-    blacklist: '',
-    loggingType: 'domain'
-  }, function (items) {
-    document.getElementById('theme').value = items.theme;
-    document.getElementById('blacklist').value = items.blacklist;
-    document.getElementById(items.loggingType + 'Type').checked = true;
-  });
+    // Use default value color = 'red' and likesColor = true.
+    chrome.storage.sync.get({
+        theme: 'light',
+        blacklist: '',
+        loggingType: 'domain'
+    }, function (items) {
+        document.getElementById('theme').value = items.theme;
+        document.getElementById('blacklist').value = items.blacklist;
+        document.getElementById(items.loggingType + 'Type').checked = true;
+    });
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);

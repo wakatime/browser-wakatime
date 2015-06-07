@@ -1,9 +1,7 @@
-var UrlHelper = require('./UrlHelper');
-
-var $ = require('jquery');
-
-var currentTimestamp = require('./helpers/currentTimestamp');
-var changeExtensionIcon = require('./helpers/changeExtensionIcon');
+import UrlHelper from './UrlHelper.js';
+import $ from 'jquery';
+import currentTimestamp from './helpers/currentTimestamp.js';
+import changeExtensionIcon from './helpers/changeExtensionIcon.js';
 
 class WakaTime {
 
@@ -18,16 +16,15 @@ class WakaTime {
     /**
      * Checks if the user is logged in.
      *
-     * @return $.promise()
+     * @returns {*}
      */
-    checkAuth()
-    {
+    checkAuth() {
         var deferredObject = $.Deferred();
 
         $.ajax({
             url: this.currentUserApiUrl,
             dataType: 'json',
-            success: (data) =>  {
+            success: (data) => {
 
                 deferredObject.resolve(data.data);
 
@@ -46,14 +43,11 @@ class WakaTime {
     /**
      * Depending on various factors detects the current active tab URL or domain,
      * and sends it to WakaTime for logging.
-     *
-     * @return null
      */
-    recordHeartbeat()
-    {
+    recordHeartbeat() {
         this.checkAuth().done(data => {
 
-            if(data !== false){
+            if (data !== false) {
 
                 // User is logged in.
                 // Change extension icon to default color.
@@ -61,8 +55,7 @@ class WakaTime {
 
                 chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
 
-                    if(newState === 'active')
-                    {
+                    if (newState === 'active') {
                         // Get current tab URL.
                         chrome.tabs.query({active: true}, (tabs) => {
                             this.sendHeartbeat(tabs[0].url);
@@ -83,13 +76,13 @@ class WakaTime {
     /**
      * Creates payload for the heartbeat and returns it as JSON.
      *
-     * @param  string entity
-     * @param  string type 'domain' or 'url'
-     * @param  boolean debug  = false
-     * @return JSON
+     * @param entity
+     * @param type
+     * @param debug
+     * @returns {*}
+     * @private
      */
-    _preparePayload(entity, type, debug = false)
-    {
+    _preparePayload(entity, type, debug = false) {
         return JSON.stringify({
             entity: entity,
             type: type,
@@ -98,18 +91,19 @@ class WakaTime {
         });
     }
 
+
     /**
      * Returns a promise with logging type variable.
      *
-     * @return $.promise
+     * @returns {*}
+     * @private
      */
-    _getLoggingType()
-    {
+    _getLoggingType() {
         var deferredObject = $.Deferred();
 
         chrome.storage.sync.get({
             loggingType: this.loggingType
-        }, function(items) {
+        }, function (items) {
             deferredObject.resolve(items.loggingType);
         });
 
@@ -120,20 +114,21 @@ class WakaTime {
      * Given the entity and logging type it creates a payload and
      * sends an ajax post request to the API.
      *
-     * @param  string entity
-     * @return null
+     * @param entity
      */
-    sendHeartbeat(entity)
-    {
+    sendHeartbeat(entity) {
+
+        var payload = null;
+
         this._getLoggingType().done((loggingType) => {
 
             // Get only the domain from the entity.
             // And send that in heartbeat
-            if(loggingType == 'domain') {
+            if (loggingType == 'domain') {
 
                 var domain = UrlHelper.getDomainFromUrl(entity);
 
-                var payload = this._preparePayload(domain, 'domain');
+                payload = this._preparePayload(domain, 'domain');
 
                 console.log(payload);
 
@@ -142,7 +137,7 @@ class WakaTime {
             }
             // Send entity in heartbeat
             else if (loggingType == 'url') {
-                var payload = this._preparePayload(entity, 'url');
+                payload = this._preparePayload(entity, 'url');
 
                 console.log(payload);
 
@@ -155,9 +150,9 @@ class WakaTime {
     /**
      * Sends AJAX request with payload to the heartbeat API as JSON.
      *
-     * @param  JSON payload
-     * @param  string method  = 'POST'
-     * @return $.promise
+     * @param payload
+     * @param method
+     * @returns {*}
      */
     sendAjaxRequestToApi(payload, method = 'POST') {
 
@@ -169,7 +164,7 @@ class WakaTime {
             contentType: 'application/json',
             method: method,
             data: payload,
-            success: (response) =>  {
+            success: (response) => {
 
                 deferredObject.resolve(this);
 

@@ -1,7 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var WakaTime = require('./WakaTime');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _WakaTimeJs = require('./WakaTime.js');
+
+var _WakaTimeJs2 = _interopRequireDefault(_WakaTimeJs);
 
 /**
  * Whenever an alarms sets off, this function
@@ -17,7 +21,7 @@ function resolveAlarm(alarm) {
 
         console.log('recording a heartbeat - alarm triggered');
 
-        var wakatime = new WakaTime();
+        var wakatime = new _WakaTimeJs2['default']();
 
         wakatime.recordHeartbeat();
     }
@@ -38,7 +42,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
         console.log('recording a heartbeat - active tab changed');
 
-        var wakatime = new WakaTime();
+        var wakatime = new _WakaTimeJs2['default']();
 
         wakatime.recordHeartbeat();
     });
@@ -57,7 +61,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
 
-                var wakatime = new WakaTime();
+                var wakatime = new _WakaTimeJs2['default']();
 
                 wakatime.recordHeartbeat();
             }
@@ -65,7 +69,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     }
 });
 
-},{"./WakaTime":3}],2:[function(require,module,exports){
+},{"./WakaTime.js":3}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105,14 +109,25 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var UrlHelper = require('./UrlHelper');
+var _UrlHelperJs = require('./UrlHelper.js');
 
-var $ = require('jquery');
+var _UrlHelperJs2 = _interopRequireDefault(_UrlHelperJs);
 
-var currentTimestamp = require('./helpers/currentTimestamp');
-var changeExtensionIcon = require('./helpers/changeExtensionIcon');
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _helpersCurrentTimestampJs = require('./helpers/currentTimestamp.js');
+
+var _helpersCurrentTimestampJs2 = _interopRequireDefault(_helpersCurrentTimestampJs);
+
+var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
+
+var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
 
 var WakaTime = (function () {
     function WakaTime() {
@@ -130,14 +145,14 @@ var WakaTime = (function () {
         /**
          * Checks if the user is logged in.
          *
-         * @return $.promise()
+         * @returns {*}
          */
         value: function checkAuth() {
             var _this = this;
 
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
-            $.ajax({
+            _jquery2['default'].ajax({
                 url: this.currentUserApiUrl,
                 dataType: 'json',
                 success: function success(data) {
@@ -160,8 +175,6 @@ var WakaTime = (function () {
         /**
          * Depending on various factors detects the current active tab URL or domain,
          * and sends it to WakaTime for logging.
-         *
-         * @return null
          */
         value: function recordHeartbeat() {
             var _this2 = this;
@@ -172,7 +185,7 @@ var WakaTime = (function () {
 
                     // User is logged in.
                     // Change extension icon to default color.
-                    changeExtensionIcon();
+                    (0, _helpersChangeExtensionIconJs2['default'])();
 
                     chrome.idle.queryState(_this2.detectionIntervalInSeconds, function (newState) {
 
@@ -187,7 +200,7 @@ var WakaTime = (function () {
 
                     // User is not logged in.
                     // Change extension icon to red color.
-                    changeExtensionIcon('red');
+                    (0, _helpersChangeExtensionIconJs2['default'])('red');
                 }
             });
         }
@@ -197,10 +210,11 @@ var WakaTime = (function () {
         /**
          * Creates payload for the heartbeat and returns it as JSON.
          *
-         * @param  string entity
-         * @param  string type 'domain' or 'url'
-         * @param  boolean debug  = false
-         * @return JSON
+         * @param entity
+         * @param type
+         * @param debug
+         * @returns {*}
+         * @private
          */
         value: function _preparePayload(entity, type) {
             var debug = arguments[2] === undefined ? false : arguments[2];
@@ -208,7 +222,7 @@ var WakaTime = (function () {
             return JSON.stringify({
                 entity: entity,
                 type: type,
-                time: currentTimestamp(),
+                time: (0, _helpersCurrentTimestampJs2['default'])(),
                 is_debugging: debug
             });
         }
@@ -218,10 +232,11 @@ var WakaTime = (function () {
         /**
          * Returns a promise with logging type variable.
          *
-         * @return $.promise
+         * @returns {*}
+         * @private
          */
         value: function _getLoggingType() {
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
             chrome.storage.sync.get({
                 loggingType: this.loggingType
@@ -238,11 +253,12 @@ var WakaTime = (function () {
          * Given the entity and logging type it creates a payload and
          * sends an ajax post request to the API.
          *
-         * @param  string entity
-         * @return null
+         * @param entity
          */
         value: function sendHeartbeat(entity) {
             var _this3 = this;
+
+            var payload = null;
 
             this._getLoggingType().done(function (loggingType) {
 
@@ -250,9 +266,9 @@ var WakaTime = (function () {
                 // And send that in heartbeat
                 if (loggingType == 'domain') {
 
-                    var domain = UrlHelper.getDomainFromUrl(entity);
+                    var domain = _UrlHelperJs2['default'].getDomainFromUrl(entity);
 
-                    var payload = _this3._preparePayload(domain, 'domain');
+                    payload = _this3._preparePayload(domain, 'domain');
 
                     console.log(payload);
 
@@ -260,7 +276,7 @@ var WakaTime = (function () {
                 }
                 // Send entity in heartbeat
                 else if (loggingType == 'url') {
-                    var payload = _this3._preparePayload(entity, 'url');
+                    payload = _this3._preparePayload(entity, 'url');
 
                     console.log(payload);
 
@@ -274,18 +290,18 @@ var WakaTime = (function () {
         /**
          * Sends AJAX request with payload to the heartbeat API as JSON.
          *
-         * @param  JSON payload
-         * @param  string method  = 'POST'
-         * @return $.promise
+         * @param payload
+         * @param method
+         * @returns {*}
          */
         value: function sendAjaxRequestToApi(payload) {
             var _this4 = this;
 
             var method = arguments[1] === undefined ? 'POST' : arguments[1];
 
-            var deferredObject = $.Deferred();
+            var deferredObject = _jquery2['default'].Deferred();
 
-            $.ajax({
+            _jquery2['default'].ajax({
                 url: this.heartbeatApiUrl,
                 dataType: 'json',
                 contentType: 'application/json',
@@ -316,13 +332,10 @@ module.exports = exports['default'];
 
 //default
 
-},{"./UrlHelper":2,"./helpers/changeExtensionIcon":4,"./helpers/currentTimestamp":5,"jquery":6}],4:[function(require,module,exports){
+},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"jquery":6}],4:[function(require,module,exports){
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white' and ''.
- *
- * @param  string color = ''
- * @return null
  */
 'use strict';
 
@@ -350,8 +363,6 @@ module.exports = exports['default'];
 },{}],5:[function(require,module,exports){
 /**
  * Returns UNIX timestamp
- * 
- * @return integer
  */
 "use strict";
 
