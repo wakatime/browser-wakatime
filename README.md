@@ -21,7 +21,9 @@ Installation
 
 ![SC closed](./screenshots/sc_3_closed.png)
 
-![SC open](./screenshots/sc_3_open.png)
+![SC open](./screenshots/sc_5-logging-green.png)
+
+![SC open](./screenshots/sc_5-logging-red.png)
 
 ![Options SC](./screenshots/sc_4-options.png)
 
