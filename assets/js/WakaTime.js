@@ -51,7 +51,7 @@ class WakaTime {
             if (data !== false) {
 
                 chrome.storage.sync.get({
-                    loggingEnabled: false
+                    loggingEnabled: true
                 }, (items) => {
                     if (items.loggingEnabled === true) {
                         changeExtensionIcon();

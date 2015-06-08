@@ -188,7 +188,7 @@ var WakaTime = (function () {
                 if (data !== false) {
 
                     chrome.storage.sync.get({
-                        loggingEnabled: false
+                        loggingEnabled: true
                     }, function (items) {
                         if (items.loggingEnabled === true) {
                             (0, _helpersChangeExtensionIconJs2['default'])();
