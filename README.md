@@ -55,6 +55,12 @@ Run Gulp and monitor changes:
 gulp watch
 ```
 
+Run tests:
+
+```
+npm test
+```
+
 ### Load unpacked in Chrome
 
 1. Clone repository to disk
