@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest && mocha --compilers js:mocha-traceur __tests__/**/*.spec.js"
+    "test": "jest && mocha --compilers js:mocha-traceur tests/**/*.spec.js"
   },
   "jest": {
     "testFileExtensions": [
