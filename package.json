@@ -9,6 +9,9 @@
     "scriptPreprocessor": "<rootDir>/__tests__/preprocessor.js",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir/__tests__/**/*.spec.js"
     ]
   },
   "private": true,
