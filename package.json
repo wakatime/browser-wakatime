@@ -6,6 +6,7 @@
     "testFileExtensions": [
       "jest.js"
     ],
+    "testDirectoryName": "tests",
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react"
