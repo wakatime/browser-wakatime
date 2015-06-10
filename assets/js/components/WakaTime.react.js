@@ -6,17 +6,20 @@ import changeExtensionIcon from '../helpers/changeExtensionIcon.js';
 import WakaTimeOriginal from '../WakaTime.js';
 
 class WakaTime extends React.Component {
-    logoutUserUrl = 'https://wakatime.com/logout';
 
-    state = {
-        user: {
-            full_name: null,
-            email: null,
-            photo: null
-        },
-        loggedIn: false,
-        loggingEnabled: false
-    };
+    constructor(props) {
+        super(props);
+        this.logoutUserUrl = 'https://wakatime.com/logout';
+        this.state = {
+            user: {
+                full_name: null,
+                email: null,
+                photo: null
+            },
+            loggedIn: false,
+            loggingEnabled: false
+        }
+    }
 
     componentDidMount() {
 

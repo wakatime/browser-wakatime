@@ -6,13 +6,15 @@ import devtools from './libs/devtools-detect.js';
 
 class WakaTime {
 
-    detectionIntervalInSeconds = 60; //default
+    constructor(props) {
+        this.detectionIntervalInSeconds = 60; //default
 
-    loggingType = 'domain'; //default
+        this.loggingType = 'domain'; //default
 
-    heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
+        this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
 
-    currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
+        this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
+    }
 
     /**
      * Checks if the user is logged in.
