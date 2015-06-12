@@ -1,3 +1,5 @@
+//jshint esnext:true
+
 import React from "react";
 import $ from 'jquery';
 import NavBar from './NavBar.react.js';
@@ -18,7 +20,7 @@ class WakaTime extends React.Component {
             },
             loggedIn: false,
             loggingEnabled: false
-        }
+        };
     }
 
     componentDidMount() {

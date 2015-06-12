@@ -1,3 +1,5 @@
+//jshint esnext:true
+
 import React from 'react';
 
 class Navbar extends React.Component {
