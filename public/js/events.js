@@ -134,12 +134,15 @@ var _libsDevtoolsDetectJs = require('./libs/devtools-detect.js');
 var _libsDevtoolsDetectJs2 = _interopRequireDefault(_libsDevtoolsDetectJs);
 
 var WakaTime = (function () {
-    function WakaTime() {
+    function WakaTime(props) {
         _classCallCheck(this, WakaTime);
 
-        this.detectionIntervalInSeconds = 60;
-        this.loggingType = 'domain';
+        this.detectionIntervalInSeconds = 60; //default
+
+        this.loggingType = 'domain'; //default
+
         this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
+
         this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
     }
 
@@ -341,9 +344,6 @@ var WakaTime = (function () {
 
 exports['default'] = WakaTime;
 module.exports = exports['default'];
-//default
-
-//default
 
 },{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"./libs/devtools-detect.js":6,"jquery":7}],4:[function(require,module,exports){
 /**

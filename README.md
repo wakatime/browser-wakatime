@@ -19,8 +19,6 @@ Installation
 
 ## Screenshots
 
-![SC closed](./screenshots/sc_3_open.png)
-
 ![SC open](./screenshots/sc_5-logging-green.png)
 
 ![SC open](./screenshots/sc_5-logging-red.png)
@@ -68,7 +66,3 @@ npm test
 3. Enable `Developer mode`
 4. Click `Load unpacked extension...`
 5. Select repository directory
-
-### Issues
-
-- Currently Elixir can only run one Browserify task at a time. (I will create a new Browserify task for this)

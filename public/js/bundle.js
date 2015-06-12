@@ -84,12 +84,15 @@ var _libsDevtoolsDetectJs = require('./libs/devtools-detect.js');
 var _libsDevtoolsDetectJs2 = _interopRequireDefault(_libsDevtoolsDetectJs);
 
 var WakaTime = (function () {
-    function WakaTime() {
+    function WakaTime(props) {
         _classCallCheck(this, WakaTime);
 
-        this.detectionIntervalInSeconds = 60;
-        this.loggingType = 'domain';
+        this.detectionIntervalInSeconds = 60; //default
+
+        this.loggingType = 'domain'; //default
+
         this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
+
         this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
     }
 
@@ -138,7 +141,7 @@ var WakaTime = (function () {
                 if (data !== false) {
 
                     chrome.storage.sync.get({
-                        loggingEnabled: false
+                        loggingEnabled: true
                     }, function (items) {
                         if (items.loggingEnabled === true) {
                             (0, _helpersChangeExtensionIconJs2['default'])();
@@ -291,9 +294,6 @@ var WakaTime = (function () {
 
 exports['default'] = WakaTime;
 module.exports = exports['default'];
-//default
-
-//default
 
 },{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":7,"./helpers/currentTimestamp.js":8,"./libs/devtools-detect.js":9,"jquery":23}],4:[function(require,module,exports){
 'use strict';
@@ -609,6 +609,8 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -640,13 +642,10 @@ var _WakaTimeJs = require('../WakaTime.js');
 var _WakaTimeJs2 = _interopRequireDefault(_WakaTimeJs);
 
 var WakaTime = (function (_React$Component) {
-    function WakaTime() {
+    function WakaTime(props) {
         _classCallCheck(this, WakaTime);
 
-        if (_React$Component != null) {
-            _React$Component.apply(this, arguments);
-        }
-
+        _get(Object.getPrototypeOf(WakaTime.prototype), 'constructor', this).call(this, props);
         this.logoutUserUrl = 'https://wakatime.com/logout';
         this.state = {
             user: {
