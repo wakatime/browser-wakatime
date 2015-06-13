@@ -29,16 +29,9 @@ Installation
 
 > For development purposes only.
 
-Install NPM dependencies:
-
+To get started, install NPM and Bower dependencies, and do an initial build with Gulp:
 ```
-npm install
-```
-
-Install Bower dependencies:
-
-```
-bower install
+npm start
 ```
 
 Run Gulp once:
