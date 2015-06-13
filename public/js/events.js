@@ -1,26 +1,18 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// Core
 'use strict';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var WakaTime = require('./core/WakaTime');
 
-var _WakaTimeJs = require('./WakaTime.js');
-
-var _WakaTimeJs2 = _interopRequireDefault(_WakaTimeJs);
-
-var wakatime = new _WakaTimeJs2['default']();
+// initialize class
+var wakatime = new WakaTime();
 
 // Holds currently open connections (ports) with devtools
 // Uses tabId as index key.
 var connections = {};
 
-/**
- * Whenever an alarms sets off, this function
- * gets called to detect the alarm name and
- * do appropriate action.
- *
- * @param alarm
- */
-function resolveAlarm(alarm) {
+// Add a listener to resolve alarms
+chrome.alarms.onAlarm.addListener(function (alarm) {
     // |alarm| can be undefined because onAlarm also gets called from
     // window.setTimeout on old chrome versions.
     if (alarm && alarm.name == 'heartbeatAlarm') {
@@ -29,10 +21,7 @@ function resolveAlarm(alarm) {
 
         wakatime.recordHeartbeat();
     }
-}
-
-// Add a listener to resolve alarms
-chrome.alarms.onAlarm.addListener(resolveAlarm);
+});
 
 // Create a new alarm for heartbeats.
 chrome.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
@@ -69,6 +58,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     }
 });
 
+/**
+ * This is in charge of detecting if devtools are opened or closed
+ * and sending a heartbeat depending on that.
+ */
 chrome.runtime.onConnect.addListener(function (port) {
 
     if (port.name == 'devtools-page') {
@@ -103,36 +96,49 @@ chrome.runtime.onConnect.addListener(function (port) {
     }
 });
 
-},{"./WakaTime.js":3}],2:[function(require,module,exports){
-"use strict";
+},{"./core/WakaTime":3}],2:[function(require,module,exports){
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
     value: true
 });
+var config = {
+    // Extension name
+    name: 'WakaTime',
+    // Time for idle state of the browser
+    // The user is considered idle if there was
+    // no activity in the browser for x seconds
+    detectionIntervalInSeconds: 60,
+    //default logging type
+    loggingType: 'domain',
+    // By default logging is enabled
+    loggingEnabled: true,
+    // Url to which to send the heartbeat
+    heartbeatApiUrl: 'https://wakatime.com/api/v1/users/current/heartbeats',
+    // Url from which to detect if the user is logged in
+    currentUserApiUrl: 'https://wakatime.com/api/v1/users/current',
+    // The url to logout the user from wakatime
+    logoutUserUrl: 'https://wakatime.com/logout',
+    // Different colors for different states of the extension
+    colors: {
+        allGood: '',
+        notLogging: 'gray',
+        notSignedIn: 'red',
+        lightTheme: 'white'
+    },
+    // Tooltips for each of the extension states
+    tooltips: {
+        allGood: '',
+        notLogging: 'Not logging',
+        notSignedIn: 'Not signed In'
+    },
+    // Default theme
+    theme: 'light',
+    states: ['allGood', 'notLogging', 'notSignedIn']
+};
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var UrlHelper = (function () {
-    function UrlHelper() {
-        _classCallCheck(this, UrlHelper);
-    }
-
-    _createClass(UrlHelper, null, [{
-        key: "getDomainFromUrl",
-        value: function getDomainFromUrl(url) {
-            var parts = url.split("/");
-
-            return parts[0] + "//" + parts[2];
-        }
-    }]);
-
-    return UrlHelper;
-})();
-
-exports["default"] = UrlHelper;
-module.exports = exports["default"];
+exports['default'] = config;
+module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -143,31 +149,20 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _UrlHelperJs = require('./UrlHelper.js');
+var $ = require('jquery');
 
-var _UrlHelperJs2 = _interopRequireDefault(_UrlHelperJs);
+var config = require('./../config');
 
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _helpersCurrentTimestampJs = require('./helpers/currentTimestamp.js');
-
-var _helpersCurrentTimestampJs2 = _interopRequireDefault(_helpersCurrentTimestampJs);
-
-var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
-
-var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
-
-var in_array = require('./helpers/in_array');
-var config = require('./config.js');
+// Helpers
+var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
+var currentTimestamp = require('./../helpers/currentTimestamp');
+var changeExtensionState = require('../helpers/changeExtensionState');
+var in_array = require('./../helpers/in_array');
 
 var WakaTime = (function () {
-    function WakaTime(props) {
+    function WakaTime() {
         _classCallCheck(this, WakaTime);
 
         this.tabsWithDevtoolsOpen = [];
@@ -175,6 +170,12 @@ var WakaTime = (function () {
 
     _createClass(WakaTime, [{
         key: 'setTabsWithDevtoolsOpen',
+
+        /**
+         * Settter for tabsWithDevtoolsOpen
+         *
+         * @param tabs
+         */
         value: function setTabsWithDevtoolsOpen(tabs) {
             this.tabsWithDevtoolsOpen = tabs;
         }
@@ -187,9 +188,9 @@ var WakaTime = (function () {
          * @returns {*}
          */
         value: function checkAuth() {
-            var deferredObject = _jquery2['default'].Deferred();
+            var deferredObject = $.Deferred();
 
-            _jquery2['default'].ajax({
+            $.ajax({
                 url: config.currentUserApiUrl,
                 dataType: 'json',
                 success: function success(data) {
@@ -224,7 +225,8 @@ var WakaTime = (function () {
                         loggingEnabled: config.loggingEnabled
                     }, function (items) {
                         if (items.loggingEnabled === true) {
-                            (0, _helpersChangeExtensionIconJs2['default'])(config.colors.allGood);
+
+                            changeExtensionState('allGood');
 
                             chrome.idle.queryState(config.detectionIntervalInSeconds, function (newState) {
 
@@ -240,14 +242,14 @@ var WakaTime = (function () {
                                 }
                             });
                         } else {
-                            (0, _helpersChangeExtensionIconJs2['default'])(config.colors.notLogging);
+                            changeExtensionState('notLogging');
                         }
                     });
                 } else {
 
                     // User is not logged in.
                     // Change extension icon to red color.
-                    (0, _helpersChangeExtensionIconJs2['default'])(config.colors.notSignedIn);
+                    changeExtensionState('notSignedIn');
                 }
             });
         }
@@ -269,7 +271,7 @@ var WakaTime = (function () {
             return JSON.stringify({
                 entity: entity,
                 type: type,
-                time: (0, _helpersCurrentTimestampJs2['default'])(),
+                time: currentTimestamp(),
                 is_debugging: debug
             });
         }
@@ -283,7 +285,7 @@ var WakaTime = (function () {
          * @private
          */
         value: function _getLoggingType() {
-            var deferredObject = _jquery2['default'].Deferred();
+            var deferredObject = $.Deferred();
 
             chrome.storage.sync.get({
                 loggingType: config.loggingType
@@ -314,7 +316,7 @@ var WakaTime = (function () {
                 // And send that in heartbeat
                 if (loggingType == 'domain') {
 
-                    var domain = _UrlHelperJs2['default'].getDomainFromUrl(entity);
+                    var domain = getDomainFromUrl(entity);
 
                     payload = _this2._preparePayload(domain, 'domain', debug);
 
@@ -347,9 +349,9 @@ var WakaTime = (function () {
 
             var method = arguments[1] === undefined ? 'POST' : arguments[1];
 
-            var deferredObject = _jquery2['default'].Deferred();
+            var deferredObject = $.Deferred();
 
-            _jquery2['default'].ajax({
+            $.ajax({
                 url: config.heartbeatApiUrl,
                 dataType: 'json',
                 contentType: 'application/json',
@@ -377,51 +379,20 @@ var WakaTime = (function () {
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"./UrlHelper.js":2,"./config.js":4,"./helpers/changeExtensionIcon.js":5,"./helpers/currentTimestamp.js":6,"./helpers/in_array":7,"jquery":8}],4:[function(require,module,exports){
+},{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/currentTimestamp":7,"./../helpers/getDomainFromUrl":8,"./../helpers/in_array":9,"jquery":10}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
-exports['default'] = {
-    // Time for idle state of the browser
-    // The user is considered idle if there was
-    // no activity in the browser for x seconds
-    detectionIntervalInSeconds: 60,
-    //default logging type
-    loggingType: 'domain',
-    // By default logging is enabled
-    loggingEnabled: true,
-    // Url to which to send the heartbeat
-    heartbeatApiUrl: 'https://wakatime.com/api/v1/users/current/heartbeats',
-    // Url from which to detect if the user is logged in
-    currentUserApiUrl: 'https://wakatime.com/api/v1/users/current',
-    // The url to logout the user from wakatime
-    logoutUserUrl: 'https://wakatime.com/logout',
-    // Different colors for different states of the extension
-    colors: {
-        allGood: '',
-        notLogging: 'gray',
-        notSignedIn: 'red',
-        lightTheme: 'white'
-    },
-    // Default theme
-    theme: 'light'
-};
-module.exports = exports['default'];
+var config = require('../config');
 
-},{}],5:[function(require,module,exports){
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white', 'gray' and ''.
+ *
+ * @param color
  */
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-exports['default'] = changeExtensionIcon;
-
 function changeExtensionIcon() {
     var color = arguments[0] === undefined ? '' : arguments[0];
 
@@ -439,9 +410,9 @@ function changeExtensionIcon() {
 
     if (color === '') {
         chrome.storage.sync.get({
-            theme: 'light'
+            theme: config.theme
         }, function (items) {
-            if (items.theme == 'light') {
+            if (items.theme == config.theme) {
                 path = './graphics/wakatime-logo-38.png';
 
                 chrome.browserAction.setIcon({
@@ -458,25 +429,125 @@ function changeExtensionIcon() {
     }
 }
 
+exports['default'] = changeExtensionIcon;
 module.exports = exports['default'];
 
-},{}],6:[function(require,module,exports){
+},{"../config":2}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var config = require('../config');
+
+// Helpers
+var changeExtensionIcon = require('./changeExtensionIcon');
+var changeExtensionTooltip = require('./changeExtensionTooltip');
+var in_array = require('./in_array');
+
+/**
+ * Sets the current state of the extension.
+ *
+ * @param state
+ */
+function changeExtensionState(state) {
+    if (!in_array(state, config.states)) {
+        throw new Error('Not a valid state!');
+    }
+
+    switch (state) {
+        case 'allGood':
+            changeExtensionIcon(config.colors.allGood);
+            changeExtensionTooltip(config.tooltips.allGood);
+            break;
+        case 'notLogging':
+            changeExtensionIcon(config.colors.notLogging);
+            changeExtensionTooltip(config.tooltips.notLogging);
+            break;
+        case 'notSignedIn':
+            changeExtensionIcon(config.colors.notSignedIn);
+            changeExtensionTooltip(config.tooltips.notSignedIn);
+            break;
+    }
+}
+
+exports['default'] = changeExtensionState;
+module.exports = exports['default'];
+
+},{"../config":2,"./changeExtensionIcon":4,"./changeExtensionTooltip":6,"./in_array":9}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var config = require('../config');
+
+/**
+ * It changes the extension title
+ *
+ * @param text
+ */
+function changeExtensionTooltip(text) {
+
+    if (text === '') {
+        text = config.name;
+    } else {
+        text = config.name + ' - ' + text;
+    }
+
+    chrome.browserAction.setTitle({ title: text });
+}
+
+exports['default'] = changeExtensionTooltip;
+module.exports = exports['default'];
+
+},{"../config":2}],7:[function(require,module,exports){
 /**
  * Returns UNIX timestamp
+ *
+ * @returns {number}
  */
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-exports["default"] = function () {
+function currentTimestamp() {
   return Math.round(new Date().getTime() / 1000);
-};
+}
 
+exports["default"] = currentTimestamp;
 module.exports = exports["default"];
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+/**
+ * Returns domain from given URL.
+ *
+ * @param url
+ * @returns {string}
+ */
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function getDomainFromUrl(url) {
+    var parts = url.split("/");
+
+    return parts[0] + "//" + parts[2];
+}
+
+exports["default"] = getDomainFromUrl;
+module.exports = exports["default"];
+
+},{}],9:[function(require,module,exports){
+/**
+ * Returns boolean if needle is found in haystack or not.
+ *
+ * @param needle
+ * @param haystack
+ * @returns {boolean}
+ */
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -496,7 +567,7 @@ function in_array(needle, haystack) {
 exports["default"] = in_array;
 module.exports = exports["default"];
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/

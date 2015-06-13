@@ -1,6 +1,10 @@
 /**
  * Returns UNIX timestamp
+ *
+ * @returns {number}
  */
-export default function(){
+function currentTimestamp(){
     return Math.round((new Date()).getTime() / 1000);
 }
+
+export default currentTimestamp;

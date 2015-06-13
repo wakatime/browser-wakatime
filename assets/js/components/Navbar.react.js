@@ -1,6 +1,6 @@
 //jshint esnext:true
 
-import React from 'react';
+var React = require('react');
 
 class Navbar extends React.Component {
 

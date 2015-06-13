@@ -1,4 +1,6 @@
-export default {
+var config = {
+    // Extension name
+    name: 'WakaTime',
     // Time for idle state of the browser
     // The user is considered idle if there was
     // no activity in the browser for x seconds
@@ -20,6 +22,19 @@ export default {
         notSignedIn: 'red',
         lightTheme: 'white'
     },
+    // Tooltips for each of the extension states
+    tooltips: {
+        allGood: '',
+        notLogging: 'Not logging',
+        notSignedIn: 'Not signed In'
+    },
     // Default theme
-    theme: 'light'
+    theme: 'light',
+    states: [
+        'allGood',
+        'notLogging',
+        'notSignedIn'
+    ]
 };
+
+export default config;

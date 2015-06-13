@@ -1,19 +1,15 @@
-import WakaTime from "./WakaTime.js";
+// Core
+var WakaTime = require("./core/WakaTime");
 
+// initialize class
 var wakatime = new WakaTime;
 
 // Holds currently open connections (ports) with devtools
 // Uses tabId as index key.
 var connections = {};
 
-/**
- * Whenever an alarms sets off, this function
- * gets called to detect the alarm name and
- * do appropriate action.
- *
- * @param alarm
- */
-function resolveAlarm(alarm) {
+// Add a listener to resolve alarms
+chrome.alarms.onAlarm.addListener(function(alarm){
     // |alarm| can be undefined because onAlarm also gets called from
     // window.setTimeout on old chrome versions.
     if (alarm && alarm.name == 'heartbeatAlarm') {
@@ -22,10 +18,7 @@ function resolveAlarm(alarm) {
 
         wakatime.recordHeartbeat();
     }
-}
-
-// Add a listener to resolve alarms
-chrome.alarms.onAlarm.addListener(resolveAlarm);
+});
 
 // Create a new alarm for heartbeats.
 chrome.alarms.create('heartbeatAlarm', {periodInMinutes: 2});
@@ -65,6 +58,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 
+/**
+ * This is in charge of detecting if devtools are opened or closed
+ * and sending a heartbeat depending on that.
+ */
 chrome.runtime.onConnect.addListener(function (port) {
 
     if (port.name == "devtools-page") {

@@ -2,8 +2,10 @@
 global.jQuery = require('jquery');
 require('bootstrap');
 
-import React from 'react';
-import WakaTime from './components/WakaTime.react.js';
+var React = require('react');
+
+// React components
+var WakaTime = require('./components/WakaTime.react');
 
 React.render(
     <WakaTime />,

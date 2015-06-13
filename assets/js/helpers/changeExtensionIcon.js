@@ -1,8 +1,12 @@
+var config = require('../config');
+
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white', 'gray' and ''.
+ *
+ * @param color
  */
-export default function changeExtensionIcon(color = '') {
+function changeExtensionIcon(color = '') {
 
     var path = null;
 
@@ -18,9 +22,9 @@ export default function changeExtensionIcon(color = '') {
 
     if (color === '') {
         chrome.storage.sync.get({
-            theme: 'light'
+            theme: config.theme
         }, function (items) {
-            if (items.theme == 'light') {
+            if (items.theme == config.theme) {
                 path = './graphics/wakatime-logo-38.png';
 
                 chrome.browserAction.setIcon({
@@ -38,3 +42,5 @@ export default function changeExtensionIcon(color = '') {
     }
 
 }
+
+export default changeExtensionIcon;

@@ -2,9 +2,9 @@
 global.jQuery = require('jquery');
 require('bootstrap');
 
-var config = require('./config');
+var $ = require("jquery");
 
-import $ from "jquery";
+var config = require('./config');
 
 function detectCheckedRadio(name) {
     for (var i = 0; i < document.getElementsByName(name).length; i ++) {

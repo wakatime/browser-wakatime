@@ -3,14 +3,10 @@
 /* This is a fix for Bootstrap requiring jQuery */
 'use strict';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
 global.jQuery = require('jquery');
 require('bootstrap');
+
+var $ = require('jquery');
 
 var config = require('./config');
 
@@ -38,7 +34,7 @@ function save_options(e) {
         loggingType: loggingType
     }, function () {
         // Update status to let user know options were saved.
-        var status = (0, _jquery2['default'])('#status');
+        var status = $('#status');
         status.html('<strong>Well done!</strong> Options have been saved.');
 
         status.fadeIn(1500, function () {
@@ -76,7 +72,9 @@ document.getElementById('save').addEventListener('click', save_options);
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
-exports['default'] = {
+var config = {
+    // Extension name
+    name: 'WakaTime',
     // Time for idle state of the browser
     // The user is considered idle if there was
     // no activity in the browser for x seconds
@@ -98,9 +96,18 @@ exports['default'] = {
         notSignedIn: 'red',
         lightTheme: 'white'
     },
+    // Tooltips for each of the extension states
+    tooltips: {
+        allGood: '',
+        notLogging: 'Not logging',
+        notSignedIn: 'Not signed In'
+    },
     // Default theme
-    theme: 'light'
+    theme: 'light',
+    states: ['allGood', 'notLogging', 'notSignedIn']
 };
+
+exports['default'] = config;
 module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){

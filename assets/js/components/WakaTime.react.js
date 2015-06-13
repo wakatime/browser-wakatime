@@ -1,24 +1,37 @@
 //jshint esnext:true
 
-import React from "react";
-import $ from 'jquery';
-import NavBar from './NavBar.react.js';
-import MainList from './MainList.react.js';
-import changeExtensionIcon from '../helpers/changeExtensionIcon.js';
-import WakaTimeOriginal from '../WakaTime.js';
-var config = require('../config.js');
+var React = require("react");
+var $ = require('jquery');
+
+var config = require('../config');
+
+// React components
+var NavBar = require('./NavBar.react');
+var MainList = require('./MainList.react');
+
+// Core
+var WakaTimeOriginal = require('../core/WakaTime');
+
+// Helpers
+var changeExtensionState = require('../helpers/changeExtensionState');
 
 class WakaTime extends React.Component {
 
-    state = {
-        user: {
-            full_name: null,
-            email: null,
-            photo: null
-        },
-        loggedIn: false,
-        loggingEnabled: config.loggingEnabled
-    };
+    constructor(){
+
+        super();
+
+        this.state = {
+            user: {
+                full_name: null,
+                email: null,
+                photo: null
+            },
+            loggedIn: false,
+            loggingEnabled: config.loggingEnabled
+        };
+    }
+
 
     componentDidMount() {
 
@@ -33,10 +46,10 @@ class WakaTime extends React.Component {
                 }, (items) => {
                     this.setState({loggingEnabled: items.loggingEnabled});
                     if (items.loggingEnabled === true) {
-                        changeExtensionIcon(config.colors.allGood);
+                        changeExtensionState('allGood');
                     }
                     else {
-                        changeExtensionIcon(config.colors.notLogging);
+                        changeExtensionState('notLogging');
                     }
                 });
 
@@ -50,7 +63,7 @@ class WakaTime extends React.Component {
                 });
             }
             else {
-                changeExtensionIcon(config.colors.notSignedIn);
+                changeExtensionState('notSignedIn');
             }
         });
 
@@ -91,7 +104,7 @@ class WakaTime extends React.Component {
                 loggingEnabled: false
             });
 
-            changeExtensionIcon(config.colors.notSignedIn);
+            changeExtensionState('notSignedIn');
 
         });
     }
@@ -101,7 +114,7 @@ class WakaTime extends React.Component {
             loggingEnabled: false
         });
 
-        changeExtensionIcon(config.colors.notLogging);
+        changeExtensionState('notLogging');
 
         chrome.storage.sync.set({
             loggingEnabled: false
@@ -113,7 +126,7 @@ class WakaTime extends React.Component {
             loggingEnabled: true
         });
 
-        changeExtensionIcon(config.colors.allGood);
+        changeExtensionState('allGood');
 
         chrome.storage.sync.set({
             loggingEnabled: true
