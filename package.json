@@ -15,21 +15,21 @@
   },
   "private": true,
   "devDependencies": {
-    "babel-jest": "^5.2.0",
-    "chai": "^3.0.0",
+    "babel-jest": "^5.3.0",
     "gulp": "^3.8.8",
-    "jest-cli": "^0.4.10",
-    "babel": "^5.5.6",
+    "jest-cli": "^0.4.12",
     "laravel-elixir": "*",
+    "react-tools": "^0.13.3",
     "mocha": "^2.2.5",
     "mocha-sinon": "^1.1.4",
     "mocha-traceur": "^2.1.0",
-    "sinon": "^1.14.1"
+    "sinon": "^1.14.1",
+    "babel": "^5.5.6",
+    "chai": "^3.0.0"
   },
   "dependencies": {
     "bootstrap": "^3.3.4",
     "jquery": "^2.1.3",
-    "react": "^0.13.3",
-    "react-tools": "^0.13.3"
+    "react": "^0.13.3"
   }
 }

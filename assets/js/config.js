@@ -15,6 +15,8 @@ var config = {
     currentUserApiUrl: 'https://wakatime.com/api/v1/users/current',
     // The url to logout the user from wakatime
     logoutUserUrl: 'https://wakatime.com/logout',
+    // Gets stats from the WakaTime API
+    summariesApiUrl: 'https://wakatime.com/api/v1/users/current/summaries',
     // Different colors for different states of the extension
     colors: {
         allGood: '',
