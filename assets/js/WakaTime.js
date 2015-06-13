@@ -2,9 +2,11 @@ import UrlHelper from './UrlHelper.js';
 import $ from 'jquery';
 import currentTimestamp from './helpers/currentTimestamp.js';
 import changeExtensionIcon from './helpers/changeExtensionIcon.js';
-import devtools from './libs/devtools-detect.js';
+var in_array = require('./helpers/in_array');
 
 class WakaTime {
+
+    tabsWithDevtoolsOpen = [];
 
     constructor(props) {
         this.detectionIntervalInSeconds = 60; //default
@@ -14,6 +16,12 @@ class WakaTime {
         this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
 
         this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
+
+        this.tabsWithDevtoolsOpen = [];
+    }
+
+    setTabsWithDevtoolsOpen(tabs) {
+        this.tabsWithDevtoolsOpen = tabs;
     }
 
     /**
@@ -63,7 +71,11 @@ class WakaTime {
                             if (newState === 'active') {
                                 // Get current tab URL.
                                 chrome.tabs.query({active: true}, (tabs) => {
-                                    this.sendHeartbeat(tabs[0].url);
+                                    var debug = false;
+                                    // If the current active tab has devtools open
+                                    if(in_array(tabs[0].id, this.tabsWithDevtoolsOpen)) debug = true;
+
+                                    this.sendHeartbeat(tabs[0].url, debug);
                                 });
                             }
                         });
@@ -124,13 +136,11 @@ class WakaTime {
      * sends an ajax post request to the API.
      *
      * @param entity
+     * @param debug
      */
-    sendHeartbeat(entity) {
+    sendHeartbeat(entity,  debug) {
 
         var payload = null;
-
-        // TODO: Detect if devTools are open
-        console.log(devtools.open);
 
         this._getLoggingType().done((loggingType) => {
 
@@ -140,7 +150,7 @@ class WakaTime {
 
                 var domain = UrlHelper.getDomainFromUrl(entity);
 
-                payload = this._preparePayload(domain, 'domain');
+                payload = this._preparePayload(domain, 'domain', debug);
 
                 console.log(payload);
 
@@ -149,7 +159,7 @@ class WakaTime {
             }
             // Send entity in heartbeat
             else if (loggingType == 'url') {
-                payload = this._preparePayload(entity, 'url');
+                payload = this._preparePayload(entity, 'url', debug);
 
                 console.log(payload);
 

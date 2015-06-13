@@ -1,5 +1,11 @@
 import WakaTime from "./WakaTime.js";
 
+var wakatime = new WakaTime;
+
+// Holds currently open connections (ports) with devtools
+// Uses tabId as index key.
+var connections = {};
+
 /**
  * Whenever an alarms sets off, this function
  * gets called to detect the alarm name and
@@ -13,8 +19,6 @@ function resolveAlarm(alarm) {
     if (alarm && alarm.name == 'heartbeatAlarm') {
 
         console.log('recording a heartbeat - alarm triggered');
-
-        var wakatime = new WakaTime;
 
         wakatime.recordHeartbeat();
     }
@@ -35,8 +39,6 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
         console.log('recording a heartbeat - active tab changed');
 
-        var wakatime = new WakaTime;
-
         wakatime.recordHeartbeat();
     });
 
@@ -55,11 +57,45 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
 
-                var wakatime = new WakaTime;
-
                 wakatime.recordHeartbeat();
             }
         });
     }
 
+});
+
+
+chrome.runtime.onConnect.addListener(function (port) {
+
+    if (port.name == "devtools-page") {
+
+        // Listen to messages sent from the DevTools page
+        port.onMessage.addListener(function (message, sender, sendResponse) {
+            if (message.name == "init") {
+
+                connections[message.tabId] = port;
+
+                wakatime.setTabsWithDevtoolsOpen(Object.keys(connections));
+
+                wakatime.recordHeartbeat();
+            }
+        });
+
+        port.onDisconnect.addListener(function (port) {
+
+            var tabs = Object.keys(connections);
+
+            for (var i = 0, len = tabs.length; i < len; i ++) {
+                if (connections[tabs[i]] == port) {
+                    delete connections[tabs[i]];
+                    break;
+                }
+            }
+
+            wakatime.setTabsWithDevtoolsOpen(Object.keys(connections));
+
+            wakatime.recordHeartbeat();
+        });
+
+    }
 });

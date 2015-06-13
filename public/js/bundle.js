@@ -79,13 +79,13 @@ var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
 
 var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
 
-var _libsDevtoolsDetectJs = require('./libs/devtools-detect.js');
-
-var _libsDevtoolsDetectJs2 = _interopRequireDefault(_libsDevtoolsDetectJs);
+var in_array = require('./helpers/in_array');
 
 var WakaTime = (function () {
     function WakaTime(props) {
         _classCallCheck(this, WakaTime);
+
+        this.tabsWithDevtoolsOpen = [];
 
         this.detectionIntervalInSeconds = 60; //default
 
@@ -94,9 +94,16 @@ var WakaTime = (function () {
         this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
 
         this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
+
+        this.tabsWithDevtoolsOpen = [];
     }
 
     _createClass(WakaTime, [{
+        key: 'setTabsWithDevtoolsOpen',
+        value: function setTabsWithDevtoolsOpen(tabs) {
+            this.tabsWithDevtoolsOpen = tabs;
+        }
+    }, {
         key: 'checkAuth',
 
         /**
@@ -151,7 +158,11 @@ var WakaTime = (function () {
                                 if (newState === 'active') {
                                     // Get current tab URL.
                                     chrome.tabs.query({ active: true }, function (tabs) {
-                                        _this2.sendHeartbeat(tabs[0].url);
+                                        var debug = false;
+                                        // If the current active tab has devtools open
+                                        if (in_array(tabs[0].id, _this2.tabsWithDevtoolsOpen)) debug = true;
+
+                                        _this2.sendHeartbeat(tabs[0].url, debug);
                                     });
                                 }
                             });
@@ -217,14 +228,12 @@ var WakaTime = (function () {
          * sends an ajax post request to the API.
          *
          * @param entity
+         * @param debug
          */
-        value: function sendHeartbeat(entity) {
+        value: function sendHeartbeat(entity, debug) {
             var _this3 = this;
 
             var payload = null;
-
-            // TODO: Detect if devTools are open
-            console.log(_libsDevtoolsDetectJs2['default'].open);
 
             this._getLoggingType().done(function (loggingType) {
 
@@ -234,7 +243,7 @@ var WakaTime = (function () {
 
                     var domain = _UrlHelperJs2['default'].getDomainFromUrl(entity);
 
-                    payload = _this3._preparePayload(domain, 'domain');
+                    payload = _this3._preparePayload(domain, 'domain', debug);
 
                     console.log(payload);
 
@@ -242,7 +251,7 @@ var WakaTime = (function () {
                 }
                 // Send entity in heartbeat
                 else if (loggingType == 'url') {
-                    payload = _this3._preparePayload(entity, 'url');
+                    payload = _this3._preparePayload(entity, 'url', debug);
 
                     console.log(payload);
 
@@ -295,7 +304,9 @@ var WakaTime = (function () {
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":7,"./helpers/currentTimestamp.js":8,"./libs/devtools-detect.js":9,"jquery":23}],4:[function(require,module,exports){
+},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":7,"./helpers/currentTimestamp.js":8,"./helpers/in_array":9,"jquery":23}],4:[function(require,module,exports){
+//jshint esnext:true
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -488,6 +499,8 @@ exports['default'] = MainList;
 module.exports = exports['default'];
 
 },{"react":179}],5:[function(require,module,exports){
+//jshint esnext:true
+
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -601,6 +614,8 @@ exports["default"] = Navbar;
 module.exports = exports["default"];
 
 },{"react":179}],6:[function(require,module,exports){
+//jshint esnext:true
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -868,47 +883,24 @@ exports["default"] = function () {
 module.exports = exports["default"];
 
 },{}],9:[function(require,module,exports){
-/*!
-	devtools-detect
-	Detect if DevTools is open
-	https://github.com/sindresorhus/devtools-detect
-	by Sindre Sorhus
-	MIT License
-*/
-'use strict';
+"use strict";
 
-(function () {
-	'use strict';
-	var devtools = { open: false };
-	var threshold = 160;
-	var emitEvent = function emitEvent(state) {
-		window.dispatchEvent(new CustomEvent('devtoolschange', {
-			detail: {
-				open: state
-			}
-		}));
-	};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function in_array(needle, haystack) {
+    for (var i = 0; i < haystack.length; i++) {
+        if (needle == haystack[i]) {
+            return true;
+            break;
+        }
+    }
 
-	setInterval(function () {
-		if (window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized || window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-			if (!devtools.open) {
-				emitEvent(true);
-			}
-			devtools.open = true;
-		} else {
-			if (devtools.open) {
-				emitEvent(false);
-			}
-			devtools.open = false;
-		}
-	}, 500);
+    return false;
+}
 
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = devtools;
-	} else {
-		window.devtools = devtools;
-	}
-})();
+exports["default"] = in_array;
+module.exports = exports["default"];
 
 },{}],10:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.

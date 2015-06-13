@@ -7,6 +7,12 @@ var _WakaTimeJs = require('./WakaTime.js');
 
 var _WakaTimeJs2 = _interopRequireDefault(_WakaTimeJs);
 
+var wakatime = new _WakaTimeJs2['default']();
+
+// Holds currently open connections (ports) with devtools
+// Uses tabId as index key.
+var connections = {};
+
 /**
  * Whenever an alarms sets off, this function
  * gets called to detect the alarm name and
@@ -20,8 +26,6 @@ function resolveAlarm(alarm) {
     if (alarm && alarm.name == 'heartbeatAlarm') {
 
         console.log('recording a heartbeat - alarm triggered');
-
-        var wakatime = new _WakaTimeJs2['default']();
 
         wakatime.recordHeartbeat();
     }
@@ -42,8 +46,6 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
         console.log('recording a heartbeat - active tab changed');
 
-        var wakatime = new _WakaTimeJs2['default']();
-
         wakatime.recordHeartbeat();
     });
 });
@@ -61,10 +63,42 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
 
-                var wakatime = new _WakaTimeJs2['default']();
+                wakatime.recordHeartbeat();
+            }
+        });
+    }
+});
+
+chrome.runtime.onConnect.addListener(function (port) {
+
+    if (port.name == 'devtools-page') {
+
+        // Listen to messages sent from the DevTools page
+        port.onMessage.addListener(function (message, sender, sendResponse) {
+            if (message.name == 'init') {
+
+                connections[message.tabId] = port;
+
+                wakatime.setTabsWithDevtoolsOpen(Object.keys(connections));
 
                 wakatime.recordHeartbeat();
             }
+        });
+
+        port.onDisconnect.addListener(function (port) {
+
+            var tabs = Object.keys(connections);
+
+            for (var i = 0, len = tabs.length; i < len; i++) {
+                if (connections[tabs[i]] == port) {
+                    delete connections[tabs[i]];
+                    break;
+                }
+            }
+
+            wakatime.setTabsWithDevtoolsOpen(Object.keys(connections));
+
+            wakatime.recordHeartbeat();
         });
     }
 });
@@ -129,13 +163,13 @@ var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
 
 var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
 
-var _libsDevtoolsDetectJs = require('./libs/devtools-detect.js');
-
-var _libsDevtoolsDetectJs2 = _interopRequireDefault(_libsDevtoolsDetectJs);
+var in_array = require('./helpers/in_array');
 
 var WakaTime = (function () {
     function WakaTime(props) {
         _classCallCheck(this, WakaTime);
+
+        this.tabsWithDevtoolsOpen = [];
 
         this.detectionIntervalInSeconds = 60; //default
 
@@ -144,9 +178,16 @@ var WakaTime = (function () {
         this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
 
         this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
+
+        this.tabsWithDevtoolsOpen = [];
     }
 
     _createClass(WakaTime, [{
+        key: 'setTabsWithDevtoolsOpen',
+        value: function setTabsWithDevtoolsOpen(tabs) {
+            this.tabsWithDevtoolsOpen = tabs;
+        }
+    }, {
         key: 'checkAuth',
 
         /**
@@ -201,7 +242,11 @@ var WakaTime = (function () {
                                 if (newState === 'active') {
                                     // Get current tab URL.
                                     chrome.tabs.query({ active: true }, function (tabs) {
-                                        _this2.sendHeartbeat(tabs[0].url);
+                                        var debug = false;
+                                        // If the current active tab has devtools open
+                                        if (in_array(tabs[0].id, _this2.tabsWithDevtoolsOpen)) debug = true;
+
+                                        _this2.sendHeartbeat(tabs[0].url, debug);
                                     });
                                 }
                             });
@@ -267,14 +312,12 @@ var WakaTime = (function () {
          * sends an ajax post request to the API.
          *
          * @param entity
+         * @param debug
          */
-        value: function sendHeartbeat(entity) {
+        value: function sendHeartbeat(entity, debug) {
             var _this3 = this;
 
             var payload = null;
-
-            // TODO: Detect if devTools are open
-            console.log(_libsDevtoolsDetectJs2['default'].open);
 
             this._getLoggingType().done(function (loggingType) {
 
@@ -284,7 +327,7 @@ var WakaTime = (function () {
 
                     var domain = _UrlHelperJs2['default'].getDomainFromUrl(entity);
 
-                    payload = _this3._preparePayload(domain, 'domain');
+                    payload = _this3._preparePayload(domain, 'domain', debug);
 
                     console.log(payload);
 
@@ -292,7 +335,7 @@ var WakaTime = (function () {
                 }
                 // Send entity in heartbeat
                 else if (loggingType == 'url') {
-                    payload = _this3._preparePayload(entity, 'url');
+                    payload = _this3._preparePayload(entity, 'url', debug);
 
                     console.log(payload);
 
@@ -345,7 +388,7 @@ var WakaTime = (function () {
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"./libs/devtools-detect.js":6,"jquery":7}],4:[function(require,module,exports){
+},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"./helpers/in_array":6,"jquery":7}],4:[function(require,module,exports){
 /**
  * It changes the extension icon color.
  * Supported values are: 'red', 'white' and ''.
@@ -412,47 +455,24 @@ exports["default"] = function () {
 module.exports = exports["default"];
 
 },{}],6:[function(require,module,exports){
-/*!
-	devtools-detect
-	Detect if DevTools is open
-	https://github.com/sindresorhus/devtools-detect
-	by Sindre Sorhus
-	MIT License
-*/
-'use strict';
+"use strict";
 
-(function () {
-	'use strict';
-	var devtools = { open: false };
-	var threshold = 160;
-	var emitEvent = function emitEvent(state) {
-		window.dispatchEvent(new CustomEvent('devtoolschange', {
-			detail: {
-				open: state
-			}
-		}));
-	};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function in_array(needle, haystack) {
+    for (var i = 0; i < haystack.length; i++) {
+        if (needle == haystack[i]) {
+            return true;
+            break;
+        }
+    }
 
-	setInterval(function () {
-		if (window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized || window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-			if (!devtools.open) {
-				emitEvent(true);
-			}
-			devtools.open = true;
-		} else {
-			if (devtools.open) {
-				emitEvent(false);
-			}
-			devtools.open = false;
-		}
-	}, 500);
+    return false;
+}
 
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = devtools;
-	} else {
-		window.devtools = devtools;
-	}
-})();
+exports["default"] = in_array;
+module.exports = exports["default"];
 
 },{}],7:[function(require,module,exports){
 /*!

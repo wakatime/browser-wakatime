@@ -3,6 +3,7 @@
   "name": "WakaTime",
   "version": "1.0.0",
   "description": "Get stats about your website debugging, research, documentation, etc.",
+  "devtools_page": "devtools.html",
   "icons": {
     "16": "graphics/wakatime-logo-16.png",
     "48": "graphics/wakatime-logo-48.png",
