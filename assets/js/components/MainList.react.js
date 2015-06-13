@@ -62,7 +62,7 @@ class MainList extends React.Component {
                     </div>
                 );
             }
-            else
+            else if(this.props.loggingEnabled === false && this.props.loggedIn === true)
             {
                 return (
                     <div className="panel panel-default">

@@ -6,22 +6,19 @@ import NavBar from './NavBar.react.js';
 import MainList from './MainList.react.js';
 import changeExtensionIcon from '../helpers/changeExtensionIcon.js';
 import WakaTimeOriginal from '../WakaTime.js';
+var config = require('../config.js');
 
 class WakaTime extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.logoutUserUrl = 'https://wakatime.com/logout';
-        this.state = {
-            user: {
-                full_name: null,
-                email: null,
-                photo: null
-            },
-            loggedIn: false,
-            loggingEnabled: false
-        };
-    }
+    state = {
+        user: {
+            full_name: null,
+            email: null,
+            photo: null
+        },
+        loggedIn: false,
+        loggingEnabled: config.loggingEnabled
+    };
 
     componentDidMount() {
 
@@ -32,14 +29,14 @@ class WakaTime extends React.Component {
             if (data !== false) {
 
                 chrome.storage.sync.get({
-                    loggingEnabled: false
+                    loggingEnabled: config.loggingEnabled
                 }, (items) => {
                     this.setState({loggingEnabled: items.loggingEnabled});
                     if (items.loggingEnabled === true) {
-                        changeExtensionIcon();
+                        changeExtensionIcon(config.colors.allGood);
                     }
                     else {
-                        changeExtensionIcon('red');
+                        changeExtensionIcon(config.colors.notLogging);
                     }
                 });
 
@@ -53,7 +50,7 @@ class WakaTime extends React.Component {
                 });
             }
             else {
-                changeExtensionIcon('red');
+                changeExtensionIcon(config.colors.notSignedIn);
             }
         });
 
@@ -63,7 +60,7 @@ class WakaTime extends React.Component {
         var deferredObject = $.Deferred();
 
         $.ajax({
-            url: this.logoutUserUrl,
+            url: config.logoutUserUrl,
             method: 'GET',
             success: () => {
 
@@ -72,7 +69,7 @@ class WakaTime extends React.Component {
             },
             error: (xhr, status, err) => {
 
-                console.error(this.logoutUserUrl, status, err.toString());
+                console.error(config.logoutUserUrl, status, err.toString());
 
                 deferredObject.resolve(this);
             }
@@ -94,7 +91,7 @@ class WakaTime extends React.Component {
                 loggingEnabled: false
             });
 
-            changeExtensionIcon('red');
+            changeExtensionIcon(config.colors.notSignedIn);
 
         });
     }
@@ -104,7 +101,7 @@ class WakaTime extends React.Component {
             loggingEnabled: false
         });
 
-        changeExtensionIcon('red');
+        changeExtensionIcon(config.colors.notLogging);
 
         chrome.storage.sync.set({
             loggingEnabled: false
@@ -116,7 +113,7 @@ class WakaTime extends React.Component {
             loggingEnabled: true
         });
 
-        changeExtensionIcon();
+        changeExtensionIcon(config.colors.allGood);
 
         chrome.storage.sync.set({
             loggingEnabled: true

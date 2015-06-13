@@ -1,6 +1,6 @@
 /**
  * It changes the extension icon color.
- * Supported values are: 'red', 'white' and ''.
+ * Supported values are: 'red', 'white', 'gray' and ''.
  */
 export default function changeExtensionIcon(color = '') {
 
@@ -9,7 +9,7 @@ export default function changeExtensionIcon(color = '') {
     if (color !== '') {
         color = '-' + color;
 
-        path = './graphics/wakatime-logo-48' + color + '.png';
+        path = './graphics/wakatime-logo-38' + color + '.png';
 
         chrome.browserAction.setIcon({
             path: path
@@ -21,14 +21,14 @@ export default function changeExtensionIcon(color = '') {
             theme: 'light'
         }, function (items) {
             if (items.theme == 'light') {
-                path = './graphics/wakatime-logo-48.png';
+                path = './graphics/wakatime-logo-38.png';
 
                 chrome.browserAction.setIcon({
                     path: path
                 });
             }
             else {
-                path = './graphics/wakatime-logo-48-white.png';
+                path = './graphics/wakatime-logo-38-white.png';
 
                 chrome.browserAction.setIcon({
                     path: path

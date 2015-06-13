@@ -164,20 +164,11 @@ var _helpersChangeExtensionIconJs = require('./helpers/changeExtensionIcon.js');
 var _helpersChangeExtensionIconJs2 = _interopRequireDefault(_helpersChangeExtensionIconJs);
 
 var in_array = require('./helpers/in_array');
+var config = require('./config.js');
 
 var WakaTime = (function () {
     function WakaTime(props) {
         _classCallCheck(this, WakaTime);
-
-        this.tabsWithDevtoolsOpen = [];
-
-        this.detectionIntervalInSeconds = 60; //default
-
-        this.loggingType = 'domain'; //default
-
-        this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
-
-        this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
 
         this.tabsWithDevtoolsOpen = [];
     }
@@ -196,12 +187,10 @@ var WakaTime = (function () {
          * @returns {*}
          */
         value: function checkAuth() {
-            var _this = this;
-
             var deferredObject = _jquery2['default'].Deferred();
 
             _jquery2['default'].ajax({
-                url: this.currentUserApiUrl,
+                url: config.currentUserApiUrl,
                 dataType: 'json',
                 success: function success(data) {
 
@@ -209,7 +198,7 @@ var WakaTime = (function () {
                 },
                 error: function error(xhr, status, err) {
 
-                    console.error(_this.currentUserApiUrl, status, err.toString());
+                    console.error(config.currentUserApiUrl, status, err.toString());
 
                     deferredObject.resolve(false);
                 }
@@ -225,40 +214,40 @@ var WakaTime = (function () {
          * and sends it to WakaTime for logging.
          */
         value: function recordHeartbeat() {
-            var _this2 = this;
+            var _this = this;
 
             this.checkAuth().done(function (data) {
 
                 if (data !== false) {
 
                     chrome.storage.sync.get({
-                        loggingEnabled: true
+                        loggingEnabled: config.loggingEnabled
                     }, function (items) {
                         if (items.loggingEnabled === true) {
-                            (0, _helpersChangeExtensionIconJs2['default'])();
+                            (0, _helpersChangeExtensionIconJs2['default'])(config.colors.allGood);
 
-                            chrome.idle.queryState(_this2.detectionIntervalInSeconds, function (newState) {
+                            chrome.idle.queryState(config.detectionIntervalInSeconds, function (newState) {
 
                                 if (newState === 'active') {
                                     // Get current tab URL.
                                     chrome.tabs.query({ active: true }, function (tabs) {
                                         var debug = false;
                                         // If the current active tab has devtools open
-                                        if (in_array(tabs[0].id, _this2.tabsWithDevtoolsOpen)) debug = true;
+                                        if (in_array(tabs[0].id, _this.tabsWithDevtoolsOpen)) debug = true;
 
-                                        _this2.sendHeartbeat(tabs[0].url, debug);
+                                        _this.sendHeartbeat(tabs[0].url, debug);
                                     });
                                 }
                             });
                         } else {
-                            (0, _helpersChangeExtensionIconJs2['default'])('red');
+                            (0, _helpersChangeExtensionIconJs2['default'])(config.colors.notLogging);
                         }
                     });
                 } else {
 
                     // User is not logged in.
                     // Change extension icon to red color.
-                    (0, _helpersChangeExtensionIconJs2['default'])('red');
+                    (0, _helpersChangeExtensionIconJs2['default'])(config.colors.notSignedIn);
                 }
             });
         }
@@ -297,7 +286,7 @@ var WakaTime = (function () {
             var deferredObject = _jquery2['default'].Deferred();
 
             chrome.storage.sync.get({
-                loggingType: this.loggingType
+                loggingType: config.loggingType
             }, function (items) {
                 deferredObject.resolve(items.loggingType);
             });
@@ -315,7 +304,7 @@ var WakaTime = (function () {
          * @param debug
          */
         value: function sendHeartbeat(entity, debug) {
-            var _this3 = this;
+            var _this2 = this;
 
             var payload = null;
 
@@ -327,19 +316,19 @@ var WakaTime = (function () {
 
                     var domain = _UrlHelperJs2['default'].getDomainFromUrl(entity);
 
-                    payload = _this3._preparePayload(domain, 'domain', debug);
+                    payload = _this2._preparePayload(domain, 'domain', debug);
 
                     console.log(payload);
 
-                    _this3.sendAjaxRequestToApi(payload);
+                    _this2.sendAjaxRequestToApi(payload);
                 }
                 // Send entity in heartbeat
                 else if (loggingType == 'url') {
-                    payload = _this3._preparePayload(entity, 'url', debug);
+                    payload = _this2._preparePayload(entity, 'url', debug);
 
                     console.log(payload);
 
-                    _this3.sendAjaxRequestToApi(payload);
+                    _this2.sendAjaxRequestToApi(payload);
                 }
             });
         }
@@ -354,27 +343,27 @@ var WakaTime = (function () {
          * @returns {*}
          */
         value: function sendAjaxRequestToApi(payload) {
-            var _this4 = this;
+            var _this3 = this;
 
             var method = arguments[1] === undefined ? 'POST' : arguments[1];
 
             var deferredObject = _jquery2['default'].Deferred();
 
             _jquery2['default'].ajax({
-                url: this.heartbeatApiUrl,
+                url: config.heartbeatApiUrl,
                 dataType: 'json',
                 contentType: 'application/json',
                 method: method,
                 data: payload,
                 success: function success(response) {
 
-                    deferredObject.resolve(_this4);
+                    deferredObject.resolve(_this3);
                 },
                 error: function error(xhr, status, err) {
 
-                    console.error(_this4.heartbeatApiUrl, status, err.toString());
+                    console.error(config.heartbeatApiUrl, status, err.toString());
 
-                    deferredObject.resolve(_this4);
+                    deferredObject.resolve(_this3);
                 }
             });
 
@@ -388,10 +377,43 @@ var WakaTime = (function () {
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"./UrlHelper.js":2,"./helpers/changeExtensionIcon.js":4,"./helpers/currentTimestamp.js":5,"./helpers/in_array":6,"jquery":7}],4:[function(require,module,exports){
+},{"./UrlHelper.js":2,"./config.js":4,"./helpers/changeExtensionIcon.js":5,"./helpers/currentTimestamp.js":6,"./helpers/in_array":7,"jquery":8}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports['default'] = {
+    // Time for idle state of the browser
+    // The user is considered idle if there was
+    // no activity in the browser for x seconds
+    detectionIntervalInSeconds: 60,
+    //default logging type
+    loggingType: 'domain',
+    // By default logging is enabled
+    loggingEnabled: true,
+    // Url to which to send the heartbeat
+    heartbeatApiUrl: 'https://wakatime.com/api/v1/users/current/heartbeats',
+    // Url from which to detect if the user is logged in
+    currentUserApiUrl: 'https://wakatime.com/api/v1/users/current',
+    // The url to logout the user from wakatime
+    logoutUserUrl: 'https://wakatime.com/logout',
+    // Different colors for different states of the extension
+    colors: {
+        allGood: '',
+        notLogging: 'gray',
+        notSignedIn: 'red',
+        lightTheme: 'white'
+    },
+    // Default theme
+    theme: 'light'
+};
+module.exports = exports['default'];
+
+},{}],5:[function(require,module,exports){
 /**
  * It changes the extension icon color.
- * Supported values are: 'red', 'white' and ''.
+ * Supported values are: 'red', 'white', 'gray' and ''.
  */
 'use strict';
 
@@ -408,7 +430,7 @@ function changeExtensionIcon() {
     if (color !== '') {
         color = '-' + color;
 
-        path = './graphics/wakatime-logo-48' + color + '.png';
+        path = './graphics/wakatime-logo-38' + color + '.png';
 
         chrome.browserAction.setIcon({
             path: path
@@ -420,13 +442,13 @@ function changeExtensionIcon() {
             theme: 'light'
         }, function (items) {
             if (items.theme == 'light') {
-                path = './graphics/wakatime-logo-48.png';
+                path = './graphics/wakatime-logo-38.png';
 
                 chrome.browserAction.setIcon({
                     path: path
                 });
             } else {
-                path = './graphics/wakatime-logo-48-white.png';
+                path = './graphics/wakatime-logo-38-white.png';
 
                 chrome.browserAction.setIcon({
                     path: path
@@ -438,7 +460,7 @@ function changeExtensionIcon() {
 
 module.exports = exports['default'];
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Returns UNIX timestamp
  */
@@ -454,7 +476,7 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -474,7 +496,7 @@ function in_array(needle, haystack) {
 exports["default"] = in_array;
 module.exports = exports["default"];
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/

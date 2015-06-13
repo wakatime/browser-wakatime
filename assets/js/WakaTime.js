@@ -3,20 +3,11 @@ import $ from 'jquery';
 import currentTimestamp from './helpers/currentTimestamp.js';
 import changeExtensionIcon from './helpers/changeExtensionIcon.js';
 var in_array = require('./helpers/in_array');
+var config = require('./config.js');
 
 class WakaTime {
 
-    tabsWithDevtoolsOpen = [];
-
     constructor(props) {
-        this.detectionIntervalInSeconds = 60; //default
-
-        this.loggingType = 'domain'; //default
-
-        this.heartbeatApiUrl = 'https://wakatime.com/api/v1/users/current/heartbeats';
-
-        this.currentUserApiUrl = 'https://wakatime.com/api/v1/users/current';
-
         this.tabsWithDevtoolsOpen = [];
     }
 
@@ -33,7 +24,7 @@ class WakaTime {
         var deferredObject = $.Deferred();
 
         $.ajax({
-            url: this.currentUserApiUrl,
+            url: config.currentUserApiUrl,
             dataType: 'json',
             success: (data) => {
 
@@ -42,7 +33,7 @@ class WakaTime {
             },
             error: (xhr, status, err) => {
 
-                console.error(this.currentUserApiUrl, status, err.toString());
+                console.error(config.currentUserApiUrl, status, err.toString());
 
                 deferredObject.resolve(false);
             }
@@ -61,12 +52,12 @@ class WakaTime {
             if (data !== false) {
 
                 chrome.storage.sync.get({
-                    loggingEnabled: true
+                    loggingEnabled: config.loggingEnabled
                 }, (items) => {
                     if (items.loggingEnabled === true) {
-                        changeExtensionIcon();
+                        changeExtensionIcon(config.colors.allGood);
 
-                        chrome.idle.queryState(this.detectionIntervalInSeconds, (newState) => {
+                        chrome.idle.queryState(config.detectionIntervalInSeconds, (newState) => {
 
                             if (newState === 'active') {
                                 // Get current tab URL.
@@ -81,7 +72,7 @@ class WakaTime {
                         });
                     }
                     else {
-                        changeExtensionIcon('red');
+                        changeExtensionIcon(config.colors.notLogging);
                     }
                 });
             }
@@ -89,7 +80,7 @@ class WakaTime {
 
                 // User is not logged in.
                 // Change extension icon to red color.
-                changeExtensionIcon('red');
+                changeExtensionIcon(config.colors.notSignedIn);
             }
         });
     }
@@ -123,7 +114,7 @@ class WakaTime {
         var deferredObject = $.Deferred();
 
         chrome.storage.sync.get({
-            loggingType: this.loggingType
+            loggingType: config.loggingType
         }, function (items) {
             deferredObject.resolve(items.loggingType);
         });
@@ -181,7 +172,7 @@ class WakaTime {
         var deferredObject = $.Deferred();
 
         $.ajax({
-            url: this.heartbeatApiUrl,
+            url: config.heartbeatApiUrl,
             dataType: 'json',
             contentType: 'application/json',
             method: method,
@@ -193,7 +184,7 @@ class WakaTime {
             },
             error: (xhr, status, err) => {
 
-                console.error(this.heartbeatApiUrl, status, err.toString());
+                console.error(config.heartbeatApiUrl, status, err.toString());
 
                 deferredObject.resolve(this);
 

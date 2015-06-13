@@ -2,6 +2,8 @@
 global.jQuery = require('jquery');
 require('bootstrap');
 
+var config = require('./config');
+
 import $ from "jquery";
 
 function detectCheckedRadio(name) {
@@ -47,9 +49,9 @@ function save_options(e) {
 function restore_options() {
     // Use default value color = 'red' and likesColor = true.
     chrome.storage.sync.get({
-        theme: 'light',
+        theme: config.theme,
         blacklist: '',
-        loggingType: 'domain'
+        loggingType: config.loggingType
     }, function (items) {
         document.getElementById('theme').value = items.theme;
         document.getElementById('blacklist').value = items.blacklist;
