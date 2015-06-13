@@ -134,7 +134,8 @@ var config = {
     },
     // Default theme
     theme: 'light',
-    states: ['allGood', 'notLogging', 'notSignedIn']
+    // Valid extension states
+    states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted']
 };
 
 exports['default'] = config;

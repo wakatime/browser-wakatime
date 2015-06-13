@@ -30,10 +30,13 @@ var config = {
     },
     // Default theme
     theme: 'light',
+    // Valid extension states
     states: [
         'allGood',
         'notLogging',
-        'notSignedIn'
+        'notSignedIn',
+        'blacklisted',
+        'whitelisted'
     ]
 };
 
