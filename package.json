@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "test": "jest && mocha --compilers js:mocha-traceur tests/**/*.spec.js"
+    "test": "jest && mocha --compilers js:mocha-traceur tests/**/*.spec.js",
+    "start": "npm install && bower install && gulp"
   },
   "jest": {
     "testFileExtensions": [
