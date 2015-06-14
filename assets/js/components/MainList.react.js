@@ -22,14 +22,6 @@ class MainList extends React.Component {
             if (this.props.loggedIn === true) {
                 return (
                     <div>
-                        <a target="_blank" href="https://wakatime.com/settings/rules" className="list-group-item">
-                            <i className="fa fa-fw fa-filter"></i>
-                            Custom Rules
-                        </a>
-                        <a target="_blank" href="https://wakatime.com/dashboard" className="list-group-item">
-                            <i className="fa fa-fw fa-tachometer"></i>
-                            Dashboard
-                        </a>
                         <a href="#" className="list-group-item" onClick={this.props.logoutUser}>
                             <i className="fa fa-fw fa-sign-out"></i>
                             Logout
@@ -51,13 +43,11 @@ class MainList extends React.Component {
             if(this.props.loggingEnabled === true && this.props.loggedIn === true)
             {
                 return (
-                    <div className="panel panel-default">
-                        <div className="panel-body">
-                            <div className="row">
-                                <div className="col-xs-12">
-                                    <a href="#" onClick={this.props.disableLogging} className="btn btn-danger btn-lg btn-block">Disable logging</a>
-                                </div>
-                            </div>
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <p>
+                                <a href="#" onClick={this.props.disableLogging} className="btn btn-danger btn-block">Disable logging</a>
+                            </p>
                         </div>
                     </div>
                 );
@@ -65,36 +55,26 @@ class MainList extends React.Component {
             else if(this.props.loggingEnabled === false && this.props.loggedIn === true)
             {
                 return (
-                    <div className="panel panel-default">
-                        <div className="panel-body">
-                            <div className="row">
-                                <div className="col-xs-12">
-                                    <a href="#" onClick={this.props.enableLogging} className="btn btn-success btn-lg btn-block">Enable logging</a>
-                                </div>
-                            </div>
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <p>
+                                <a href="#" onClick={this.props.enableLogging} className="btn btn-success btn-block">Enable logging</a>
+                            </p>
                         </div>
                     </div>
                 );
             }
         };
 
-        var signedInAs = () => {
+        var totalTimeLoggedToday = () => {
             if (this.props.loggedIn === true) {
                 return (
-                    <div className="panel panel-default">
-                        <div className="panel-body">
-                            <div className="row">
-                                <div className="col-xs-2">
-                                    <img className="img-circle" width="48" height="48" src={this.props.user.photo} />
-                                </div>
-                                <div className="col-xs-10">
-                                    Signed in as&nbsp;
-                                    <b>{this.props.user.full_name}</b>
-                                    <br />
-                                    {this.props.user.email}
-                                </div>
-                            </div>
-
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <blockquote>
+                                <p>{this.props.totalTimeLoggedToday}</p>
+                                <small><cite>TOTAL TIME LOGGED TODAY</cite></small>
+                            </blockquote>
                         </div>
                     </div>
                 );
@@ -104,7 +84,7 @@ class MainList extends React.Component {
         return (
             <div>
 
-                {signedInAs()}
+                {totalTimeLoggedToday()}
 
                 {loggingStatus()}
 

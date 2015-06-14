@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var moment = require('moment');
 
 var config = require('./../config');
 
@@ -21,6 +22,30 @@ class WakaTime {
      */
     setTabsWithDevtoolsOpen(tabs) {
         this.tabsWithDevtoolsOpen = tabs;
+    }
+
+    getTotalTimeLoggedToday() {
+        var deferredObject = $.Deferred();
+
+        var today = moment().format('YYYY-MM-DD');
+
+        $.ajax({
+            url: config.summariesApiUrl + '?start=' + today + '&end=' + today,
+            dataType: 'json',
+            success: (data) => {
+
+                deferredObject.resolve(data.data[0]['grand_total']);
+
+            },
+            error: (xhr, status, err) => {
+
+                console.error(config.summariesApiUrl, status, err.toString());
+
+                deferredObject.resolve(false);
+            }
+        });
+
+        return deferredObject.promise();
     }
 
     /**

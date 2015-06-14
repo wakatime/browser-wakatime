@@ -28,7 +28,8 @@ class WakaTime extends React.Component {
                 photo: null
             },
             loggedIn: false,
-            loggingEnabled: config.loggingEnabled
+            loggingEnabled: config.loggingEnabled,
+            totalTimeLoggedToday: 0
         };
     }
 
@@ -60,6 +61,13 @@ class WakaTime extends React.Component {
                         photo: data.photo
                     },
                     loggedIn: true
+                });
+
+                wakatime.getTotalTimeLoggedToday().done((grand_total) => {
+                   console.log(grand_total['text']);
+                    this.setState({
+                        totalTimeLoggedToday: grand_total['text']
+                    })
                 });
             }
             else {
@@ -133,10 +141,13 @@ class WakaTime extends React.Component {
         });
     }
 
+
     render() {
         return (
             <div>
-                <NavBar />
+                <NavBar
+                    user={this.state.user}
+                    loggedIn={this.state.loggedIn} />
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
@@ -145,6 +156,7 @@ class WakaTime extends React.Component {
                                 enableLogging={this._enableLogging.bind(this)}
                                 loggingEnabled={this.state.loggingEnabled}
                                 user={this.state.user}
+                                totalTimeLoggedToday={this.state.totalTimeLoggedToday}
                                 logoutUser={this._logoutUser.bind(this)}
                                 loggedIn={this.state.loggedIn} />
                         </div>

@@ -19,9 +19,11 @@ Installation
 
 ## Screenshots
 
-![SC open](./screenshots/sc_5-logging-green.png)
+![SC open](./screenshots/sc_6-green.png)
 
-![SC open](./screenshots/sc_5-logging-red.png)
+![SC open](./screenshots/sc_6-red.png)
+
+![SC open](./screenshots/sc_6-open.png)
 
 ![Options SC](./screenshots/sc_4-options.png)
 

@@ -5,6 +5,41 @@ var React = require('react');
 class Navbar extends React.Component {
 
     render() {
+
+        var signedInAs = () => {
+            if (this.props.loggedIn === true) {
+                return (
+                    <p class="navbar-text">Signed in as <b>{this.props.user.full_name}</b></p>
+                );
+            }
+        };
+
+        var dashboard = () => {
+            if (this.props.loggedIn === true) {
+                return (
+                    <li>
+                        <a target="_blank" href="https://wakatime.com/dashboard">
+                            <i className="fa fa-fw fa-tachometer"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                );
+            }
+        };
+
+        var customRules = () => {
+            if (this.props.loggedIn === true) {
+                return (
+                    <li>
+                        <a target="_blank" href="https://wakatime.com/settings/rules">
+                            <i className="fa fa-fw fa-filter"></i>
+                            Custom Rules
+                        </a>
+                    </li>
+                );
+            }
+        };
+
         return (
             <nav className="navbar navbar-default" role="navigation">
                 <div className="container-fluid">
@@ -19,7 +54,10 @@ class Navbar extends React.Component {
                         </a>
                     </div>
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        {signedInAs()}
                         <ul className="nav navbar-nav">
+                            {customRules()}
+                            {dashboard()}
                             <li className="dropdown">
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     <i className="fa fa-fw fa-info"></i>
