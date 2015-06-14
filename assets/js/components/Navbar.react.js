@@ -9,7 +9,7 @@ class Navbar extends React.Component {
         var signedInAs = () => {
             if (this.props.loggedIn === true) {
                 return (
-                    <p class="navbar-text">Signed in as <b>{this.props.user.full_name}</b></p>
+                    <p className="navbar-text">Signed in as <b>{this.props.user.full_name}</b></p>
                 );
             }
         };

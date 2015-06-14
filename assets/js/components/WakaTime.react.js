@@ -29,7 +29,7 @@ class WakaTime extends React.Component {
             },
             loggedIn: false,
             loggingEnabled: config.loggingEnabled,
-            totalTimeLoggedToday: 0
+            totalTimeLoggedToday: '0 minutes'
         };
     }
 
@@ -64,7 +64,6 @@ class WakaTime extends React.Component {
                 });
 
                 wakatime.getTotalTimeLoggedToday().done((grand_total) => {
-                   console.log(grand_total['text']);
                     this.setState({
                         totalTimeLoggedToday: grand_total['text']
                     })

@@ -218,7 +218,7 @@ var Navbar = (function (_React$Component) {
                 if (_this.props.loggedIn === true) {
                     return React.createElement(
                         "p",
-                        { "class": "navbar-text" },
+                        { className: "navbar-text" },
                         "Signed in as ",
                         React.createElement(
                             "b",
@@ -388,7 +388,7 @@ var WakaTime = (function (_React$Component) {
             },
             loggedIn: false,
             loggingEnabled: config.loggingEnabled,
-            totalTimeLoggedToday: 0
+            totalTimeLoggedToday: '0 minutes'
         };
     }
 
@@ -426,7 +426,6 @@ var WakaTime = (function (_React$Component) {
                     });
 
                     wakatime.getTotalTimeLoggedToday().done(function (grand_total) {
-                        console.log(grand_total['text']);
                         _this.setState({
                             totalTimeLoggedToday: grand_total['text']
                         });
