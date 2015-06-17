@@ -9,7 +9,7 @@ var wakatime = new WakaTime;
 var connections = {};
 
 // Add a listener to resolve alarms
-chrome.alarms.onAlarm.addListener(function(alarm){
+chrome.alarms.onAlarm.addListener(function (alarm) {
     // |alarm| can be undefined because onAlarm also gets called from
     // window.setTimeout on old chrome versions.
     if (alarm && alarm.name == 'heartbeatAlarm') {
@@ -45,7 +45,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if (changeInfo.status === 'complete') {
         // Get current tab URL.
-        chrome.tabs.query({active: true}, (tabs) => {
+        chrome.tabs.query({active: true}, function(tabs) {
             // If tab updated is the same as active tab
             if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
