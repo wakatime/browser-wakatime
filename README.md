@@ -21,11 +21,11 @@ Installation
 
 ![SC open](./screenshots/sc_6-green.png)
 
-![SC open](./screenshots/sc_6-red.png)
-
 ![SC open](./screenshots/sc_6-open.png)
 
-![Options SC](./screenshots/sc_4-options.png)
+![Options SC](./screenshots/sc_7-options2.png)
+
+![Options SC](./screenshots/sc_7-options4.png)
 
 ## Development instructions
 

@@ -1,12 +1,12 @@
-jest.dontMock('../../assets/js/components/Alert.react.js');
+jest.dontMock('../../assets/js/components/SitesList.react.js');
 
-describe('Alert', function() {
-    var React, Alert, TestUtils, Component;
+describe('SitesList', function() {
+    var React, SitesList, TestUtils, Component;
 
     beforeEach(function() {
         // Setup our tools
         React = require('react/addons');
-        Alert = require('../../assets/js/components/Alert.react.js');
+        SitesList = require('../../assets/js/components/SitesList.react.js');
         TestUtils = React.addons.TestUtils;
         // Create the React component here using TestUtils and store into Component
     });

@@ -1,6 +1,6 @@
 jest.dontMock('../../assets/js/components/Options.react.js');
 
-describe('Wakatime', function() {
+describe('Options', function() {
     var React, Options, TestUtils, Component;
 
     beforeEach(function() {
