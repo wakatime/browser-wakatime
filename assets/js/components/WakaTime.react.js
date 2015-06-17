@@ -17,9 +17,9 @@ var changeExtensionState = require('../helpers/changeExtensionState');
 
 class WakaTime extends React.Component {
 
-    constructor(){
+    constructor(props){
 
-        super();
+        super(props);
 
         this.state = {
             user: {

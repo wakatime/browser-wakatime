@@ -8901,6 +8901,20 @@ input[type="checkbox"]:disabled:checked:after,
 .carousel-caption h6 {
   color: inherit;
 }
+.alert-enter {
+  opacity: 0.01;
+  transition: opacity 1s ease-in;
+}
+.alert-enter.alert-enter-active {
+  opacity: 1;
+}
+.alert-leave {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+.alert-leave.alert-leave-active {
+  opacity: 0.01;
+}
 body {
   min-width: 357px;
 }

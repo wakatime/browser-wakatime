@@ -109,7 +109,11 @@ var config = {
     // The user is considered idle if there was
     // no activity in the browser for x seconds
     detectionIntervalInSeconds: 60,
-    //default logging type
+    // Default logging style
+    // Log all except blacklisted sites
+    // or log only the white listed sites.
+    loggingStyle: 'blacklist',
+    // Default logging type
     loggingType: 'domain',
     // By default logging is enabled
     loggingEnabled: true,
@@ -137,7 +141,17 @@ var config = {
     // Default theme
     theme: 'light',
     // Valid extension states
-    states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted']
+    states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+    alert: {
+        success: {
+            type: 'success',
+            text: 'Options have been saved!'
+        },
+        failure: {
+            type: 'danger',
+            text: 'There was an error while saving the options!'
+        }
+    }
 };
 
 exports['default'] = config;
