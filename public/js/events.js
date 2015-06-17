@@ -142,6 +142,7 @@ var config = {
     theme: 'light',
     // Valid extension states
     states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+    // Predefined alert type and text for success and failure.
     alert: {
         success: {
             type: 'success',

@@ -1,5 +1,3 @@
-//jshint esnext:true
-
 var React = require("react");
 var $ = require('jquery');
 
@@ -15,13 +13,10 @@ var WakaTimeOriginal = require('../core/WakaTime');
 // Helpers
 var changeExtensionState = require('../helpers/changeExtensionState');
 
-class WakaTime extends React.Component {
+var WakaTime = React.createClass({
 
-    constructor(props){
-
-        super(props);
-
-        this.state = {
+    getInitialState: function() {
+        return {
             user: {
                 full_name: null,
                 email: null,
@@ -31,21 +26,23 @@ class WakaTime extends React.Component {
             loggingEnabled: config.loggingEnabled,
             totalTimeLoggedToday: '0 minutes'
         };
-    }
+    },
 
-
-    componentDidMount() {
+    componentDidMount: function() {
 
         var wakatime = new WakaTimeOriginal;
 
-        wakatime.checkAuth().done(data => {
+        var that = this;
+
+        wakatime.checkAuth().done(function(data) {
 
             if (data !== false) {
 
                 chrome.storage.sync.get({
                     loggingEnabled: config.loggingEnabled
-                }, (items) => {
-                    this.setState({loggingEnabled: items.loggingEnabled});
+                }, function(items) {
+                    that.setState({loggingEnabled: items.loggingEnabled});
+
                     if (items.loggingEnabled === true) {
                         changeExtensionState('allGood');
                     }
@@ -54,7 +51,7 @@ class WakaTime extends React.Component {
                     }
                 });
 
-                this.setState({
+                that.setState({
                     user: {
                         full_name: data.full_name,
                         email: data.email,
@@ -63,10 +60,10 @@ class WakaTime extends React.Component {
                     loggedIn: true
                 });
 
-                wakatime.getTotalTimeLoggedToday().done((grand_total) => {
-                    this.setState({
+                wakatime.getTotalTimeLoggedToday().done(function(grand_total) {
+                    that.setState({
                         totalTimeLoggedToday: grand_total['text']
-                    })
+                    });
                 });
             }
             else {
@@ -74,34 +71,39 @@ class WakaTime extends React.Component {
             }
         });
 
-    }
+    },
 
-    logoutUser() {
+    logoutUser: function() {
         var deferredObject = $.Deferred();
+
+        var that = this;
 
         $.ajax({
             url: config.logoutUserUrl,
             method: 'GET',
-            success: () => {
+            success: function() {
 
-                deferredObject.resolve(this);
+                deferredObject.resolve(that);
 
             },
             error: (xhr, status, err) => {
 
                 console.error(config.logoutUserUrl, status, err.toString());
 
-                deferredObject.resolve(this);
+                deferredObject.resolve(that);
             }
         });
 
         return deferredObject.promise();
-    }
+    },
 
-    _logoutUser() {
-        this.logoutUser().done(() => {
+    _logoutUser: function() {
 
-            this.setState({
+        var that = this;
+
+        this.logoutUser().done(function(){
+
+            that.setState({
                 user: {
                     full_name: null,
                     email: null,
@@ -114,9 +116,9 @@ class WakaTime extends React.Component {
             changeExtensionState('notSignedIn');
 
         });
-    }
+    },
 
-    _disableLogging() {
+    _disableLogging: function() {
         this.setState({
             loggingEnabled: false
         });
@@ -126,9 +128,9 @@ class WakaTime extends React.Component {
         chrome.storage.sync.set({
             loggingEnabled: false
         });
-    }
+    },
 
-    _enableLogging() {
+    _enableLogging: function() {
         this.setState({
             loggingEnabled: true
         });
@@ -138,10 +140,9 @@ class WakaTime extends React.Component {
         chrome.storage.sync.set({
             loggingEnabled: true
         });
-    }
+    },
 
-
-    render() {
+    render: function() {
         return (
             <div>
                 <NavBar
@@ -151,12 +152,12 @@ class WakaTime extends React.Component {
                     <div className="row">
                         <div className="col-md-12">
                             <MainList
-                                disableLogging={this._disableLogging.bind(this)}
-                                enableLogging={this._enableLogging.bind(this)}
+                                disableLogging={this._disableLogging}
+                                enableLogging={this._enableLogging}
                                 loggingEnabled={this.state.loggingEnabled}
                                 user={this.state.user}
                                 totalTimeLoggedToday={this.state.totalTimeLoggedToday}
-                                logoutUser={this._logoutUser.bind(this)}
+                                logoutUser={this._logoutUser}
                                 loggedIn={this.state.loggedIn} />
                         </div>
                     </div>
@@ -164,6 +165,7 @@ class WakaTime extends React.Component {
             </div>
         );
     }
-}
 
-export default WakaTime;
+});
+
+module.exports = WakaTime;

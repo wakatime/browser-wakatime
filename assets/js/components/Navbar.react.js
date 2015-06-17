@@ -1,21 +1,21 @@
-//jshint esnext:true
-
 var React = require('react');
 
-class Navbar extends React.Component {
+var Navbar = React.createClass({
 
-    render() {
+    render: function() {
 
-        var signedInAs = () => {
-            if (this.props.loggedIn === true) {
+        var that = this;
+
+        var signedInAs = function() {
+            if (that.props.loggedIn === true) {
                 return (
-                    <p className="navbar-text">Signed in as <b>{this.props.user.full_name}</b></p>
+                    <p className="navbar-text">Signed in as <b>{that.props.user.full_name}</b></p>
                 );
             }
         };
 
-        var dashboard = () => {
-            if (this.props.loggedIn === true) {
+        var dashboard = function() {
+            if (that.props.loggedIn === true) {
                 return (
                     <li>
                         <a target="_blank" href="https://wakatime.com/dashboard">
@@ -27,8 +27,8 @@ class Navbar extends React.Component {
             }
         };
 
-        var customRules = () => {
-            if (this.props.loggedIn === true) {
+        var customRules = function() {
+            if (that.props.loggedIn === true) {
                 return (
                     <li>
                         <a target="_blank" href="https://wakatime.com/settings/rules">
@@ -84,6 +84,6 @@ class Navbar extends React.Component {
         );
     }
 
-}
+});
 
-export default Navbar;
+module.exports = Navbar;

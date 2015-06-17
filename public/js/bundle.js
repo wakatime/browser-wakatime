@@ -15,349 +15,283 @@ React.render(React.createElement(WakaTime, null), document.getElementById('wakat
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/WakaTime.react":4,"bootstrap":13,"jquery":26,"react":183}],2:[function(require,module,exports){
-//jshint esnext:true
-
 'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 var React = require('react');
 
-var MainList = (function (_React$Component) {
-    function MainList() {
-        _classCallCheck(this, MainList);
+var MainList = React.createClass({
+    displayName: 'MainList',
 
-        if (_React$Component != null) {
-            _React$Component.apply(this, arguments);
+    _openOptionsPage: function _openOptionsPage() {
+        if (chrome.runtime.openOptionsPage) {
+            // New way to open options pages, if supported (Chrome 42+).
+            chrome.runtime.openOptionsPage();
+        } else {
+            // Reasonable fallback.
+            window.open(chrome.runtime.getURL('options.html'));
         }
-    }
+    },
 
-    _inherits(MainList, _React$Component);
+    render: function render() {
 
-    _createClass(MainList, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {}
-    }, {
-        key: '_openOptionsPage',
-        value: function _openOptionsPage() {
-            if (chrome.runtime.openOptionsPage) {
-                // New way to open options pages, if supported (Chrome 42+).
-                chrome.runtime.openOptionsPage();
-            } else {
-                // Reasonable fallback.
-                window.open(chrome.runtime.getURL('options.html'));
-            }
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this = this;
+        var that = this;
 
-            var loginLogoutButton = function loginLogoutButton() {
-                if (_this.props.loggedIn === true) {
-                    return React.createElement(
-                        'div',
-                        null,
-                        React.createElement(
-                            'a',
-                            { href: '#', className: 'list-group-item', onClick: _this.props.logoutUser },
-                            React.createElement('i', { className: 'fa fa-fw fa-sign-out' }),
-                            'Logout'
-                        )
-                    );
-                }
-
+        var loginLogoutButton = function loginLogoutButton() {
+            if (that.props.loggedIn === true) {
                 return React.createElement(
-                    'a',
-                    { target: '_blank', href: 'https://wakatime.com/login', className: 'list-group-item' },
-                    React.createElement('i', { className: 'fa fa-fw fa-sign-in' }),
-                    'Login'
-                );
-            };
-
-            // If logging is enabled, display that info to user
-            var loggingStatus = function loggingStatus() {
-                if (_this.props.loggingEnabled === true && _this.props.loggedIn === true) {
-                    return React.createElement(
-                        'div',
-                        { className: 'row' },
-                        React.createElement(
-                            'div',
-                            { className: 'col-xs-12' },
-                            React.createElement(
-                                'p',
-                                null,
-                                React.createElement(
-                                    'a',
-                                    { href: '#', onClick: _this.props.disableLogging, className: 'btn btn-danger btn-block' },
-                                    'Disable logging'
-                                )
-                            )
-                        )
-                    );
-                } else if (_this.props.loggingEnabled === false && _this.props.loggedIn === true) {
-                    return React.createElement(
-                        'div',
-                        { className: 'row' },
-                        React.createElement(
-                            'div',
-                            { className: 'col-xs-12' },
-                            React.createElement(
-                                'p',
-                                null,
-                                React.createElement(
-                                    'a',
-                                    { href: '#', onClick: _this.props.enableLogging, className: 'btn btn-success btn-block' },
-                                    'Enable logging'
-                                )
-                            )
-                        )
-                    );
-                }
-            };
-
-            var totalTimeLoggedToday = function totalTimeLoggedToday() {
-                if (_this.props.loggedIn === true) {
-                    return React.createElement(
-                        'div',
-                        { className: 'row' },
-                        React.createElement(
-                            'div',
-                            { className: 'col-xs-12' },
-                            React.createElement(
-                                'blockquote',
-                                null,
-                                React.createElement(
-                                    'p',
-                                    null,
-                                    _this.props.totalTimeLoggedToday
-                                ),
-                                React.createElement(
-                                    'small',
-                                    null,
-                                    React.createElement(
-                                        'cite',
-                                        null,
-                                        'TOTAL TIME LOGGED TODAY'
-                                    )
-                                )
-                            )
-                        )
-                    );
-                }
-            };
-
-            return React.createElement(
-                'div',
-                null,
-                totalTimeLoggedToday(),
-                loggingStatus(),
-                React.createElement(
                     'div',
-                    { className: 'list-group' },
+                    null,
                     React.createElement(
                         'a',
-                        { href: '#', className: 'list-group-item', onClick: this._openOptionsPage },
-                        React.createElement('i', { className: 'fa fa-fw fa-cogs' }),
-                        'Options'
-                    ),
-                    loginLogoutButton()
-                )
+                        { href: '#', className: 'list-group-item', onClick: that.props.logoutUser },
+                        React.createElement('i', { className: 'fa fa-fw fa-sign-out' }),
+                        'Logout'
+                    )
+                );
+            }
+
+            return React.createElement(
+                'a',
+                { target: '_blank', href: 'https://wakatime.com/login', className: 'list-group-item' },
+                React.createElement('i', { className: 'fa fa-fw fa-sign-in' }),
+                'Login'
             );
-        }
-    }]);
+        };
 
-    return MainList;
-})(React.Component);
+        // If logging is enabled, display that info to user
+        var loggingStatus = function loggingStatus() {
+            if (that.props.loggingEnabled === true && that.props.loggedIn === true) {
+                return React.createElement(
+                    'div',
+                    { className: 'row' },
+                    React.createElement(
+                        'div',
+                        { className: 'col-xs-12' },
+                        React.createElement(
+                            'p',
+                            null,
+                            React.createElement(
+                                'a',
+                                { href: '#', onClick: that.props.disableLogging, className: 'btn btn-danger btn-block' },
+                                'Disable logging'
+                            )
+                        )
+                    )
+                );
+            } else if (that.props.loggingEnabled === false && that.props.loggedIn === true) {
+                return React.createElement(
+                    'div',
+                    { className: 'row' },
+                    React.createElement(
+                        'div',
+                        { className: 'col-xs-12' },
+                        React.createElement(
+                            'p',
+                            null,
+                            React.createElement(
+                                'a',
+                                { href: '#', onClick: that.props.enableLogging, className: 'btn btn-success btn-block' },
+                                'Enable logging'
+                            )
+                        )
+                    )
+                );
+            }
+        };
 
-exports['default'] = MainList;
-module.exports = exports['default'];
+        var totalTimeLoggedToday = function totalTimeLoggedToday() {
+            if (that.props.loggedIn === true) {
+                return React.createElement(
+                    'div',
+                    { className: 'row' },
+                    React.createElement(
+                        'div',
+                        { className: 'col-xs-12' },
+                        React.createElement(
+                            'blockquote',
+                            null,
+                            React.createElement(
+                                'p',
+                                null,
+                                that.props.totalTimeLoggedToday
+                            ),
+                            React.createElement(
+                                'small',
+                                null,
+                                React.createElement(
+                                    'cite',
+                                    null,
+                                    'TOTAL TIME LOGGED TODAY'
+                                )
+                            )
+                        )
+                    )
+                );
+            }
+        };
 
-},{"react":183}],3:[function(require,module,exports){
-//jshint esnext:true
+        return React.createElement(
+            'div',
+            null,
+            totalTimeLoggedToday(),
+            loggingStatus(),
+            React.createElement(
+                'div',
+                { className: 'list-group' },
+                React.createElement(
+                    'a',
+                    { href: '#', className: 'list-group-item', onClick: this._openOptionsPage },
+                    React.createElement('i', { className: 'fa fa-fw fa-cogs' }),
+                    'Options'
+                ),
+                loginLogoutButton()
+            )
+        );
+    }
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+module.exports = MainList;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+},{"react":183}],3:[function(require,module,exports){
+"use strict";
 
 var React = require("react");
 
-var Navbar = (function (_React$Component) {
-    function Navbar() {
-        _classCallCheck(this, Navbar);
+var Navbar = React.createClass({
+    displayName: "Navbar",
 
-        if (_React$Component != null) {
-            _React$Component.apply(this, arguments);
-        }
-    }
+    render: function render() {
 
-    _inherits(Navbar, _React$Component);
+        var that = this;
 
-    _createClass(Navbar, [{
-        key: "render",
-        value: function render() {
-            var _this = this;
-
-            var signedInAs = function signedInAs() {
-                if (_this.props.loggedIn === true) {
-                    return React.createElement(
-                        "p",
-                        { className: "navbar-text" },
-                        "Signed in as ",
-                        React.createElement(
-                            "b",
-                            null,
-                            _this.props.user.full_name
-                        )
-                    );
-                }
-            };
-
-            var dashboard = function dashboard() {
-                if (_this.props.loggedIn === true) {
-                    return React.createElement(
-                        "li",
+        var signedInAs = function signedInAs() {
+            if (that.props.loggedIn === true) {
+                return React.createElement(
+                    "p",
+                    { className: "navbar-text" },
+                    "Signed in as ",
+                    React.createElement(
+                        "b",
                         null,
-                        React.createElement(
-                            "a",
-                            { target: "_blank", href: "https://wakatime.com/dashboard" },
-                            React.createElement("i", { className: "fa fa-fw fa-tachometer" }),
-                            "Dashboard"
-                        )
-                    );
-                }
-            };
+                        that.props.user.full_name
+                    )
+                );
+            }
+        };
 
-            var customRules = function customRules() {
-                if (_this.props.loggedIn === true) {
-                    return React.createElement(
-                        "li",
-                        null,
-                        React.createElement(
-                            "a",
-                            { target: "_blank", href: "https://wakatime.com/settings/rules" },
-                            React.createElement("i", { className: "fa fa-fw fa-filter" }),
-                            "Custom Rules"
-                        )
-                    );
-                }
-            };
+        var dashboard = function dashboard() {
+            if (that.props.loggedIn === true) {
+                return React.createElement(
+                    "li",
+                    null,
+                    React.createElement(
+                        "a",
+                        { target: "_blank", href: "https://wakatime.com/dashboard" },
+                        React.createElement("i", { className: "fa fa-fw fa-tachometer" }),
+                        "Dashboard"
+                    )
+                );
+            }
+        };
 
-            return React.createElement(
-                "nav",
-                { className: "navbar navbar-default", role: "navigation" },
+        var customRules = function customRules() {
+            if (that.props.loggedIn === true) {
+                return React.createElement(
+                    "li",
+                    null,
+                    React.createElement(
+                        "a",
+                        { target: "_blank", href: "https://wakatime.com/settings/rules" },
+                        React.createElement("i", { className: "fa fa-fw fa-filter" }),
+                        "Custom Rules"
+                    )
+                );
+            }
+        };
+
+        return React.createElement(
+            "nav",
+            { className: "navbar navbar-default", role: "navigation" },
+            React.createElement(
+                "div",
+                { className: "container-fluid" },
                 React.createElement(
                     "div",
-                    { className: "container-fluid" },
+                    { className: "navbar-header" },
                     React.createElement(
-                        "div",
-                        { className: "navbar-header" },
+                        "button",
+                        { type: "button", className: "navbar-toggle collapsed", "data-toggle": "collapse", "data-target": "#bs-example-navbar-collapse-1" },
                         React.createElement(
-                            "button",
-                            { type: "button", className: "navbar-toggle collapsed", "data-toggle": "collapse", "data-target": "#bs-example-navbar-collapse-1" },
-                            React.createElement(
-                                "span",
-                                { className: "sr-only" },
-                                "Toggle navigation"
-                            ),
-                            React.createElement("i", { className: "fa fa-fw fa-cogs" })
+                            "span",
+                            { className: "sr-only" },
+                            "Toggle navigation"
                         ),
-                        React.createElement(
-                            "a",
-                            { target: "_blank", className: "navbar-brand", href: "https://wakatime.com" },
-                            "WakaTime",
-                            React.createElement("img", { src: "graphics/wakatime-logo-48.png" })
-                        )
+                        React.createElement("i", { className: "fa fa-fw fa-cogs" })
                     ),
                     React.createElement(
-                        "div",
-                        { className: "collapse navbar-collapse", id: "bs-example-navbar-collapse-1" },
-                        signedInAs(),
+                        "a",
+                        { target: "_blank", className: "navbar-brand", href: "https://wakatime.com" },
+                        "WakaTime",
+                        React.createElement("img", { src: "graphics/wakatime-logo-48.png" })
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "collapse navbar-collapse", id: "bs-example-navbar-collapse-1" },
+                    signedInAs(),
+                    React.createElement(
+                        "ul",
+                        { className: "nav navbar-nav" },
+                        customRules(),
+                        dashboard(),
                         React.createElement(
-                            "ul",
-                            { className: "nav navbar-nav" },
-                            customRules(),
-                            dashboard(),
+                            "li",
+                            { className: "dropdown" },
                             React.createElement(
-                                "li",
-                                { className: "dropdown" },
+                                "a",
+                                { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-expanded": "false" },
+                                React.createElement("i", { className: "fa fa-fw fa-info" }),
+                                "About",
+                                React.createElement("span", { className: "caret" })
+                            ),
+                            React.createElement(
+                                "ul",
+                                { className: "dropdown-menu", role: "menu" },
                                 React.createElement(
-                                    "a",
-                                    { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-expanded": "false" },
-                                    React.createElement("i", { className: "fa fa-fw fa-info" }),
-                                    "About",
-                                    React.createElement("span", { className: "caret" })
+                                    "li",
+                                    null,
+                                    React.createElement(
+                                        "a",
+                                        { target: "_blank", href: "https://github.com/wakatime/chrome-wakatime/issues" },
+                                        React.createElement("i", { className: "fa fa-fw fa-bug" }),
+                                        "Report an Issue"
+                                    )
                                 ),
                                 React.createElement(
-                                    "ul",
-                                    { className: "dropdown-menu", role: "menu" },
+                                    "li",
+                                    null,
                                     React.createElement(
-                                        "li",
-                                        null,
-                                        React.createElement(
-                                            "a",
-                                            { target: "_blank", href: "https://github.com/wakatime/chrome-wakatime/issues" },
-                                            React.createElement("i", { className: "fa fa-fw fa-bug" }),
-                                            "Report an Issue"
-                                        )
-                                    ),
-                                    React.createElement(
-                                        "li",
-                                        null,
-                                        React.createElement(
-                                            "a",
-                                            { target: "_blank", href: "https://github.com/wakatime/chrome-wakatime" },
-                                            React.createElement("i", { className: "fa fa-fw fa-github" }),
-                                            "View on GitHub"
-                                        )
+                                        "a",
+                                        { target: "_blank", href: "https://github.com/wakatime/chrome-wakatime" },
+                                        React.createElement("i", { className: "fa fa-fw fa-github" }),
+                                        "View on GitHub"
                                     )
                                 )
                             )
                         )
                     )
                 )
-            );
-        }
-    }]);
+            )
+        );
+    }
 
-    return Navbar;
-})(React.Component);
-
-exports["default"] = Navbar;
-module.exports = exports["default"];
-
-},{"react":183}],4:[function(require,module,exports){
-//jshint esnext:true
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+module.exports = Navbar;
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+},{"react":183}],4:[function(require,module,exports){
+'use strict';
 
 var React = require('react');
 var $ = require('jquery');
@@ -374,13 +308,11 @@ var WakaTimeOriginal = require('../core/WakaTime');
 // Helpers
 var changeExtensionState = require('../helpers/changeExtensionState');
 
-var WakaTime = (function (_React$Component) {
-    function WakaTime(props) {
-        _classCallCheck(this, WakaTime);
+var WakaTime = React.createClass({
+    displayName: 'WakaTime',
 
-        _get(Object.getPrototypeOf(WakaTime.prototype), 'constructor', this).call(this, props);
-
-        this.state = {
+    getInitialState: function getInitialState() {
+        return {
             user: {
                 full_name: null,
                 email: null,
@@ -390,159 +322,150 @@ var WakaTime = (function (_React$Component) {
             loggingEnabled: config.loggingEnabled,
             totalTimeLoggedToday: '0 minutes'
         };
-    }
+    },
 
-    _inherits(WakaTime, _React$Component);
+    componentDidMount: function componentDidMount() {
 
-    _createClass(WakaTime, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            var _this = this;
+        var wakatime = new WakaTimeOriginal();
 
-            var wakatime = new WakaTimeOriginal();
+        var that = this;
 
-            wakatime.checkAuth().done(function (data) {
+        wakatime.checkAuth().done(function (data) {
 
-                if (data !== false) {
+            if (data !== false) {
 
-                    chrome.storage.sync.get({
-                        loggingEnabled: config.loggingEnabled
-                    }, function (items) {
-                        _this.setState({ loggingEnabled: items.loggingEnabled });
-                        if (items.loggingEnabled === true) {
-                            changeExtensionState('allGood');
-                        } else {
-                            changeExtensionState('notLogging');
-                        }
-                    });
+                chrome.storage.sync.get({
+                    loggingEnabled: config.loggingEnabled
+                }, function (items) {
+                    that.setState({ loggingEnabled: items.loggingEnabled });
 
-                    _this.setState({
-                        user: {
-                            full_name: data.full_name,
-                            email: data.email,
-                            photo: data.photo
-                        },
-                        loggedIn: true
-                    });
-
-                    wakatime.getTotalTimeLoggedToday().done(function (grand_total) {
-                        _this.setState({
-                            totalTimeLoggedToday: grand_total['text']
-                        });
-                    });
-                } else {
-                    changeExtensionState('notSignedIn');
-                }
-            });
-        }
-    }, {
-        key: 'logoutUser',
-        value: function logoutUser() {
-            var _this2 = this;
-
-            var deferredObject = $.Deferred();
-
-            $.ajax({
-                url: config.logoutUserUrl,
-                method: 'GET',
-                success: function success() {
-
-                    deferredObject.resolve(_this2);
-                },
-                error: function error(xhr, status, err) {
-
-                    console.error(config.logoutUserUrl, status, err.toString());
-
-                    deferredObject.resolve(_this2);
-                }
-            });
-
-            return deferredObject.promise();
-        }
-    }, {
-        key: '_logoutUser',
-        value: function _logoutUser() {
-            var _this3 = this;
-
-            this.logoutUser().done(function () {
-
-                _this3.setState({
-                    user: {
-                        full_name: null,
-                        email: null,
-                        photo: null
-                    },
-                    loggedIn: false,
-                    loggingEnabled: false
+                    if (items.loggingEnabled === true) {
+                        changeExtensionState('allGood');
+                    } else {
+                        changeExtensionState('notLogging');
+                    }
                 });
 
+                that.setState({
+                    user: {
+                        full_name: data.full_name,
+                        email: data.email,
+                        photo: data.photo
+                    },
+                    loggedIn: true
+                });
+
+                wakatime.getTotalTimeLoggedToday().done(function (grand_total) {
+                    that.setState({
+                        totalTimeLoggedToday: grand_total['text']
+                    });
+                });
+            } else {
                 changeExtensionState('notSignedIn');
-            });
-        }
-    }, {
-        key: '_disableLogging',
-        value: function _disableLogging() {
-            this.setState({
+            }
+        });
+    },
+
+    logoutUser: function logoutUser() {
+        var deferredObject = $.Deferred();
+
+        var that = this;
+
+        $.ajax({
+            url: config.logoutUserUrl,
+            method: 'GET',
+            success: function success() {
+
+                deferredObject.resolve(that);
+            },
+            error: function error(xhr, status, err) {
+
+                console.error(config.logoutUserUrl, status, err.toString());
+
+                deferredObject.resolve(that);
+            }
+        });
+
+        return deferredObject.promise();
+    },
+
+    _logoutUser: function _logoutUser() {
+
+        var that = this;
+
+        this.logoutUser().done(function () {
+
+            that.setState({
+                user: {
+                    full_name: null,
+                    email: null,
+                    photo: null
+                },
+                loggedIn: false,
                 loggingEnabled: false
             });
 
-            changeExtensionState('notLogging');
+            changeExtensionState('notSignedIn');
+        });
+    },
 
-            chrome.storage.sync.set({
-                loggingEnabled: false
-            });
-        }
-    }, {
-        key: '_enableLogging',
-        value: function _enableLogging() {
-            this.setState({
-                loggingEnabled: true
-            });
+    _disableLogging: function _disableLogging() {
+        this.setState({
+            loggingEnabled: false
+        });
 
-            changeExtensionState('allGood');
+        changeExtensionState('notLogging');
 
-            chrome.storage.sync.set({
-                loggingEnabled: true
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return React.createElement(
+        chrome.storage.sync.set({
+            loggingEnabled: false
+        });
+    },
+
+    _enableLogging: function _enableLogging() {
+        this.setState({
+            loggingEnabled: true
+        });
+
+        changeExtensionState('allGood');
+
+        chrome.storage.sync.set({
+            loggingEnabled: true
+        });
+    },
+
+    render: function render() {
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(NavBar, {
+                user: this.state.user,
+                loggedIn: this.state.loggedIn }),
+            React.createElement(
                 'div',
-                null,
-                React.createElement(NavBar, {
-                    user: this.state.user,
-                    loggedIn: this.state.loggedIn }),
+                { className: 'container' },
                 React.createElement(
                     'div',
-                    { className: 'container' },
+                    { className: 'row' },
                     React.createElement(
                         'div',
-                        { className: 'row' },
-                        React.createElement(
-                            'div',
-                            { className: 'col-md-12' },
-                            React.createElement(MainList, {
-                                disableLogging: this._disableLogging.bind(this),
-                                enableLogging: this._enableLogging.bind(this),
-                                loggingEnabled: this.state.loggingEnabled,
-                                user: this.state.user,
-                                totalTimeLoggedToday: this.state.totalTimeLoggedToday,
-                                logoutUser: this._logoutUser.bind(this),
-                                loggedIn: this.state.loggedIn })
-                        )
+                        { className: 'col-md-12' },
+                        React.createElement(MainList, {
+                            disableLogging: this._disableLogging,
+                            enableLogging: this._enableLogging,
+                            loggingEnabled: this.state.loggingEnabled,
+                            user: this.state.user,
+                            totalTimeLoggedToday: this.state.totalTimeLoggedToday,
+                            logoutUser: this._logoutUser,
+                            loggedIn: this.state.loggedIn })
                     )
                 )
-            );
-        }
-    }]);
+            )
+        );
+    }
 
-    return WakaTime;
-})(React.Component);
+});
 
-exports['default'] = WakaTime;
-module.exports = exports['default'];
+module.exports = WakaTime;
 
 },{"../config":5,"../core/WakaTime":6,"../helpers/changeExtensionState":8,"./MainList.react":2,"./NavBar.react":3,"jquery":26,"react":183}],5:[function(require,module,exports){
 'use strict';
@@ -590,6 +513,7 @@ var config = {
     theme: 'light',
     // Valid extension states
     states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+    // Predefined alert type and text for success and failure.
     alert: {
         success: {
             type: 'success',

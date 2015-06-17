@@ -1,13 +1,8 @@
-//jshint esnext:true
-
 var React = require('react');
 
-class MainList extends React.Component {
-    componentDidMount() {
+var MainList = React.createClass({
 
-    }
-
-    _openOptionsPage() {
+    _openOptionsPage: function() {
         if (chrome.runtime.openOptionsPage) {
             // New way to open options pages, if supported (Chrome 42+).
             chrome.runtime.openOptionsPage();
@@ -15,14 +10,17 @@ class MainList extends React.Component {
             // Reasonable fallback.
             window.open(chrome.runtime.getURL('options.html'));
         }
-    }
+    },
 
-    render() {
-        var loginLogoutButton = () => {
-            if (this.props.loggedIn === true) {
+    render: function() {
+
+        var that = this;
+
+        var loginLogoutButton = function() {
+            if (that.props.loggedIn === true) {
                 return (
                     <div>
-                        <a href="#" className="list-group-item" onClick={this.props.logoutUser}>
+                        <a href="#" className="list-group-item" onClick={that.props.logoutUser}>
                             <i className="fa fa-fw fa-sign-out"></i>
                             Logout
                         </a>
@@ -39,26 +37,26 @@ class MainList extends React.Component {
         };
 
         // If logging is enabled, display that info to user
-        var loggingStatus = () => {
-            if(this.props.loggingEnabled === true && this.props.loggedIn === true)
+        var loggingStatus = function() {
+            if(that.props.loggingEnabled === true && that.props.loggedIn === true)
             {
                 return (
                     <div className="row">
                         <div className="col-xs-12">
                             <p>
-                                <a href="#" onClick={this.props.disableLogging} className="btn btn-danger btn-block">Disable logging</a>
+                                <a href="#" onClick={that.props.disableLogging} className="btn btn-danger btn-block">Disable logging</a>
                             </p>
                         </div>
                     </div>
                 );
             }
-            else if(this.props.loggingEnabled === false && this.props.loggedIn === true)
+            else if(that.props.loggingEnabled === false && that.props.loggedIn === true)
             {
                 return (
                     <div className="row">
                         <div className="col-xs-12">
                             <p>
-                                <a href="#" onClick={this.props.enableLogging} className="btn btn-success btn-block">Enable logging</a>
+                                <a href="#" onClick={that.props.enableLogging} className="btn btn-success btn-block">Enable logging</a>
                             </p>
                         </div>
                     </div>
@@ -66,13 +64,13 @@ class MainList extends React.Component {
             }
         };
 
-        var totalTimeLoggedToday = () => {
-            if (this.props.loggedIn === true) {
+        var totalTimeLoggedToday = function() {
+            if (that.props.loggedIn === true) {
                 return (
                     <div className="row">
                         <div className="col-xs-12">
                             <blockquote>
-                                <p>{this.props.totalTimeLoggedToday}</p>
+                                <p>{that.props.totalTimeLoggedToday}</p>
                                 <small><cite>TOTAL TIME LOGGED TODAY</cite></small>
                             </blockquote>
                         </div>
@@ -100,6 +98,7 @@ class MainList extends React.Component {
             </div>
         );
     }
-}
 
-export default MainList;
+});
+
+module.exports = MainList;

@@ -18,8 +18,6 @@ React.render(React.createElement(Options, null), document.getElementById('wakati
 'use strict';
 
 var React = require('react');
-var ReactAddons = require('react/addons');
-var ReactCSSTransitionGroup = ReactAddons.addons.CSSTransitionGroup;
 var classNames = require('classnames');
 
 var Alert = React.createClass({
@@ -42,7 +40,7 @@ var Alert = React.createClass({
 
 module.exports = Alert;
 
-},{"classnames":18,"react":193,"react/addons":21}],3:[function(require,module,exports){
+},{"classnames":18,"react":193}],3:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -407,6 +405,7 @@ var config = {
     theme: 'light',
     // Valid extension states
     states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+    // Predefined alert type and text for success and failure.
     alert: {
         success: {
             type: 'success',

@@ -44,6 +44,7 @@ var config = {
         'blacklisted',
         'whitelisted'
     ],
+    // Predefined alert type and text for success and failure.
     alert: {
         success: {
             type: 'success',
