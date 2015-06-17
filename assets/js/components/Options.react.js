@@ -6,6 +6,7 @@ var config = require('../config');
 
 // React components
 var Alert = require('./Alert.react');
+var SitesList = require('./SitesList.react');
 
 /**
  * One thing to keep in  mind is that you cannot use this.refs.blacklist if
@@ -50,15 +51,6 @@ var Options = React.createClass({
                 loggingStyle: items.loggingStyle
             });
 
-            // TODO: Create a component for blacklist/white list
-
-            if (items.loggingStyle == 'blacklist') {
-                React.findDOMNode(that.refs.blacklist).value = items.blacklist;
-            }
-            else if (items.loggingStyle == 'whitelist') {
-                React.findDOMNode(that.refs.whitelist).value = items.whitelist;
-            }
-
             React.findDOMNode(that.refs.theme).value = items.theme;
             React.findDOMNode(that.refs.loggingType).value = items.loggingType;
             React.findDOMNode(that.refs.loggingStyle).value = items.loggingStyle;
@@ -78,31 +70,19 @@ var Options = React.createClass({
         var loggingType = React.findDOMNode(this.refs.loggingType).value.trim();
         var loggingStyle = React.findDOMNode(this.refs.loggingStyle).value.trim();
 
-        var blacklist = this.state.blacklist;
-        var whitelist = this.state.whitelist;
-
-        // Depending on logging style load blacklist or white list value from form.
-        if (loggingStyle == 'blacklist') {
-            blacklist = React.findDOMNode(this.refs.blacklist).value.trim();
-        } else if (loggingStyle == 'whitelist') {
-            whitelist = React.findDOMNode(this.refs.whitelist).value.trim();
-        }
-
-        // TODO: Bind blacklist and whitelist to state and validate user input.
-
         // Sync options with google storage.
         chrome.storage.sync.set({
             theme: theme,
-            blacklist: blacklist,
-            whitelist: whitelist,
+            blacklist: that.state.blacklist,
+            whitelist: that.state.whitelist,
             loggingType: loggingType,
             loggingStyle: loggingStyle
         }, function () {
             // Set state to be newly entered values.
             that.setState({
                 theme: theme,
-                blacklist: blacklist,
-                whitelist: whitelist,
+                blacklist: that.state.blacklist,
+                whitelist: that.state.whitelist,
                 loggingType: loggingType,
                 loggingStyle: loggingStyle,
                 displayAlert: true
@@ -110,23 +90,22 @@ var Options = React.createClass({
         });
     },
 
-    /**
-     * After the component renders this detects the logging style
-     * and updates the form blacklist or white list value.
-     */
-    componentDidUpdate: function() {
-        if (this.state.loggingStyle == 'blacklist') {
-            React.findDOMNode(this.refs.blacklist).value = this.state.blacklist;
-        }
-        else if (this.state.loggingStyle == 'whitelist') {
-            React.findDOMNode(this.refs.whitelist).value = this.state.whitelist;
-        }
-    },
-
     _displayBlackOrWhiteList: function () {
         var loggingStyle = React.findDOMNode(this.refs.loggingStyle).value.trim();
 
         this.setState({loggingStyle: loggingStyle});
+    },
+
+    _updateBlacklistState: function(sites){
+        this.setState({
+            blacklist: sites
+        });
+    },
+
+    _updateWhitelistState: function(sites){
+        this.setState({
+            whitelist: sites
+        });
     },
 
     render: function () {
@@ -147,34 +126,23 @@ var Options = React.createClass({
         };
 
         var loggingStyle = function () {
+
             if (that.state.loggingStyle == 'blacklist') {
                 return (
-                    <div className="form-group">
-                        <label htmlFor="blacklist" className="col-lg-2 control-label">Blacklist</label>
-
-                        <div className="col-lg-10">
-                            <textarea className="form-control" rows="3" ref="blacklist"
-                                placeholder="http://google.com"></textarea>
-                            <span className="help-block">Sites that you don't want to show in your reports.
-                                <br/>
-                                One line per site.</span>
-                        </div>
-                    </div>
+                    <SitesList
+                        handleChange={that._updateBlacklistState}
+                        label="Blacklist"
+                        sites={that.state.blacklist}
+                        helpText="Sites that you don't want to show in your reports." />
                 );
             }
 
             return (
-                <div className="form-group">
-                    <label htmlFor="whitelist" className="col-lg-2 control-label">Whitelist</label>
-
-                    <div className="col-lg-10">
-                        <textarea className="form-control" rows="3" ref="whitelist"
-                            placeholder="http://google.com"></textarea>
-                        <span className="help-block">Sites that you want to show in your reports.
-                            <br/>
-                            One line per site.</span>
-                    </div>
-                </div>
+                <SitesList
+                    handleChange={that._updateWhitelistState}
+                    label="Whitelist"
+                    sites={that.state.whitelist}
+                    helpText="Sites that you want to show in your reports." />
             );
 
         };
