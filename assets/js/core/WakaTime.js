@@ -11,6 +11,7 @@ var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
 var currentTimestamp = require('./../helpers/currentTimestamp');
 var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
+var contains = require('./../helpers/contains');
 
 class WakaTime {
 
@@ -88,7 +89,10 @@ class WakaTime {
             if (data !== false) {
 
                 chrome.storage.sync.get({
-                    loggingEnabled: config.loggingEnabled
+                    loggingEnabled: config.loggingEnabled,
+                    loggingStyle: config.loggingStyle,
+                    blacklist: '',
+                    whitelist: ''
                 }, (items) => {
                     if (items.loggingEnabled === true) {
 
@@ -99,11 +103,33 @@ class WakaTime {
                             if (newState === 'active') {
                                 // Get current tab URL.
                                 chrome.tabs.query({active: true}, (tabs) => {
+
+                                    var currentActiveTab = tabs[0];
+
                                     var debug = false;
                                     // If the current active tab has devtools open
-                                    if (in_array(tabs[0].id, this.tabsWithDevtoolsOpen)) debug = true;
+                                    if (in_array(currentActiveTab.id, this.tabsWithDevtoolsOpen)) debug = true;
 
-                                    this.sendHeartbeat(tabs[0].url, debug);
+                                    if (items.loggingStyle == 'blacklist') {
+                                        if (! contains(currentActiveTab.url, items.blacklist)) {
+                                            this.sendHeartbeat(currentActiveTab.url, debug);
+                                        }
+                                        else {
+                                            changeExtensionState('blacklisted');
+                                            console.log(currentActiveTab.url + ' is on a blacklist.');
+                                        }
+                                    }
+
+                                    if (items.loggingStyle == 'whitelist') {
+                                        if (contains(currentActiveTab.url, items.whitelist)) {
+                                            this.sendHeartbeat(currentActiveTab.url, debug);
+                                        }
+                                        else {
+                                            changeExtensionState('whitelisted');
+                                            console.log(currentActiveTab.url + ' is not on a whitelist.');
+                                        }
+                                    }
+
                                 });
                             }
                         });

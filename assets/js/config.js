@@ -32,7 +32,9 @@ var config = {
     tooltips: {
         allGood: '',
         notLogging: 'Not logging',
-        notSignedIn: 'Not signed In'
+        notSignedIn: 'Not signed In',
+        blacklisted: 'This URL is blacklisted',
+        whitelisted: 'This URL is not on your whitelist'
     },
     // Default theme
     theme: 'light',

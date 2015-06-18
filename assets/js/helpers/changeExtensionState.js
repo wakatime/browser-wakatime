@@ -28,6 +28,14 @@ function changeExtensionState(state) {
             changeExtensionIcon(config.colors.notSignedIn);
             changeExtensionTooltip(config.tooltips.notSignedIn);
             break;
+        case 'blacklisted':
+            changeExtensionIcon(config.colors.notLogging);
+            changeExtensionTooltip(config.tooltips.blacklisted);
+            break;
+        case 'whitelisted':
+            changeExtensionIcon(config.colors.notLogging);
+            changeExtensionTooltip(config.tooltips.whitelisted);
+            break;
     }
 }
 

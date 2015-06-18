@@ -135,7 +135,9 @@ var config = {
     tooltips: {
         allGood: '',
         notLogging: 'Not logging',
-        notSignedIn: 'Not signed In'
+        notSignedIn: 'Not signed In',
+        blacklisted: 'This URL is blacklisted',
+        whitelisted: 'This URL is not on your whitelist'
     },
     // Default theme
     theme: 'light',
@@ -180,6 +182,7 @@ var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
 var currentTimestamp = require('./../helpers/currentTimestamp');
 var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
+var contains = require('./../helpers/contains');
 
 var WakaTime = (function () {
     function WakaTime() {
@@ -266,7 +269,10 @@ var WakaTime = (function () {
                 if (data !== false) {
 
                     chrome.storage.sync.get({
-                        loggingEnabled: config.loggingEnabled
+                        loggingEnabled: config.loggingEnabled,
+                        loggingStyle: config.loggingStyle,
+                        blacklist: '',
+                        whitelist: ''
                     }, function (items) {
                         if (items.loggingEnabled === true) {
 
@@ -277,11 +283,30 @@ var WakaTime = (function () {
                                 if (newState === 'active') {
                                     // Get current tab URL.
                                     chrome.tabs.query({ active: true }, function (tabs) {
+
+                                        var currentActiveTab = tabs[0];
+
                                         var debug = false;
                                         // If the current active tab has devtools open
-                                        if (in_array(tabs[0].id, _this.tabsWithDevtoolsOpen)) debug = true;
+                                        if (in_array(currentActiveTab.id, _this.tabsWithDevtoolsOpen)) debug = true;
 
-                                        _this.sendHeartbeat(tabs[0].url, debug);
+                                        if (items.loggingStyle == 'blacklist') {
+                                            if (!contains(currentActiveTab.url, items.blacklist)) {
+                                                _this.sendHeartbeat(currentActiveTab.url, debug);
+                                            } else {
+                                                changeExtensionState('blacklisted');
+                                                console.log(currentActiveTab.url + ' is on a blacklist.');
+                                            }
+                                        }
+
+                                        if (items.loggingStyle == 'whitelist') {
+                                            if (contains(currentActiveTab.url, items.whitelist)) {
+                                                _this.sendHeartbeat(currentActiveTab.url, debug);
+                                            } else {
+                                                changeExtensionState('whitelisted');
+                                                console.log(currentActiveTab.url + ' is not on a whitelist.');
+                                            }
+                                        }
                                     });
                                 }
                             });
@@ -423,7 +448,7 @@ var WakaTime = (function () {
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/currentTimestamp":7,"./../helpers/getDomainFromUrl":8,"./../helpers/in_array":9,"jquery":10,"moment":11}],4:[function(require,module,exports){
+},{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/contains":7,"./../helpers/currentTimestamp":8,"./../helpers/getDomainFromUrl":9,"./../helpers/in_array":10,"jquery":11,"moment":12}],4:[function(require,module,exports){
 /* global chrome */
 
 'use strict';
@@ -508,12 +533,20 @@ function changeExtensionState(state) {
             changeExtensionIcon(config.colors.notSignedIn);
             changeExtensionTooltip(config.tooltips.notSignedIn);
             break;
+        case 'blacklisted':
+            changeExtensionIcon(config.colors.notLogging);
+            changeExtensionTooltip(config.tooltips.blacklisted);
+            break;
+        case 'whitelisted':
+            changeExtensionIcon(config.colors.notLogging);
+            changeExtensionTooltip(config.tooltips.whitelisted);
+            break;
     }
 }
 
 module.exports = changeExtensionState;
 
-},{"../config":2,"./changeExtensionIcon":4,"./changeExtensionTooltip":6,"./in_array":9}],6:[function(require,module,exports){
+},{"../config":2,"./changeExtensionIcon":4,"./changeExtensionTooltip":6,"./in_array":10}],6:[function(require,module,exports){
 /* global chrome */
 
 'use strict';
@@ -540,6 +573,31 @@ module.exports = changeExtensionTooltip;
 
 },{"../config":2}],7:[function(require,module,exports){
 /**
+ * Creates an array from list using \n as delimiter
+ * and checks if the line is located in the list.
+ *
+ * @param line
+ * @param list
+ * @returns {boolean}
+ */
+'use strict';
+
+function contains(line, list) {
+    var lines = list.split('\n');
+
+    for (var i = 0; i < lines.length; i++) {
+        if (line.indexOf(lines[i]) > -1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+module.exports = contains;
+
+},{}],8:[function(require,module,exports){
+/**
  * Returns UNIX timestamp
  *
  * @returns {number}
@@ -552,7 +610,7 @@ function currentTimestamp() {
 
 module.exports = currentTimestamp;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  * Returns domain from given URL.
  *
@@ -569,7 +627,7 @@ function getDomainFromUrl(url) {
 
 module.exports = getDomainFromUrl;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
  * Returns boolean if needle is found in haystack or not.
  *
@@ -591,7 +649,7 @@ function in_array(needle, haystack) {
 
 module.exports = in_array;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -9803,7 +9861,7 @@ return jQuery;
 
 }));
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
