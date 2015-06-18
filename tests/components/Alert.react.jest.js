@@ -1,4 +1,4 @@
-jest.dontMock('../../assets/js/components/Alert.react.js');
+jest.dontMock('../../assets/js/components/Alert.jsx');
 
 describe('Alert', function() {
     var React, Alert, TestUtils, Component;
@@ -6,7 +6,7 @@ describe('Alert', function() {
     beforeEach(function() {
         // Setup our tools
         React = require('react/addons');
-        Alert = require('../../assets/js/components/Alert.react.js');
+        Alert = require('../../assets/js/components/Alert.jsx');
         TestUtils = React.addons.TestUtils;
         // Create the React component here using TestUtils and store into Component
     });

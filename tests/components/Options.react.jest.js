@@ -1,4 +1,4 @@
-jest.dontMock('../../assets/js/components/Options.react.js');
+jest.dontMock('../../assets/js/components/Options.jsx');
 
 describe('Options', function() {
     var React, Options, TestUtils, Component;
@@ -6,7 +6,7 @@ describe('Options', function() {
     beforeEach(function() {
         // Setup our tools
         React = require('react/addons');
-        Options = require('../../assets/js/components/Options.react.js');
+        Options = require('../../assets/js/components/Options.jsx');
         TestUtils = React.addons.TestUtils;
         // Create the React component here using TestUtils and store into Component
     });

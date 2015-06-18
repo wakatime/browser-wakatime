@@ -1,4 +1,4 @@
-jest.dontMock('../../assets/js/components/Navbar.react.js');
+jest.dontMock('../../assets/js/components/Navbar.jsx');
 
 describe('Navbar', function() {
     var React, Navbar, TestUtils, Component;
@@ -6,7 +6,7 @@ describe('Navbar', function() {
     beforeEach(function() {
         // Setup our tools
         React = require('react/addons');
-        Navbar = require('../../assets/js/components/Navbar.react.js');
+        Navbar = require('../../assets/js/components/Navbar.jsx');
         TestUtils = React.addons.TestUtils;
         // Create the React component here using TestUtils and store into Component
     });

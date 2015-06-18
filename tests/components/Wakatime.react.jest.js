@@ -1,4 +1,4 @@
-jest.dontMock('../../assets/js/components/Wakatime.react.js');
+jest.dontMock('../../assets/js/components/Wakatime.jsx');
 
 describe('Wakatime', function() {
     var React, Wakatime, TestUtils, Component;
@@ -6,7 +6,7 @@ describe('Wakatime', function() {
     beforeEach(function() {
         // Setup our tools
         React = require('react/addons');
-        Wakatime = require('../../assets/js/components/Wakatime.react.js');
+        Wakatime = require('../../assets/js/components/Wakatime.jsx');
         TestUtils = React.addons.TestUtils;
         // Create the React component here using TestUtils and store into Component
     });
