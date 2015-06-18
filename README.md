@@ -54,11 +54,15 @@ Run tests:
 npm test
 ```
 
-Lint code:
+Lint code *(Both JS and JSX)*:
 
 ```
 jsxhint --jsx-only .
 ```
+
+### Automatic code linting
+
+There is a precommit hook that lints the code before commiting the changes.
 
 ### Load unpacked in Chrome
 
