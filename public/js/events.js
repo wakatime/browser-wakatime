@@ -1,4 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* global chrome */
+
 // Core
 'use strict';
 
@@ -99,9 +101,6 @@ chrome.runtime.onConnect.addListener(function (port) {
 },{"./core/WakaTime":3}],2:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
 var config = {
     // Extension name
     name: 'WakaTime',
@@ -155,10 +154,12 @@ var config = {
     }
 };
 
-exports['default'] = config;
-module.exports = exports['default'];
+module.exports = config;
 
 },{}],3:[function(require,module,exports){
+/* global chrome */
+//jshint esnext:true
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -210,7 +211,7 @@ var WakaTime = (function () {
                 dataType: 'json',
                 success: function success(data) {
 
-                    deferredObject.resolve(data.data[0]['grand_total']);
+                    deferredObject.resolve(data.data[0].grand_total);
                 },
                 error: function error(xhr, status, err) {
 
@@ -423,11 +424,10 @@ exports['default'] = WakaTime;
 module.exports = exports['default'];
 
 },{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/currentTimestamp":7,"./../helpers/getDomainFromUrl":8,"./../helpers/in_array":9,"jquery":10,"moment":11}],4:[function(require,module,exports){
+/* global chrome */
+
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
 var config = require('../config');
 
 /**
@@ -436,8 +436,9 @@ var config = require('../config');
  *
  * @param color
  */
-function changeExtensionIcon() {
-    var color = arguments[0] === undefined ? '' : arguments[0];
+function changeExtensionIcon(color) {
+
+    color = color ? color : '';
 
     var path = null;
 
@@ -472,15 +473,11 @@ function changeExtensionIcon() {
     }
 }
 
-exports['default'] = changeExtensionIcon;
-module.exports = exports['default'];
+module.exports = changeExtensionIcon;
 
 },{"../config":2}],5:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
 var config = require('../config');
 
 // Helpers
@@ -514,15 +511,13 @@ function changeExtensionState(state) {
     }
 }
 
-exports['default'] = changeExtensionState;
-module.exports = exports['default'];
+module.exports = changeExtensionState;
 
 },{"../config":2,"./changeExtensionIcon":4,"./changeExtensionTooltip":6,"./in_array":9}],6:[function(require,module,exports){
+/* global chrome */
+
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
 var config = require('../config');
 
 /**
@@ -541,8 +536,7 @@ function changeExtensionTooltip(text) {
     chrome.browserAction.setTitle({ title: text });
 }
 
-exports['default'] = changeExtensionTooltip;
-module.exports = exports['default'];
+module.exports = changeExtensionTooltip;
 
 },{"../config":2}],7:[function(require,module,exports){
 /**
@@ -552,15 +546,11 @@ module.exports = exports['default'];
  */
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 function currentTimestamp() {
   return Math.round(new Date().getTime() / 1000);
 }
 
-exports["default"] = currentTimestamp;
-module.exports = exports["default"];
+module.exports = currentTimestamp;
 
 },{}],8:[function(require,module,exports){
 /**
@@ -571,17 +561,13 @@ module.exports = exports["default"];
  */
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 function getDomainFromUrl(url) {
     var parts = url.split("/");
 
     return parts[0] + "//" + parts[2];
 }
 
-exports["default"] = getDomainFromUrl;
-module.exports = exports["default"];
+module.exports = getDomainFromUrl;
 
 },{}],9:[function(require,module,exports){
 /**
@@ -593,22 +579,17 @@ module.exports = exports["default"];
  */
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 function in_array(needle, haystack) {
     for (var i = 0; i < haystack.length; i++) {
         if (needle == haystack[i]) {
             return true;
-            break;
         }
     }
 
     return false;
 }
 
-exports["default"] = in_array;
-module.exports = exports["default"];
+module.exports = in_array;
 
 },{}],10:[function(require,module,exports){
 /*!

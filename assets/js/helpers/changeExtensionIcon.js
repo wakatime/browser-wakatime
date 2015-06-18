@@ -1,3 +1,5 @@
+/* global chrome */
+
 var config = require('../config');
 
 /**
@@ -6,7 +8,9 @@ var config = require('../config');
  *
  * @param color
  */
-function changeExtensionIcon(color = '') {
+function changeExtensionIcon(color) {
+
+    color = color ? color : '';
 
     var path = null;
 
@@ -43,4 +47,4 @@ function changeExtensionIcon(color = '') {
 
 }
 
-export default changeExtensionIcon;
+module.exports = changeExtensionIcon;

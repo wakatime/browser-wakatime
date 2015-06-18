@@ -10,4 +10,4 @@ function getDomainFromUrl(url) {
     return parts[0] + "//" + parts[2];
 }
 
-export default getDomainFromUrl;
+module.exports = getDomainFromUrl;

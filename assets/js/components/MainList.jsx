@@ -1,3 +1,5 @@
+/* global chrome */
+
 var React = require('react');
 
 var MainList = React.createClass({

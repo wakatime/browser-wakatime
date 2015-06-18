@@ -1,3 +1,5 @@
+/* global chrome */
+
 var React = require('react');
 var ReactAddons = require('react/addons');
 var ReactCSSTransitionGroup = ReactAddons.addons.CSSTransitionGroup;
@@ -5,8 +7,8 @@ var ReactCSSTransitionGroup = ReactAddons.addons.CSSTransitionGroup;
 var config = require('../config');
 
 // React components
-var Alert = require('./Alert.react');
-var SitesList = require('./SitesList.react');
+var Alert = require('./Alert.jsx');
+var SitesList = require('./SitesList.jsx');
 
 /**
  * One thing to keep in  mind is that you cannot use this.refs.blacklist if
@@ -113,7 +115,7 @@ var Options = React.createClass({
         var that = this;
 
         var alert = function() {
-            if(that.state.displayAlert == true){
+            if(that.state.displayAlert === true){
 
                 setTimeout(function () {
                     that.setState({displayAlert:false});

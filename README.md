@@ -54,6 +54,12 @@ Run tests:
 npm test
 ```
 
+Lint code:
+
+```
+jsxhint --jsx-only .
+```
+
 ### Load unpacked in Chrome
 
 1. Clone repository to disk

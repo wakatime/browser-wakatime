@@ -1,11 +1,13 @@
+/* global chrome */
+
 var React = require("react");
 var $ = require('jquery');
 
 var config = require('../config');
 
 // React components
-var NavBar = require('./NavBar.react');
-var MainList = require('./MainList.react');
+var NavBar = require('./NavBar.jsx');
+var MainList = require('./MainList.jsx');
 
 // Core
 var WakaTimeOriginal = require('../core/WakaTime');
@@ -30,7 +32,7 @@ var WakaTime = React.createClass({
 
     componentDidMount: function() {
 
-        var wakatime = new WakaTimeOriginal;
+        var wakatime = new WakaTimeOriginal();
 
         var that = this;
 
@@ -62,7 +64,7 @@ var WakaTime = React.createClass({
 
                 wakatime.getTotalTimeLoggedToday().done(function(grand_total) {
                     that.setState({
-                        totalTimeLoggedToday: grand_total['text']
+                        totalTimeLoggedToday: grand_total.text
                     });
                 });
             }
@@ -86,7 +88,7 @@ var WakaTime = React.createClass({
                 deferredObject.resolve(that);
 
             },
-            error: (xhr, status, err) => {
+            error: function(xhr, status, err) {
 
                 console.error(config.logoutUserUrl, status, err.toString());
 

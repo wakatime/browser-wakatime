@@ -1,3 +1,6 @@
+/* global chrome */
+//jshint esnext:true
+
 var $ = require('jquery');
 var moment = require('moment');
 
@@ -34,7 +37,7 @@ class WakaTime {
             dataType: 'json',
             success: (data) => {
 
-                deferredObject.resolve(data.data[0]['grand_total']);
+                deferredObject.resolve(data.data[0].grand_total);
 
             },
             error: (xhr, status, err) => {

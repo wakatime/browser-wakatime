@@ -15,6 +15,8 @@ React.render(React.createElement(WakaTime, null), document.getElementById('wakat
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/WakaTime.jsx":4,"bootstrap":13,"jquery":26,"react":183}],2:[function(require,module,exports){
+/* global chrome */
+
 'use strict';
 
 var React = require('react');
@@ -291,6 +293,8 @@ var Navbar = React.createClass({
 module.exports = Navbar;
 
 },{"react":183}],4:[function(require,module,exports){
+/* global chrome */
+
 'use strict';
 
 var React = require('react');

@@ -10,7 +10,7 @@ var in_array = require('./in_array');
  *
  * @param state
  */
-function changeExtensionState(state){
+function changeExtensionState(state) {
     if (! in_array(state, config.states)) {
         throw new Error('Not a valid state!');
     }
@@ -31,4 +31,4 @@ function changeExtensionState(state){
     }
 }
 
-export default changeExtensionState;
+module.exports = changeExtensionState;

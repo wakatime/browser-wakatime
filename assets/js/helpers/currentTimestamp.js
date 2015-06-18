@@ -3,8 +3,8 @@
  *
  * @returns {number}
  */
-function currentTimestamp(){
+function currentTimestamp() {
     return Math.round((new Date()).getTime() / 1000);
 }
 
-export default currentTimestamp;
+module.exports = currentTimestamp;

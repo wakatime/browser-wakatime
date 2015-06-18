@@ -1,8 +1,10 @@
+/* global chrome */
+
 // Core
 var WakaTime = require("./core/WakaTime");
 
 // initialize class
-var wakatime = new WakaTime;
+var wakatime = new WakaTime();
 
 // Holds currently open connections (ports) with devtools
 // Uses tabId as index key.

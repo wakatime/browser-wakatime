@@ -5,9 +5,9 @@ require('bootstrap');
 var React = require('react');
 
 // React components
-var Options = require('./components/Options.react');
+var WakaTime = require('./components/WakaTime.jsx');
 
 React.render(
-    <Options />,
-    document.getElementById('wakatime-options')
+    <WakaTime />,
+    document.getElementById('wakatime')
 );
