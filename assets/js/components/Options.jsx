@@ -71,20 +71,23 @@ var Options = React.createClass({
         var theme = React.findDOMNode(this.refs.theme).value.trim();
         var loggingType = React.findDOMNode(this.refs.loggingType).value.trim();
         var loggingStyle = React.findDOMNode(this.refs.loggingStyle).value.trim();
+        // Trimming blacklist and whitelist removes blank lines and spaces.
+        var blacklist = that.state.blacklist.trim();
+        var whitelist = that.state.whitelist.trim();
 
         // Sync options with google storage.
         chrome.storage.sync.set({
             theme: theme,
-            blacklist: that.state.blacklist,
-            whitelist: that.state.whitelist,
+            blacklist: blacklist,
+            whitelist: whitelist,
             loggingType: loggingType,
             loggingStyle: loggingStyle
         }, function () {
             // Set state to be newly entered values.
             that.setState({
                 theme: theme,
-                blacklist: that.state.blacklist,
-                whitelist: that.state.whitelist,
+                blacklist: blacklist,
+                whitelist: whitelist,
                 loggingType: loggingType,
                 loggingStyle: loggingStyle,
                 displayAlert: true
