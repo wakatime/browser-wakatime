@@ -960,12 +960,14 @@ function contains(line, list) {
 
     for (var i = 0; i < lines.length; i++) {
 
-        // If by any chance one line in the list is empty or contains a blank space, ignore it
-        // It would probably be better to use regex here to detect blank space, but since
-        // this is not likely to be triggered anyway, there is no need for that yet.
-        if (lines[i] === '' || lines[i] === ' ') continue;
+        // Trim all lines from the list
+        var cleanLine = lines[i].trim();
 
-        if (line.indexOf(lines[i]) > -1) {
+        // If by any chance one line in the list is empty, ignore it
+        if (cleanLine === '') continue;
+
+        // If line contains the clean line return true
+        if (line.indexOf(cleanLine) > -1) {
             return true;
         }
     }
