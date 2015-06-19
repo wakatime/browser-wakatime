@@ -8,7 +8,6 @@ var config = require('./../config');
 
 // Helpers
 var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
-var currentTimestamp = require('./../helpers/currentTimestamp');
 var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
 var contains = require('./../helpers/contains');
@@ -161,7 +160,7 @@ class WakaTime {
         return JSON.stringify({
             entity: entity,
             type: type,
-            time: currentTimestamp(),
+            time: moment().format('X'),
             is_debugging: debug
         });
     }

@@ -179,7 +179,6 @@ var config = require('./../config');
 
 // Helpers
 var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
-var currentTimestamp = require('./../helpers/currentTimestamp');
 var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
 var contains = require('./../helpers/contains');
@@ -340,7 +339,7 @@ var WakaTime = (function () {
             return JSON.stringify({
                 entity: entity,
                 type: type,
-                time: currentTimestamp(),
+                time: moment().format('X'),
                 is_debugging: debug
             });
         }
@@ -448,7 +447,7 @@ var WakaTime = (function () {
 exports['default'] = WakaTime;
 module.exports = exports['default'];
 
-},{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/contains":7,"./../helpers/currentTimestamp":8,"./../helpers/getDomainFromUrl":9,"./../helpers/in_array":10,"jquery":11,"moment":12}],4:[function(require,module,exports){
+},{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/contains":7,"./../helpers/getDomainFromUrl":8,"./../helpers/in_array":9,"jquery":10,"moment":11}],4:[function(require,module,exports){
 /* global chrome */
 
 'use strict';
@@ -546,7 +545,7 @@ function changeExtensionState(state) {
 
 module.exports = changeExtensionState;
 
-},{"../config":2,"./changeExtensionIcon":4,"./changeExtensionTooltip":6,"./in_array":10}],6:[function(require,module,exports){
+},{"../config":2,"./changeExtensionIcon":4,"./changeExtensionTooltip":6,"./in_array":9}],6:[function(require,module,exports){
 /* global chrome */
 
 'use strict';
@@ -587,7 +586,7 @@ function contains(line, list) {
 
     for (var i = 0; i < lines.length; i++) {
 
-        // Trim all lines from the list
+        // Trim all lines from the list one by one
         var cleanLine = lines[i].trim();
 
         // If by any chance one line in the list is empty, ignore it
@@ -606,20 +605,6 @@ module.exports = contains;
 
 },{}],8:[function(require,module,exports){
 /**
- * Returns UNIX timestamp
- *
- * @returns {number}
- */
-"use strict";
-
-function currentTimestamp() {
-  return Math.round(new Date().getTime() / 1000);
-}
-
-module.exports = currentTimestamp;
-
-},{}],9:[function(require,module,exports){
-/**
  * Returns domain from given URL.
  *
  * @param url
@@ -635,7 +620,7 @@ function getDomainFromUrl(url) {
 
 module.exports = getDomainFromUrl;
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  * Returns boolean if needle is found in haystack or not.
  *
@@ -657,7 +642,7 @@ function in_array(needle, haystack) {
 
 module.exports = in_array;
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -9869,7 +9854,7 @@ return jQuery;
 
 }));
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
