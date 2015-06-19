@@ -23,9 +23,7 @@ Installation
 
 ![SC open](./screenshots/sc_6-open.png)
 
-![Options SC](./screenshots/sc_7-options2.png)
-
-![Options SC](./screenshots/sc_7-options4.png)
+![Options SC](./screenshots/sc_8-options.png)
 
 ## Development instructions
 
