@@ -12,9 +12,11 @@ function contains(line, list) {
     for(var i in lines) {
         // Use regex to remove all whitespace
         var cleanLine = lines[i].replace(/\s/g, '');
-        if(cleanLine.length === 0) {  continue; }
-        return line.indexOf(cleanLine) >= 0 ? false : true;
+        if(cleanLine.length === 0) continue;
+        if (line.indexOf(cleanLine) >= 0) return true;
     }
+
+    return false;
 }
 
 module.exports = contains;
