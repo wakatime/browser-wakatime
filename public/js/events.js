@@ -263,61 +263,50 @@ var WakaTime = (function () {
         value: function recordHeartbeat() {
             var _this = this;
 
-            this.checkAuth().done(function (data) {
+            chrome.storage.sync.get({
+                loggingEnabled: config.loggingEnabled,
+                loggingStyle: config.loggingStyle,
+                blacklist: '',
+                whitelist: ''
+            }, function (items) {
+                if (items.loggingEnabled === true) {
 
-                if (data !== false) {
+                    changeExtensionState('allGood');
 
-                    chrome.storage.sync.get({
-                        loggingEnabled: config.loggingEnabled,
-                        loggingStyle: config.loggingStyle,
-                        blacklist: '',
-                        whitelist: ''
-                    }, function (items) {
-                        if (items.loggingEnabled === true) {
+                    chrome.idle.queryState(config.detectionIntervalInSeconds, function (newState) {
 
-                            changeExtensionState('allGood');
+                        if (newState === 'active') {
+                            // Get current tab URL.
+                            chrome.tabs.query({ active: true }, function (tabs) {
 
-                            chrome.idle.queryState(config.detectionIntervalInSeconds, function (newState) {
+                                var currentActiveTab = tabs[0];
 
-                                if (newState === 'active') {
-                                    // Get current tab URL.
-                                    chrome.tabs.query({ active: true }, function (tabs) {
+                                var debug = false;
+                                // If the current active tab has devtools open
+                                if (in_array(currentActiveTab.id, _this.tabsWithDevtoolsOpen)) debug = true;
 
-                                        var currentActiveTab = tabs[0];
+                                if (items.loggingStyle == 'blacklist') {
+                                    if (!contains(currentActiveTab.url, items.blacklist)) {
+                                        _this.sendHeartbeat(currentActiveTab.url, debug);
+                                    } else {
+                                        changeExtensionState('blacklisted');
+                                        console.log(currentActiveTab.url + ' is on a blacklist.');
+                                    }
+                                }
 
-                                        var debug = false;
-                                        // If the current active tab has devtools open
-                                        if (in_array(currentActiveTab.id, _this.tabsWithDevtoolsOpen)) debug = true;
-
-                                        if (items.loggingStyle == 'blacklist') {
-                                            if (!contains(currentActiveTab.url, items.blacklist)) {
-                                                _this.sendHeartbeat(currentActiveTab.url, debug);
-                                            } else {
-                                                changeExtensionState('blacklisted');
-                                                console.log(currentActiveTab.url + ' is on a blacklist.');
-                                            }
-                                        }
-
-                                        if (items.loggingStyle == 'whitelist') {
-                                            if (contains(currentActiveTab.url, items.whitelist)) {
-                                                _this.sendHeartbeat(currentActiveTab.url, debug);
-                                            } else {
-                                                changeExtensionState('whitelisted');
-                                                console.log(currentActiveTab.url + ' is not on a whitelist.');
-                                            }
-                                        }
-                                    });
+                                if (items.loggingStyle == 'whitelist') {
+                                    if (contains(currentActiveTab.url, items.whitelist)) {
+                                        _this.sendHeartbeat(currentActiveTab.url, debug);
+                                    } else {
+                                        changeExtensionState('whitelisted');
+                                        console.log(currentActiveTab.url + ' is not on a whitelist.');
+                                    }
                                 }
                             });
-                        } else {
-                            changeExtensionState('notLogging');
                         }
                     });
                 } else {
-
-                    // User is not logged in.
-                    // Change extension icon to red color.
-                    changeExtensionState('notSignedIn');
+                    changeExtensionState('notLogging');
                 }
             });
         }
@@ -425,12 +414,16 @@ var WakaTime = (function () {
                 contentType: 'application/json',
                 method: method,
                 data: payload,
+                statusCode: {
+                    401: function _() {
+                        changeExtensionState('notSignedIn');
+                    },
+                    201: function _() {}
+                },
                 success: function success(response) {
-
                     deferredObject.resolve(_this3);
                 },
                 error: function error(xhr, status, err) {
-
                     console.error(config.heartbeatApiUrl, status, err.toString());
 
                     deferredObject.resolve(_this3);
@@ -446,6 +439,8 @@ var WakaTime = (function () {
 
 exports['default'] = WakaTime;
 module.exports = exports['default'];
+
+// nothing to do here
 
 },{"../helpers/changeExtensionState":5,"./../config":2,"./../helpers/contains":7,"./../helpers/getDomainFromUrl":8,"./../helpers/in_array":9,"jquery":10,"moment":11}],4:[function(require,module,exports){
 /* global chrome */
