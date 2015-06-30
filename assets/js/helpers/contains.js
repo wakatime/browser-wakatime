@@ -18,7 +18,7 @@ function contains(line, list) {
         if(cleanLine === '') continue;
 
         // If line contains the clean line return true
-        if (line.indexOf(cleanLine) > - 1) {
+        if (cleanLine.indexOf(line) > - 1) {
             return true;
         }
     }
