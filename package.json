@@ -1,10 +1,14 @@
 {
   "scripts": {
     "test": "jest && mocha --compilers js:mocha-traceur tests/**/*.spec.js",
+    "test-react": "jest",
+    "test-js": "mocha --compilers js:mocha-traceur tests/**/*.spec.js",
     "start": "npm install && bower install && gulp",
     "lint": "jsxhint --jsx-only ."
   },
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "jest": {
     "testFileExtensions": [
       "jest.js"
@@ -27,7 +31,8 @@
     "mocha-traceur": "^2.1.0",
     "precommit-hook": "^2.0.1",
     "react-tools": "^0.13.3",
-    "sinon": "^1.14.1"
+    "sinon": "^1.15.4",
+    "sinon-chrome": "^0.1.2"
   },
   "dependencies": {
     "bootstrap": "^3.3.4",
