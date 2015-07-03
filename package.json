@@ -20,6 +20,7 @@
   },
   "private": true,
   "devDependencies": {
+    "bower": "^1.4.1",
     "chai": "^3.0.0",
     "gulp": "^3.8.8",
     "jest-cli": "^0.4.12",
