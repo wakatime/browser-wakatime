@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "test": "jest --verbose && mocha --compilers js:mocha-traceur tests/**/*.spec.js",
-    "test-react": "jest --verbose",
+    "test": "jest --verbose --coverage && mocha --compilers js:mocha-traceur tests/**/*.spec.js",
+    "test-react": "jest --verbose --coverage",
     "test-js": "mocha --compilers js:mocha-traceur tests/**/*.spec.js",
     "start": "npm install && bower install && gulp",
     "lint": "jsxhint --jsx-only ."
