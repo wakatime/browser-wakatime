@@ -4,7 +4,8 @@
     "test-react": "jest --verbose --coverage",
     "test-js": "mocha --compilers js:mocha-traceur tests/**/*.spec.js",
     "start": "npm install && bower install && gulp",
-    "lint": "jsxhint --jsx-only ."
+    "lint": "jsxhint --jsx-only .",
+    "postinstall": "gulp postinstall"
   },
   "pre-commit": [
     "lint"
@@ -22,6 +23,7 @@
   "devDependencies": {
     "bower": "^1.4.1",
     "chai": "^3.0.0",
+    "del": "^1.2.0",
     "gulp": "^3.8.8",
     "jest-cli": "^0.4.12",
     "jshint": "^2.8.0",
