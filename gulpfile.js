@@ -1,4 +1,21 @@
+var del = require('del');
+var gulp = require('gulp');
 var elixir = require('laravel-elixir');
+
+/*
+ |--------------------------------------------------------------------------
+ | Pre-defined Gulp Tasks
+ |--------------------------------------------------------------------------
+ |
+ | Tasks outside the scope of Elixir can be predefined before setting it up.
+ |
+ */
+
+gulp.task('postinstall', function (cb) {
+    // .pem files cause Chrome to show a bunch of warnings
+    //so we remove them on postinstall
+    del('node_modules/**/*.pem', cb);
+});
 
 /*
  |--------------------------------------------------------------------------
