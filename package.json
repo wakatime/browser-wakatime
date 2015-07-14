@@ -37,6 +37,7 @@
     "precommit-hook": "^2.0.1",
     "react-tools": "^0.13.3",
     "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0",
     "sinon-chrome": "^0.1.2"
   },
   "dependencies": {
