@@ -14,6 +14,7 @@
     "testFileExtensions": [
       "jest.js"
     ],
+    "scriptPreprocessor": "<rootDir>/tests/preprocesser.js",
     "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react"

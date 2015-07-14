@@ -1,8 +1,3 @@
-var chai = require('chai');
-var sinon = require('sinon');
-var chrome = require('sinon-chrome');
-var expect = chai.expect;
-
 import changeExtensionTooltip from '../../assets/js/helpers/changeExtensionTooltip';
 
 describe('changeExtensionTooltip', function() {
@@ -11,8 +6,10 @@ describe('changeExtensionTooltip', function() {
     });
 
     it('should change the extension tooltip', function() {
+    	// Need to attach the spy first
+    	spyOn(chrome.browserAction, 'setTitle');
         changeExtensionTooltip('WakaTime');
-
-        sinon.assert.calledWithMatch(chrome.browserAction.setTitle, {title: 'WakaTime'});
+        expect(chrome.browserAction.setTitle).toHaveBeenCalledWith({title: 'Wakatime'});
+        // sinon.assert.calledWithMatch(chrome.browserAction.setTitle, {title: 'WakaTime'});
     });
 });

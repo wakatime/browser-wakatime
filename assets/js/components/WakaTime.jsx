@@ -1,4 +1,4 @@
-/* global chrome */
+/** global chrome */
 
 var React = require("react");
 var $ = require('jquery');
