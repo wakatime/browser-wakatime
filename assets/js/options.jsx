@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/* global chrome */
 
 /* This is a fix for Bootstrap requiring jQuery */
 global.jQuery = require('jquery');
