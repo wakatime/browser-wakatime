@@ -15,7 +15,7 @@ var WakaTimeOriginal = require('../core/WakaTime');
 // Helpers
 var changeExtensionState = require('../helpers/changeExtensionState');
 
-var WakaTime = React.createClass({
+var Wakatime = React.createClass({
 
     getInitialState: function() {
         return {
@@ -170,4 +170,4 @@ var WakaTime = React.createClass({
 
 });
 
-module.exports = WakaTime;
+module.exports = Wakatime;
