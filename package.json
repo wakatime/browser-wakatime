@@ -2,7 +2,7 @@
   "scripts": {
     "test": "jest --verbose --coverage && mocha --compilers js:mocha-traceur tests/**/*.spec.js",
     "test-react": "jest --verbose --coverage",
-    "test-js": "mocha --compilers js:mocha-traceur tests/**/*.spec.js",
+    "test-js": "node_modules/.bin/phantomjs tests/run.js",
     "start": "npm install && bower install && gulp",
     "lint": "jsxhint --jsx-only .",
     "postinstall": "gulp postinstall"
@@ -38,7 +38,7 @@
     "react-tools": "^0.13.3",
     "sinon": "^1.15.4",
     "sinon-chai": "^2.8.0",
-    "sinon-chrome": "^0.1.2"
+    "sinon-chrome": "^0.2.1"
   },
   "dependencies": {
     "bootstrap": "^3.3.4",
