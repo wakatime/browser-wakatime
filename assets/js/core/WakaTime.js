@@ -150,6 +150,7 @@ class WakaTime {
             entity: entity,
             type: type,
             time: moment().format('X'),
+            project: '<<LAST_PROJECT>>',
             is_debugging: debug
         });
     }
