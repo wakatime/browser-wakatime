@@ -18,9 +18,9 @@ describe('contains', function() {
 
     it('should not match url against blacklist and return false', function() {
 
-        var list = "localhost\ntest.com";
+        var list = "localhost2\ntest.com";
 
         var url = 'http://localhost/fooapp';
-        expect(contains('http://localhost2/fooapp', list)).to.equal(false);
+        expect(contains(url, list)).to.equal(false);
     });
 });
