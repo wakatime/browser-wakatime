@@ -4,6 +4,7 @@
     "test-react": "jest --verbose --coverage",
     "test-js": "node_modules/.bin/phantomjs tests/run.js",
     "start": "npm install && bower install && gulp",
+    "gulp": "gulp",
     "watch": "gulp watch",
     "lint": "jsxhint --jsx-only .",
     "postinstall": "gulp postinstall"

@@ -1,13 +1,15 @@
 chrome-wakatime
 ===============
 
-Get stats about your website debugging, research, documentation, etc.
+Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
 
 Installation
 ------------
 
-1. Install the extension inside Chrome.
+1. Install the extension:
+
+https://chrome.google.com/webstore/detail/wakatime/jnbbnacmeggbgdjgaoojpmhdlkkpblgi
 
 2. Login to [WakaTime](https://wakatime.com/).
 
@@ -34,16 +36,16 @@ To get started, install NPM and Bower dependencies, and do an initial build with
 npm start
 ```
 
-Run Gulp once:
+To build the extension once:
 
 ```
-gulp
+npm run gulp
 ```
 
-Run Gulp and monitor changes:
+To monitor changes:
 
 ```
-gulp watch
+npm run watch
 ```
 
 Run tests:
