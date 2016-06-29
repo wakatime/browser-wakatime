@@ -4,11 +4,12 @@ global.jQuery = require('jquery');
 require('bootstrap');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 // React components
 var WakaTime = require('./components/WakaTime.jsx');
 
-React.render(
+ReactDOM.render(
     <WakaTime />,
     document.getElementById('wakatime')
 );

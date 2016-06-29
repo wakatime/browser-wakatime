@@ -1,8 +1,7 @@
 /* global chrome */
 
 var React = require('react');
-var ReactAddons = require('react/addons');
-var ReactCSSTransitionGroup = ReactAddons.addons.CSSTransitionGroup;
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var config = require('../config');
 

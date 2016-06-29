@@ -12,7 +12,7 @@ var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
 var contains = require('./../helpers/contains');
 
-class WakaTime {
+class WakaTimeCore {
 
     constructor() {
         this.tabsWithDevtoolsOpen = [];
@@ -253,4 +253,4 @@ class WakaTime {
 
 }
 
-export default WakaTime;
+export default WakaTimeCore;

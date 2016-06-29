@@ -10,7 +10,7 @@ var NavBar = require('./NavBar.jsx');
 var MainList = require('./MainList.jsx');
 
 // Core
-var WakaTimeOriginal = require('../core/WakaTime');
+var WakaTimeCore = require('../core/WakaTimeCore').default;
 
 // Helpers
 var changeExtensionState = require('../helpers/changeExtensionState');
@@ -32,7 +32,7 @@ var Wakatime = React.createClass({
 
     componentDidMount: function() {
 
-        var wakatime = new WakaTimeOriginal();
+        var wakatime = new WakaTimeCore();
 
         var that = this;
 

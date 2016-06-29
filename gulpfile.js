@@ -28,7 +28,7 @@ gulp.task('postinstall', function (cb) {
  |
  */
 
-elixir.config.assetsDir = 'assets/';
+elixir.config.assetsPath = 'assets/';
 
 elixir(function (mix) {
     mix.copy('vendor/bower_components/bootstrap/less', 'assets/less/bootstrap');
