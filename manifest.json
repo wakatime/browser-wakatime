@@ -2,7 +2,8 @@
   "manifest_version": 2,
   "name": "WakaTime",
   "version": "1.0.0",
-  "description": "Get stats about your website debugging, research, documentation, etc.",
+  "description": "Automatic time tracking for Chrome.",
+  "homepage_url": "https://wakatime.com",
   "devtools_page": "devtools.html",
   "icons": {
     "16": "graphics/wakatime-logo-16.png",
@@ -10,9 +11,8 @@
     "128": "graphics/wakatime-logo-128.png"
   },
   "permissions": [
-    "https://wakatime.com/api/v1/users/current",
-    "https://wakatime.com/logout",
-    "https://wakatime.com/api/v1/users/current/heartbeats",
+    "https://api.wakatime.com/*",
+    "https://wakatime.com/*",
     "alarms",
     "tabs",
     "storage",
