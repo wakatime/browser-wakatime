@@ -8,17 +8,19 @@ describe('contains', function() {
         expect(contains).to.be.a('function');
     });
 
-    it('should find the line and return true', function() {
+    it('should match url against blacklist and return true', function() {
 
-        var list = ".app\ntest.com";
+        var list = "localhost\ntest.com";
 
-        expect(contains('.app', list)).to.equal(true);
+        var url = 'http://localhost/fooapp';
+        expect(contains(url, list)).to.equal(true);
     });
 
-    it('should not find the line and it should return false', function() {
+    it('should not match url against blacklist and return false', function() {
 
-        var list = ".app\ntest.com";
+        var list = "localhost\ntest.com";
 
-        expect(contains('.app2', list)).to.equal(false);
+        var url = 'http://localhost/fooapp';
+        expect(contains('http://localhost2/fooapp', list)).to.equal(false);
     });
 });
