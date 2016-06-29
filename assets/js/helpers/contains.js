@@ -1,12 +1,12 @@
 /**
  * Creates an array from list using \n as delimiter
- * and checks if the line is located in the list.
+ * and checks if the str is located in the list.
  *
- * @param line
+ * @param str
  * @param list
  * @returns {boolean}
  */
-function contains(line, list) {
+function contains(str, list) {
     var lines = list.split('\n');
 
     for (var i = 0; i < lines.length; i ++) {
@@ -17,8 +17,8 @@ function contains(line, list) {
         // If by any chance one line in the list is empty, ignore it
         if(cleanLine === '') continue;
 
-        // If line contains the clean line return true
-        if (cleanLine.indexOf(line) > - 1) {
+        // If current line contains the str return true
+        if (cleanLine.indexOf(str) > -1) {
             return true;
         }
     }
