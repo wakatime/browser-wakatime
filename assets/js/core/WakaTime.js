@@ -151,7 +151,8 @@ class WakaTime {
             type: type,
             time: moment().format('X'),
             project: '<<LAST_PROJECT>>',
-            is_debugging: debug
+            is_debugging: debug,
+            plugin: 'chrome-wakatime/' + config.version
         });
     }
 

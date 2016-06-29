@@ -1,6 +1,8 @@
 var config = {
     // Extension name
     name: 'WakaTime',
+    // Extension version
+    version: '1.0.0',
     // Time for idle state of the browser
     // The user is considered idle if there was
     // no activity in the browser for x seconds
