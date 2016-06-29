@@ -39,7 +39,8 @@
     "react-tools": "^0.13.3",
     "sinon": "^1.15.4",
     "sinon-chai": "^2.8.0",
-    "sinon-chrome": "^0.2.1"
+    "sinon-chrome": "^0.2.1",
+    "traceur": "0.0.111"
   },
   "dependencies": {
     "bootstrap": "^3.3.4",
