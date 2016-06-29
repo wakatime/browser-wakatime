@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "WakaTime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automatic time tracking for Chrome.",
   "homepage_url": "https://wakatime.com",
   "devtools_page": "devtools.html",
