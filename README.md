@@ -4,12 +4,11 @@ chrome-wakatime
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
 
-Installation
-------------
+##Installation
 
 1. Install the extension:
 
-https://chrome.google.com/webstore/detail/wakatime/jnbbnacmeggbgdjgaoojpmhdlkkpblgi
+[![Chrome Web Store](https://wakatime.com/static/img/chrome-web-store.png)](https://chrome.google.com/webstore/detail/wakatime/jnbbnacmeggbgdjgaoojpmhdlkkpblgi)
 
 2. Login to [WakaTime](https://wakatime.com/).
 
@@ -19,6 +18,7 @@ https://chrome.google.com/webstore/detail/wakatime/jnbbnacmeggbgdjgaoojpmhdlkkpb
 
 5. Use in conjunction with [other WakaTime plugins](https://wakatime.com/plugins).
 
+
 ## Screenshots
 
 ![SC open](./screenshots/sc_6-green.png)
@@ -26,6 +26,7 @@ https://chrome.google.com/webstore/detail/wakatime/jnbbnacmeggbgdjgaoojpmhdlkkpb
 ![SC open](./screenshots/sc_6-open.png)
 
 ![Options SC](./screenshots/sc_8-options.png)
+
 
 ## Development instructions
 
@@ -63,6 +64,7 @@ jsxhint --jsx-only .
 ### Automatic code linting
 
 There is a precommit hook that lints the code before commiting the changes.
+
 
 ### Load unpacked in Chrome
 
