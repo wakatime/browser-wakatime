@@ -1,6 +1,7 @@
 /* global chrome */
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var config = require('../config');
@@ -52,9 +53,9 @@ var Options = React.createClass({
                 loggingStyle: items.loggingStyle
             });
 
-            React.findDOMNode(that.refs.theme).value = items.theme;
-            React.findDOMNode(that.refs.loggingType).value = items.loggingType;
-            React.findDOMNode(that.refs.loggingStyle).value = items.loggingStyle;
+            ReactDOM.findDOMNode(that.refs.theme).value = items.theme;
+            ReactDOM.findDOMNode(that.refs.loggingType).value = items.loggingType;
+            ReactDOM.findDOMNode(that.refs.loggingStyle).value = items.loggingStyle;
         });
     },
 
@@ -67,9 +68,9 @@ var Options = React.createClass({
     saveSettings: function () {
         var that = this;
 
-        var theme = React.findDOMNode(this.refs.theme).value.trim();
-        var loggingType = React.findDOMNode(this.refs.loggingType).value.trim();
-        var loggingStyle = React.findDOMNode(this.refs.loggingStyle).value.trim();
+        var theme = ReactDOM.findDOMNode(this.refs.theme).value.trim();
+        var loggingType = ReactDOM.findDOMNode(this.refs.loggingType).value.trim();
+        var loggingStyle = ReactDOM.findDOMNode(this.refs.loggingStyle).value.trim();
         // Trimming blacklist and whitelist removes blank lines and spaces.
         var blacklist = that.state.blacklist.trim();
         var whitelist = that.state.whitelist.trim();
@@ -95,7 +96,7 @@ var Options = React.createClass({
     },
 
     _displayBlackOrWhiteList: function () {
-        var loggingStyle = React.findDOMNode(this.refs.loggingStyle).value.trim();
+        var loggingStyle = ReactDOM.findDOMNode(this.refs.loggingStyle).value.trim();
 
         this.setState({loggingStyle: loggingStyle});
     },
@@ -156,7 +157,7 @@ var Options = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
 
-                        <ReactCSSTransitionGroup transitionName="alert">
+                        <ReactCSSTransitionGroup transitionName="alert" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
                             {alert()}
                         </ReactCSSTransitionGroup>
 
