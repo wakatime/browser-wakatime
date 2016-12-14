@@ -253,4 +253,4 @@ class WakaTimeCore {
 
 }
 
-export default WakaTimeCore;
+//export default WakaTimeCore;

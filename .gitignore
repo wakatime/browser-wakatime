@@ -32,3 +32,5 @@ vendor/
 
 # Generated chrome extension
 public/
+web-ext-artifacts/
+.web-extension-id
