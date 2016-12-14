@@ -1,4 +1,4 @@
-/* global chrome */
+/* global browser */
 
 /* This is a fix for Bootstrap requiring jQuery */
 global.jQuery = require('jquery');

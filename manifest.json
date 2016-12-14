@@ -35,5 +35,10 @@
   "options_ui": {
     "page": "options.html",
     "chrome_style": false
+  },
+  "applicaitons": {
+    "gecko": {
+      "id": "addon@wakatime.com"
+    }
   }
 }

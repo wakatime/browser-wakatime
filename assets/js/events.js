@@ -1,4 +1,4 @@
-/* global chrome */
+/* global browser */
 
 // Core
 var WakaTimeCore = require("./core/WakaTimeCore").default;
@@ -11,7 +11,7 @@ var wakatime = new WakaTimeCore();
 var connections = {};
 
 // Add a listener to resolve alarms
-chrome.alarms.onAlarm.addListener(function (alarm) {
+browser.alarms.onAlarm.addListener(function (alarm) {
     // |alarm| can be undefined because onAlarm also gets called from
     // window.setTimeout on old chrome versions.
     if (alarm && alarm.name == 'heartbeatAlarm') {
@@ -23,14 +23,14 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 });
 
 // Create a new alarm for heartbeats.
-chrome.alarms.create('heartbeatAlarm', {periodInMinutes: 2});
+browser.alarms.create('heartbeatAlarm', {periodInMinutes: 2});
 
 /**
  * Whenever a active tab is changed it records a heartbeat with that tab url.
  */
-chrome.tabs.onActivated.addListener(function (activeInfo) {
+browser.tabs.onActivated.addListener(function (activeInfo) {
 
-    chrome.tabs.get(activeInfo.tabId, function (tab) {
+    browser.tabs.get(activeInfo.tabId).then(function (tab) {
 
         console.log('recording a heartbeat - active tab changed');
 
@@ -43,11 +43,11 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
  * Whenever any tab is updated it checks if the updated tab is the tab that is
  * currently active and if it is, then it records a heartbeat.
  */
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if (changeInfo.status === 'complete') {
         // Get current tab URL.
-        chrome.tabs.query({active: true}, function(tabs) {
+        browser.tabs.query({active: true}).then(function(tabs) {
             // If tab updated is the same as active tab
             if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
@@ -64,7 +64,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
  * This is in charge of detecting if devtools are opened or closed
  * and sending a heartbeat depending on that.
  */
-chrome.runtime.onConnect.addListener(function (port) {
+browser.runtime.onConnect.addListener(function (port) {
 
     if (port.name == "devtools-page") {
 
