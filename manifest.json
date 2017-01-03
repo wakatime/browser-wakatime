@@ -20,6 +20,7 @@
   ],
   "background": {
     "scripts": [
+      "public/js/browser-polyfill.min.js"
       "public/js/events.js"
     ],
     "persistent": false
@@ -36,7 +37,7 @@
     "page": "options.html",
     "chrome_style": false
   },
-  "applicaitons": {
+  "applications": {
     "gecko": {
       "id": "addon@wakatime.com"
     }
