@@ -4,7 +4,7 @@ chrome-wakatime
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
 
-##Installation
+## Installation
 
 1. Install the extension:
 
