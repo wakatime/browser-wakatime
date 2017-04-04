@@ -3,6 +3,8 @@ chrome-wakatime
 
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
+Note: Activity from this Chrome extension will not display on leaderboards, so installing this extension may lower your rank.
+
 
 ## Installation
 
