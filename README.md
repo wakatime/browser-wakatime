@@ -71,7 +71,7 @@ There is a precommit hook that lints the code before commiting the changes.
 ### Load unpacked in Chrome
 
 1. Clone repository to disk
-2. Go to `Settings` -> `Extensions`
+2. Go to `Settings` → `Extensions`
 3. Enable `Developer mode`
 4. Click `Load unpacked extension...`
 5. Select repository directory
