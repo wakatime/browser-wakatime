@@ -2,3 +2,9 @@
 .jshintignore text eol=lf
 AUTHORS text eol=lf
 LICENSE text eol=lf
+.csslintrc text eol=lf
+*.less text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.css text eol=lf
