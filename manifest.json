@@ -20,7 +20,7 @@
   ],
   "background": {
     "scripts": [
-      "public/js/browser-polyfill.min.js"
+      "public/js/browser-polyfill.min.js",
       "public/js/events.js"
     ],
     "persistent": false
