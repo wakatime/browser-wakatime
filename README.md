@@ -3,8 +3,10 @@ chrome-wakatime
 
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
+Note: Activity from this Chrome extension will not display on leaderboards, so installing this extension may lower your rank.
 
-##Installation
+
+## Installation
 
 1. Install the extension:
 
@@ -69,7 +71,7 @@ There is a precommit hook that lints the code before commiting the changes.
 ### Load unpacked in Chrome
 
 1. Clone repository to disk
-2. Go to `Settings` -> `Extensions`
+2. Go to `Settings` → `Extensions`
 3. Enable `Developer mode`
 4. Click `Load unpacked extension...`
 5. Select repository directory
