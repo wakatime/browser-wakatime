@@ -60,14 +60,11 @@ class WakaTimeCore {
             url: config.currentUserApiUrl,
             dataType: 'json',
             success: (data) => {
-
                 deferredObject.resolve(data.data);
-
+                this.recordHeartbeat();
             },
             error: (xhr, status, err) => {
-
                 console.error(config.currentUserApiUrl, status, err.toString());
-
                 deferredObject.resolve(false);
             }
         });
