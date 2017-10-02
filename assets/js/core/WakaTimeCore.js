@@ -228,33 +228,23 @@ class WakaTimeCore {
      * @param debug
      */
     sendHeartbeat(entity, debug) {
-
         var payload = null;
 
         this._getLoggingType().done((loggingType) => {
-
             // Get only the domain from the entity.
             // And send that in heartbeat
             if (loggingType == 'domain') {
-
-                var domain = getDomainFromUrl(entity);
-
-                payload = this._preparePayload(domain, 'domain', debug);
-
+                entity.url = getDomainFromUrl(entity.url);
+                payload = this._preparePayload(entity, 'domain', debug);
                 console.log(payload);
-
                 this.sendAjaxRequestToApi(payload);
-
             }
             // Send entity in heartbeat
             else if (loggingType == 'url') {
                 payload = this._preparePayload(entity, 'url', debug);
-
                 console.log(payload);
-
                 this.sendAjaxRequestToApi(payload);
             }
-
         });
     }
 
