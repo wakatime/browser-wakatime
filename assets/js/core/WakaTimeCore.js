@@ -3,7 +3,6 @@
 
 var $ = require('jquery');
 var moment = require('moment');
-
 var config = require('./../config');
 
 // Helpers
@@ -28,7 +27,6 @@ class WakaTimeCore {
 
     getTotalTimeLoggedToday() {
         var deferredObject = $.Deferred();
-
         var today = moment().format('YYYY-MM-DD');
 
         $.ajax({
@@ -145,38 +143,38 @@ class WakaTimeCore {
      * @returns {object}
      */
     checkURL(url, list) {
-      var lines = list.split('\n');
+        var lines = list.split('\n');
 
-      for (var i = 0; i < lines.length; i ++) {
-          // Trim all lines from the list one by one
-          var cleanLine = lines[i].trim();
+        for (var i = 0; i < lines.length; i ++) {
+            // Trim all lines from the list one by one
+            var cleanLine = lines[i].trim();
 
-          // If by any chance one line in the list is empty, ignore it
-          if (cleanLine === '') {
-              continue;
-          }
+            // If by any chance one line in the list is empty, ignore it
+            if (cleanLine === '') {
+                continue;
+            }
 
-          // If url contains the current line return object
-          if (url.indexOf(cleanLine.split('@@')[0]) > -1) {
-              if (cleanLine.split('@@')[1]) {
-                  return {
-                      url: cleanLine.split('@@')[0],
-                      project: cleanLine.split('@@')[1]
-                  };
-              }
-              else {
-                  return {
-                      url: cleanLine.split('@@')[0],
-                      project: false
-                  };
-              }
-          }
-      }
+            // If url contains the current line return object
+            if (url.indexOf(cleanLine.split('@@')[0]) > -1) {
+                if (cleanLine.split('@@')[1]) {
+                    return {
+                        url: cleanLine.split('@@')[0],
+                        project: cleanLine.split('@@')[1]
+                    };
+                }
+                else {
+                    return {
+                        url: cleanLine.split('@@')[0],
+                        project: false
+                    };
+                }
+            }
+        }
 
-      return {
-          url: false,
-          project: false
-      };
+        return {
+            url: false,
+            project: false
+        };
     }
 
     /**
