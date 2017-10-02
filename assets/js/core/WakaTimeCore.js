@@ -192,10 +192,10 @@ class WakaTimeCore {
      */
     _preparePayload(entity, type, debug = false) {
         return JSON.stringify({
-            entity: entity,
+            entity: entity.url,
             type: type,
             time: moment().format('X'),
-            project: '<<LAST_PROJECT>>',
+            project: entity.project || '<<LAST_PROJECT>>',
             is_debugging: debug,
             plugin: 'chrome-wakatime/' + config.version
         });
