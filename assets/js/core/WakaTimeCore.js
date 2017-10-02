@@ -80,7 +80,6 @@ class WakaTimeCore {
      * and sends it to WakaTime for logging.
      */
     recordHeartbeat() {
-
         chrome.storage.sync.get({
             loggingEnabled: config.loggingEnabled,
             loggingStyle: config.loggingStyle,
@@ -88,24 +87,28 @@ class WakaTimeCore {
             whitelist: ''
         }, (items) => {
             if (items.loggingEnabled === true) {
-
                 changeExtensionState('allGood');
 
                 chrome.idle.queryState(config.detectionIntervalInSeconds, (newState) => {
-
                     if (newState === 'active') {
                         // Get current tab URL.
                         chrome.tabs.query({active: true}, (tabs) => {
 
                             var currentActiveTab = tabs[0];
+                            var debug = false, entity;
 
-                            var debug = false;
                             // If the current active tab has devtools open
-                            if (in_array(currentActiveTab.id, this.tabsWithDevtoolsOpen)) debug = true;
+                            if (in_array(currentActiveTab.id, this.tabsWithDevtoolsOpen)) {
+                                debug = true;
+                            }
 
                             if (items.loggingStyle == 'blacklist') {
-                                if (! contains(currentActiveTab.url, items.blacklist)) {
-                                    this.sendHeartbeat(currentActiveTab.url, debug);
+                                entity = this.checkURL(currentActiveTab.url, items.blacklist);
+                                if (! entity.url) {
+                                    this.sendHeartbeat({
+                                        url: currentActiveTab.url,
+                                        project: false
+                                    }, debug);
                                 }
                                 else {
                                     changeExtensionState('blacklisted');
@@ -114,8 +117,9 @@ class WakaTimeCore {
                             }
 
                             if (items.loggingStyle == 'whitelist') {
-                                if (contains(currentActiveTab.url, items.whitelist)) {
-                                    this.sendHeartbeat(currentActiveTab.url, debug);
+                                entity = this.checkURL(currentActiveTab.url, items.whitelist);
+                                if (entity.url) {
+                                    this.sendHeartbeat(entity, debug);
                                 }
                                 else {
                                     changeExtensionState('whitelisted');
