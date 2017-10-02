@@ -10,7 +10,6 @@ var config = require('./../config');
 var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
 var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
-var contains = require('./../helpers/contains');
 
 class WakaTimeCore {
 
@@ -134,6 +133,50 @@ class WakaTimeCore {
                 changeExtensionState('notLogging');
             }
         });
+    }
+
+    /**
+     * Creates an array from list using \n as delimiter
+     * and checks if any element in list is contained in the url.
+     * Also checks if element is assigned to a project using @@ as delimiter
+     *
+     * @param url
+     * @param list
+     * @returns {object}
+     */
+    checkURL(url, list) {
+      var lines = list.split('\n');
+
+      for (var i = 0; i < lines.length; i ++) {
+          // Trim all lines from the list one by one
+          var cleanLine = lines[i].trim();
+
+          // If by any chance one line in the list is empty, ignore it
+          if (cleanLine === '') {
+              continue;
+          }
+
+          // If url contains the current line return object
+          if (url.indexOf(cleanLine.split('@@')[0]) > -1) {
+              if (cleanLine.split('@@')[1]) {
+                  return {
+                      url: cleanLine.split('@@')[0],
+                      project: cleanLine.split('@@')[1]
+                  };
+              }
+              else {
+                  return {
+                      url: cleanLine.split('@@')[0],
+                      project: false
+                  };
+              }
+          }
+      }
+
+      return {
+          url: false,
+          project: false
+      };
     }
 
     /**
