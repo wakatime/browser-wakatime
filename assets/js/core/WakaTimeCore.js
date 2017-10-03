@@ -103,7 +103,7 @@ class WakaTimeCore {
                                 if (! contains(currentActiveTab.url, items.blacklist)) {
                                     this.sendHeartbeat({
                                         url: currentActiveTab.url,
-                                        project: false
+                                        project: null,
                                     }, debug);
                                 }
                                 else {
@@ -165,22 +165,22 @@ class WakaTimeCore {
                 else {
                     return {
                         url: cleanLine.split('@@')[0],
-                        project: false
+                        project: null,
                     };
                 }
             }
         }
 
         return {
-            url: false,
-            project: false
+            url: null,
+            project: null,
         };
     }
 
     /**
      * Creates payload for the heartbeat and returns it as JSON.
      *
-     * @param entity
+     * @param heartbeat
      * @param type
      * @param debug
      * @returns {*}
@@ -217,10 +217,10 @@ class WakaTimeCore {
     }
 
     /**
-     * Given the entity and logging type it creates a payload and
+     * Given the heartbeat and logging type it creates a payload and
      * sends an ajax post request to the API.
      *
-     * @param entity
+     * @param heartbeat
      * @param debug
      */
     sendHeartbeat(heartbeat, debug) {
