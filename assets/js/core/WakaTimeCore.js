@@ -186,12 +186,12 @@ class WakaTimeCore {
      * @returns {*}
      * @private
      */
-    _preparePayload(entity, type, debug = false) {
+    _preparePayload(heartbeat, type, debug = false) {
         return JSON.stringify({
-            entity: entity.url,
+            entity: heartbeat.url,
             type: type,
             time: moment().format('X'),
-            project: entity.project || '<<LAST_PROJECT>>',
+            project: heartbeat.project || '<<LAST_PROJECT>>',
             is_debugging: debug,
             plugin: 'chrome-wakatime/' + config.version
         });
@@ -223,21 +223,21 @@ class WakaTimeCore {
      * @param entity
      * @param debug
      */
-    sendHeartbeat(entity, debug) {
+    sendHeartbeat(heartbeat, debug) {
         var payload = null;
 
         this._getLoggingType().done((loggingType) => {
             // Get only the domain from the entity.
             // And send that in heartbeat
             if (loggingType == 'domain') {
-                entity.url = getDomainFromUrl(entity.url);
-                payload = this._preparePayload(entity, 'domain', debug);
+                heartbeat.url = getDomainFromUrl(heartbeat.url);
+                payload = this._preparePayload(heartbeat, 'domain', debug);
                 console.log(payload);
                 this.sendAjaxRequestToApi(payload);
             }
             // Send entity in heartbeat
             else if (loggingType == 'url') {
-                payload = this._preparePayload(entity, 'url', debug);
+                payload = this._preparePayload(heartbeat, 'url', debug);
                 console.log(payload);
                 this.sendAjaxRequestToApi(payload);
             }
