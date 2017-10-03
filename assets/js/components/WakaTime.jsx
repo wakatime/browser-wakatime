@@ -67,6 +67,8 @@ var Wakatime = React.createClass({
                         totalTimeLoggedToday: grand_total.text
                     });
                 });
+
+                wakatime.recordHeartbeat();
             }
             else {
                 changeExtensionState('notSignedIn');

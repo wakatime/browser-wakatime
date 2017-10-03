@@ -9,6 +9,7 @@ var config = require('./../config');
 var getDomainFromUrl = require('./../helpers/getDomainFromUrl');
 var changeExtensionState = require('../helpers/changeExtensionState');
 var in_array = require('./../helpers/in_array');
+var contains = require('./../helpers/contains');
 
 class WakaTimeCore {
 
@@ -61,7 +62,6 @@ class WakaTimeCore {
             dataType: 'json',
             success: (data) => {
                 deferredObject.resolve(data.data);
-                this.recordHeartbeat();
             },
             error: (xhr, status, err) => {
                 console.error(config.currentUserApiUrl, status, err.toString());
@@ -92,7 +92,7 @@ class WakaTimeCore {
                         chrome.tabs.query({active: true}, (tabs) => {
 
                             var currentActiveTab = tabs[0];
-                            var debug = false, entity;
+                            var debug = false;
 
                             // If the current active tab has devtools open
                             if (in_array(currentActiveTab.id, this.tabsWithDevtoolsOpen)) {
@@ -100,8 +100,7 @@ class WakaTimeCore {
                             }
 
                             if (items.loggingStyle == 'blacklist') {
-                                entity = this.checkURL(currentActiveTab.url, items.blacklist);
-                                if (! entity.url) {
+                                if (! contains(currentActiveTab.url, items.blacklist)) {
                                     this.sendHeartbeat({
                                         url: currentActiveTab.url,
                                         project: false
@@ -114,9 +113,9 @@ class WakaTimeCore {
                             }
 
                             if (items.loggingStyle == 'whitelist') {
-                                entity = this.checkURL(currentActiveTab.url, items.whitelist);
-                                if (entity.url) {
-                                    this.sendHeartbeat(entity, debug);
+                                var heartbeat = this.getHeartbeat(currentActiveTab.url, items.whitelist);
+                                if (heartbeat.url) {
+                                    this.sendHeartbeat(heartbeat, debug);
                                 }
                                 else {
                                     changeExtensionState('whitelisted');
@@ -143,7 +142,7 @@ class WakaTimeCore {
      * @param list
      * @returns {object}
      */
-    checkURL(url, list) {
+    getHeartbeat(url, list) {
         var lines = list.split('\n');
 
         for (var i = 0; i < lines.length; i ++) {
