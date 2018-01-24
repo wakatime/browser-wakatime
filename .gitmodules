@@ -1,3 +1,0 @@
-[submodule "vendor/webextension-polyfill"]
-	path = vendor/webextension-polyfill
-	url = https://github.com/mozilla/webextension-polyfill.git
