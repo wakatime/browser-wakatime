@@ -3,7 +3,6 @@
 
 var $ = require('jquery');
 var moment = require('moment');
-
 var config = require('./../config');
 
 // Helpers
@@ -29,7 +28,6 @@ class WakaTimeCore {
 
     getTotalTimeLoggedToday() {
         var deferredObject = $.Deferred();
-
         var today = moment().format('YYYY-MM-DD');
 
         $.ajax({
@@ -63,14 +61,10 @@ class WakaTimeCore {
             url: config.currentUserApiUrl,
             dataType: 'json',
             success: (data) => {
-
                 deferredObject.resolve(data.data);
-
             },
             error: (xhr, status, err) => {
-
                 console.error(config.currentUserApiUrl, status, err.toString());
-
                 deferredObject.resolve(false);
             }
         });
@@ -83,7 +77,6 @@ class WakaTimeCore {
      * and sends it to WakaTime for logging.
      */
     recordHeartbeat() {
-
         browser.storage.sync.get({
             loggingEnabled: config.loggingEnabled,
             loggingStyle: config.loggingStyle,
@@ -91,24 +84,27 @@ class WakaTimeCore {
             whitelist: ''
         }).then((items) => {
             if (items.loggingEnabled === true) {
-
                 changeExtensionState('allGood');
 
                 browser.idle.queryState(config.detectionIntervalInSeconds).then((newState) => {
-
                     if (newState === 'active') {
                         // Get current tab URL.
                         browser.tabs.query({active: true}).then((tabs) => {
 
                             var currentActiveTab = tabs[0];
-
                             var debug = false;
+
                             // If the current active tab has devtools open
-                            if (in_array(currentActiveTab.id, this.tabsWithDevtoolsOpen)) debug = true;
+                            if (in_array(currentActiveTab.id, this.tabsWithDevtoolsOpen)) {
+                                debug = true;
+                            }
 
                             if (items.loggingStyle == 'blacklist') {
                                 if (! contains(currentActiveTab.url, items.blacklist)) {
-                                    this.sendHeartbeat(currentActiveTab.url, debug);
+                                    this.sendHeartbeat({
+                                        url: currentActiveTab.url,
+                                        project: null,
+                                    }, debug);
                                 }
                                 else {
                                     changeExtensionState('blacklisted');
@@ -117,8 +113,9 @@ class WakaTimeCore {
                             }
 
                             if (items.loggingStyle == 'whitelist') {
-                                if (contains(currentActiveTab.url, items.whitelist)) {
-                                    this.sendHeartbeat(currentActiveTab.url, debug);
+                                var heartbeat = this.getHeartbeat(currentActiveTab.url, items.whitelist);
+                                if (heartbeat.url) {
+                                    this.sendHeartbeat(heartbeat, debug);
                                 }
                                 else {
                                     changeExtensionState('whitelisted');
@@ -137,20 +134,64 @@ class WakaTimeCore {
     }
 
     /**
+     * Creates an array from list using \n as delimiter
+     * and checks if any element in list is contained in the url.
+     * Also checks if element is assigned to a project using @@ as delimiter
+     *
+     * @param url
+     * @param list
+     * @returns {object}
+     */
+    getHeartbeat(url, list) {
+        var lines = list.split('\n');
+
+        for (var i = 0; i < lines.length; i ++) {
+            // Trim all lines from the list one by one
+            var cleanLine = lines[i].trim();
+
+            // If by any chance one line in the list is empty, ignore it
+            if (cleanLine === '') {
+                continue;
+            }
+
+            // If url contains the current line return object
+            if (url.indexOf(cleanLine.split('@@')[0]) > -1) {
+                if (cleanLine.split('@@')[1]) {
+                    return {
+                        url: cleanLine.split('@@')[0],
+                        project: cleanLine.split('@@')[1]
+                    };
+                }
+                else {
+                    return {
+                        url: cleanLine.split('@@')[0],
+                        project: null,
+                    };
+                }
+            }
+        }
+
+        return {
+            url: null,
+            project: null,
+        };
+    }
+
+    /**
      * Creates payload for the heartbeat and returns it as JSON.
      *
-     * @param entity
+     * @param heartbeat
      * @param type
      * @param debug
      * @returns {*}
      * @private
      */
-    _preparePayload(entity, type, debug = false) {
+    _preparePayload(heartbeat, type, debug = false) {
         return JSON.stringify({
-            entity: entity,
+            entity: heartbeat.url,
             type: type,
             time: moment().format('X'),
-            project: '<<LAST_PROJECT>>',
+            project: heartbeat.project || '<<LAST_PROJECT>>',
             is_debugging: debug,
             plugin: 'browser-wakatime/' + config.version
         });
@@ -176,40 +217,30 @@ class WakaTimeCore {
     }
 
     /**
-     * Given the entity and logging type it creates a payload and
+     * Given the heartbeat and logging type it creates a payload and
      * sends an ajax post request to the API.
      *
-     * @param entity
+     * @param heartbeat
      * @param debug
      */
-    sendHeartbeat(entity, debug) {
-
+    sendHeartbeat(heartbeat, debug) {
         var payload = null;
 
         this._getLoggingType().done((loggingType) => {
-
             // Get only the domain from the entity.
             // And send that in heartbeat
             if (loggingType == 'domain') {
-
-                var domain = getDomainFromUrl(entity);
-
-                payload = this._preparePayload(domain, 'domain', debug);
-
+                heartbeat.url = getDomainFromUrl(heartbeat.url);
+                payload = this._preparePayload(heartbeat, 'domain', debug);
                 console.log(payload);
-
                 this.sendAjaxRequestToApi(payload);
-
             }
             // Send entity in heartbeat
             else if (loggingType == 'url') {
-                payload = this._preparePayload(entity, 'url', debug);
-
+                payload = this._preparePayload(heartbeat, 'url', debug);
                 console.log(payload);
-
                 this.sendAjaxRequestToApi(payload);
             }
-
         });
     }
 
