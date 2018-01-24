@@ -20,15 +20,11 @@ gulp.task('postinstall', function (cb) {
 });
 gulp.task('webextension',function(cb){
     exec('npm install',{
-        cwd: 'vendor/webextension-polyfill/'
+        cwd: 'node_modules/webextension-polyfill/'
     },function(){
-        exec('grunt',{
-            cwd: 'vendor/webextension-polyfill/'
-        },function(){
-            var stream = fs.createWriteStream('public/js/browser-polyfill.min.js');
-            stream.on('done',cb);
-            fs.createReadStream('vendor/webextension-polyfill/dist/browser-polyfill.min.js').pipe(stream);
-        });
+        var stream = fs.createWriteStream('public/js/browser-polyfill.min.js');
+        stream.on('done',cb);
+        fs.createReadStream('node_modules/webextension-polyfill/dist/browser-polyfill.min.js').pipe(stream);
     });
 });
 
