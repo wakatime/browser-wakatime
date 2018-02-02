@@ -75,3 +75,10 @@ There is a precommit hook that lints the code before commiting the changes.
 3. Enable `Developer mode`
 4. Click `Load unpacked extension...`
 5. Select repository directory
+
+
+### Troubleshooting
+
+Check for errors by inspecting the extension.
+
+![inspecting extension](./screenshots/wakatime-chrome-debug.gif)
