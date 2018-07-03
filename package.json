@@ -50,7 +50,8 @@
     "moment": "^2.13.0",
     "react": "^16.2.0",
     "react-addons-css-transition-group": "^15.1.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "webextension-polyfill": "^0.2.1"
   },
   "jshintConfig": {
     "asi": false,

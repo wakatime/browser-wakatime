@@ -1,4 +1,4 @@
-/* global chrome */
+/* global browser */
 
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
@@ -37,13 +37,13 @@ var Options = React.createClass({
     restoreSettings: function () {
         var that = this;
 
-        chrome.storage.sync.get({
+        browser.storage.sync.get({
             theme: config.theme,
             blacklist: '',
             whitelist: '',
             loggingType: config.loggingType,
             loggingStyle: config.loggingStyle
-        }, function (items) {
+        }).then(function (items) {
             that.setState({
                 theme: items.theme,
                 blacklist: items.blacklist,
@@ -75,13 +75,13 @@ var Options = React.createClass({
         var whitelist = that.state.whitelist.trim();
 
         // Sync options with google storage.
-        chrome.storage.sync.set({
+        browser.storage.sync.set({
             theme: theme,
             blacklist: blacklist,
             whitelist: whitelist,
             loggingType: loggingType,
             loggingStyle: loggingStyle
-        }, function () {
+        }).then(function () {
             // Set state to be newly entered values.
             that.setState({
                 theme: theme,

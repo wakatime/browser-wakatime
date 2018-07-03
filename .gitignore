@@ -26,9 +26,11 @@ node_modules
 
 .DS_Store
 
-vendor/
+vendor/bower_components
 
 .idea
 
 # Generated chrome extension
 public/
+web-ext-artifacts/
+.web-extension-id

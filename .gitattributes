@@ -1,0 +1,17 @@
+.bowerrc text eol=lf
+.jshintignore text eol=lf
+AUTHORS text eol=lf
+LICENSE text eol=lf
+.csslintrc text eol=lf
+*.less text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.jsx text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitmodules text eol=lf
+.jshintrc text eol=lf
+*.md text eol=lf
+*.rst text eol=lf

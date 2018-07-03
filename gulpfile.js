@@ -1,6 +1,8 @@
 var del = require('del');
 var gulp = require('gulp');
 var elixir = require('laravel-elixir');
+var exec = require('child_process').exec;
+var fs = require('fs');
 
 /*
  |--------------------------------------------------------------------------
@@ -16,6 +18,15 @@ gulp.task('postinstall', function (cb) {
     //so we remove them on postinstall
     del('node_modules/**/*.pem', cb);
 });
+gulp.task('webextension',function(cb){
+    exec('npm install',{
+        cwd: 'node_modules/webextension-polyfill/'
+    },function(){
+        var stream = fs.createWriteStream('public/js/browser-polyfill.min.js');
+        stream.on('done',cb);
+        fs.createReadStream('node_modules/webextension-polyfill/dist/browser-polyfill.min.js').pipe(stream);
+    });
+});
 
 /*
  |--------------------------------------------------------------------------
@@ -30,14 +41,19 @@ gulp.task('postinstall', function (cb) {
 
 elixir.config.assetsPath = 'assets/';
 
+elixir.extend('webextension', function(){
+    return gulp.start('webextension');
+});
+
 elixir(function (mix) {
+    mix.webextension();
     mix.copy('vendor/bower_components/bootstrap/less', 'assets/less/bootstrap');
-    mix.copy('vendor/bower_components/bootstrap/fonts', 'public/fonts');
+    /*mix.copy('vendor/bower_components/bootstrap/fonts', 'public/fonts');
     mix.copy('vendor/bower_components/font-awesome/less', 'assets/less/font-awesome');
     mix.copy('vendor/bower_components/font-awesome/fonts', 'public/fonts');
     mix.less('app.less');
     mix.browserify('app.jsx', 'public/js/app.js', 'assets/js');
     mix.browserify('events.js', 'public/js/events.js', 'assets/js');
     mix.browserify('options.jsx', 'public/js/options.js', 'assets/js');
-    mix.browserify('devtools.js', 'public/js/devtools.js', 'assets/js');
+    mix.browserify('devtools.js', 'public/js/devtools.js', 'assets/js');*/
 });

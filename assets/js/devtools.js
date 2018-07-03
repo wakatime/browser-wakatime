@@ -1,12 +1,12 @@
-/* global chrome */
+/* global browser */
 
 // Create a connection to the background page
-var backgroundPageConnection = chrome.runtime.connect({
+var backgroundPageConnection = browser.runtime.connect({
     name: "devtools-page"
 });
 
 // Send a message to background page with the current active tabId
 backgroundPageConnection.postMessage({
     name: 'init',
-    tabId: chrome.devtools.inspectedWindow.tabId
+    tabId: browser.devtools.inspectedWindow.tabId
 });

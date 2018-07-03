@@ -1,16 +1,16 @@
-/* global chrome */
+/* global browser */
 
 var React = require('react');
 
 var MainList = React.createClass({
 
     _openOptionsPage: function() {
-        if (chrome.runtime.openOptionsPage) {
+        if (browser.runtime.openOptionsPage) {
             // New way to open options pages, if supported (Chrome 42+).
-            chrome.runtime.openOptionsPage();
+            browser.runtime.openOptionsPage();
         } else {
             // Reasonable fallback.
-            window.open(chrome.runtime.getURL('options.html'));
+            window.open(browser.runtime.getURL('options.html'));
         }
     },
 

@@ -1,4 +1,4 @@
-/* global chrome */
+/* global browser */
 
 var React = require("react");
 var $ = require('jquery');
@@ -40,9 +40,9 @@ var Wakatime = React.createClass({
 
             if (data !== false) {
 
-                chrome.storage.sync.get({
+                browser.storage.sync.get({
                     loggingEnabled: config.loggingEnabled
-                }, function(items) {
+                }).then(function(items) {
                     that.setState({loggingEnabled: items.loggingEnabled});
 
                     if (items.loggingEnabled === true) {
@@ -129,7 +129,7 @@ var Wakatime = React.createClass({
 
         changeExtensionState('notLogging');
 
-        chrome.storage.sync.set({
+        browser.storage.sync.set({
             loggingEnabled: false
         });
     },
@@ -141,7 +141,7 @@ var Wakatime = React.createClass({
 
         changeExtensionState('allGood');
 
-        chrome.storage.sync.set({
+        browser.storage.sync.set({
             loggingEnabled: true
         });
     },
