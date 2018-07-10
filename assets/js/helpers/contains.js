@@ -17,8 +17,10 @@ function contains(url, list) {
         // If by any chance one line in the list is empty, ignore it
         if(cleanLine === '') continue;
 
-        // If url contains the current line return true
-        if (url.indexOf(cleanLine) > -1) {
+        var lineRe = new RegExp(cleanLine.replace('.', '\.').replace('*', '.*'));
+
+        // If url matches the current line return true
+        if (lineRe.test(url)) {
             return true;
         }
     }
