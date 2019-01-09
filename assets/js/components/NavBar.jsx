@@ -1,6 +1,7 @@
 var React = require('react');
+var reactCreateClass = require('create-react-class');
 
-var NavBar = React.createClass({
+var NavBar = reactCreateClass({
 
     render: function() {
 

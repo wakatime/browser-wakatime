@@ -1,6 +1,7 @@
 var React = require('react');
+var reactCreateClass = require('create-react-class');
 
-var SitesList = React.createClass({
+var SitesList = reactCreateClass({
 
     getDefaultProps: function () {
         return {

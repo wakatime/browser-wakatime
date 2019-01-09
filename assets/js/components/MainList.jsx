@@ -1,8 +1,9 @@
 /* global browser */
 
 var React = require('react');
+var reactCreateClass = require('create-react-class');
 
-var MainList = React.createClass({
+var MainList = reactCreateClass({
 
     _openOptionsPage: function() {
         if (browser.runtime.openOptionsPage) {

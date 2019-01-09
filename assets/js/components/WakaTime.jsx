@@ -1,6 +1,7 @@
 /* global browser */
 
 var React = require("react");
+var reactCreateClass = require('create-react-class');
 var $ = require('jquery');
 
 var config = require('../config');
@@ -15,7 +16,7 @@ var WakaTimeCore = require('../core/WakaTimeCore').default;
 // Helpers
 var changeExtensionState = require('../helpers/changeExtensionState');
 
-var Wakatime = React.createClass({
+var Wakatime = reactCreateClass({
 
     getInitialState: function() {
         return {

@@ -1,7 +1,8 @@
 var React = require('react');
+var reactCreateClass = require('create-react-class');
 var classNames = require('classnames');
 
-var Alert = React.createClass({
+var Alert = reactCreateClass({
 
     propTypes: {
         type: React.PropTypes.string.isRequired,

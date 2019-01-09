@@ -28,6 +28,7 @@
     "babel-jest": "^22.1.0",
     "bower": "^1.7.9",
     "chai": "^4.1.2",
+    "create-react-class": "^15.6.3",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "jest-cli": "^22.1.4",
