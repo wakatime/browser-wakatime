@@ -1,6 +1,7 @@
 /* global browser */
 
 var React = require('react');
+var reactCreateClass = require('create-react-class');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var config = require('../config');
@@ -15,7 +16,7 @@ var SitesList = require('./SitesList.jsx');
  *
  * @type {*|Function}
  */
-var Options = React.createClass({
+var Options = reactCreateClass({
 
     getInitialState: function () {
         return {
