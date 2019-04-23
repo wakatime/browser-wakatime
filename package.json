@@ -10,25 +10,18 @@
     "postinstall": "gulp postinstall",
     "validate": "npm ls"
   },
-  "pre-commit": [
-    "lint"
-  ],
+  "pre-commit": ["lint"],
   "jest": {
-    "testFileExtensions": [
-      "jest.js"
-    ],
+    "testFileExtensions": ["jest.js"],
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testDirectoryName": "tests",
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react"
-    ]
+    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
   },
   "private": true,
   "devDependencies": {
     "babel-jest": "^22.1.0",
     "bower": "^1.7.9",
     "chai": "^4.1.2",
-    "create-react-class": "^15.6.3",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "jest-cli": "^22.1.4",
@@ -49,11 +42,12 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
+    "create-react-class": "^15.6.3",
     "jquery": "^3.0.0",
     "moment": "^2.13.0",
     "react": "^16.2.0",
-    "react-addons-css-transition-group": "^15.1.0",
     "react-dom": "^16.2.0",
+    "react-transition-group": "^1.0.0",
     "webextension-polyfill": "^0.4.0"
   },
   "jshintConfig": {
