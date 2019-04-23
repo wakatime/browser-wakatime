@@ -23,13 +23,9 @@ gulp.task('webextension',function(cb){
         !fs.existsSync('public') && fs.mkdirSync('public');
         fs.mkdirSync('public/js');
     }
-    exec('npm install',{
-        cwd: 'node_modules/webextension-polyfill/'
-    },function(){
-        var stream = fs.createWriteStream('public/js/browser-polyfill.min.js');
-        stream.on('done',cb);
-        fs.createReadStream('node_modules/webextension-polyfill/dist/browser-polyfill.min.js').pipe(stream);
-    });
+
+    fs.copyFileSync('node_modules/webextension-polyfill/dist/browser-polyfill.min.js', 'public/js/browser-polyfill.min.js');
+    fs.copyFileSync('node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map', 'public/js/browser-polyfill.min.js.map');
 });
 
 /*
