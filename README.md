@@ -71,6 +71,7 @@ There is a precommit hook that lints the code before commiting the changes.
 ### Load unpacked in Chrome
 
 1. Clone repository to disk
+2. Remove `browser_specific_settings` key from manifest.json (only necessary for firefox)
 2. Go to `Settings` → `Extensions`
 3. Enable `Developer mode`
 4. Click `Load unpacked extension...`
