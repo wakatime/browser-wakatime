@@ -37,9 +37,10 @@
     "page": "options.html",
     "chrome_style": false
   },
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
-      "id": "addon@wakatime.com"
+      "id": "addon@wakatime.com",
+      "strict_min_version": "48.0"
     }
   }
 }
