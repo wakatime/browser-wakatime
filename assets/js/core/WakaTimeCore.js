@@ -89,7 +89,8 @@ class WakaTimeCore {
                 browser.idle.queryState(config.detectionIntervalInSeconds).then((newState) => {
                     if (newState === 'active') {
                         // Get current tab URL.
-                        browser.tabs.query({active: true}).then((tabs) => {
+                        browser.tabs.query({currentWindow: true, active: true}).then((tabs) => {
+                            if (tabs.length == 0) return;
 
                             var currentActiveTab = tabs[0];
                             var debug = false;

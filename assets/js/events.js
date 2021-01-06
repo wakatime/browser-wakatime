@@ -40,6 +40,21 @@ browser.tabs.onActivated.addListener(function (activeInfo) {
 });
 
 /**
+ * Whenever a active window is changed it records a heartbeat with the active tab url.
+ */
+browser.windows.onFocusChanged.addListener(function (windowId) {
+
+    if (windowId != browser.windows.WINDOW_ID_NONE) {
+        console.log('recording a heartbeat - active window changed');
+
+        wakatime.recordHeartbeat();
+    } else {
+        console.log('lost focus');
+    }
+
+});
+
+/**
  * Whenever any tab is updated it checks if the updated tab is the tab that is
  * currently active and if it is, then it records a heartbeat.
  */
@@ -47,7 +62,7 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if (changeInfo.status === 'complete') {
         // Get current tab URL.
-        browser.tabs.query({active: true}).then(function(tabs) {
+        browser.tabs.query({currentWindow: true, active: true}).then(function(tabs) {
             // If tab updated is the same as active tab
             if (tabId == tabs[0].id) {
                 console.log('recording a heartbeat - tab updated');
