@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "WakaTime",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Automatic time tracking for Chrome.",
   "homepage_url": "https://wakatime.com",
   "devtools_page": "devtools.html",
@@ -19,10 +19,7 @@
     "idle"
   ],
   "background": {
-    "scripts": [
-      "public/js/browser-polyfill.min.js",
-      "public/js/events.js"
-    ],
+    "scripts": ["public/js/browser-polyfill.min.js", "public/js/events.js"],
     "persistent": false
   },
   "browser_action": {
