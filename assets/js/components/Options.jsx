@@ -2,7 +2,7 @@
 
 var React = require('react');
 var reactCreateClass = require('create-react-class');
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+var ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGroup');
 
 var config = require('../config');
 
