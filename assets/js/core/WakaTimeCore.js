@@ -146,35 +146,46 @@ class WakaTimeCore {
     getHeartbeat(url, list) {
         var lines = list.split('\n');
 
-        for (var i = 0; i < lines.length; i ++) {
-            // Trim all lines from the list one by one
-            var cleanLine = lines[i].trim();
-
-            // If by any chance one line in the list is empty, ignore it
-            if (cleanLine === '') {
-                continue;
-            }
-
-            // If url contains the current line return object
-            if (url.indexOf(cleanLine.split('@@')[0]) > -1) {
-                if (cleanLine.split('@@')[1]) {
-                    return {
-                        url: cleanLine.split('@@')[0],
-                        project: cleanLine.split('@@')[1]
-                    };
-                }
-                else {
-                    return {
-                        url: cleanLine.split('@@')[0],
-                        project: null,
-                    };
-                }
-            }
+        for (var i = 0; i < lines.length; i++) {
+          // strip (http:// or https://) and trailing (`/` or `@@`)
+          var line = lines[i];
+          var cleanLine = line.trim().replace(/(\/|@@)$/, '').replace(/^(?:https?:\/\/)?/i, '');
+          var emptyLine = cleanLine === '';
+          if (emptyLine) {
+            continue;
+          }
+          var projectIndicatorCharacters = '@@';
+          var projectIndicatorIndex = cleanLine.lastIndexOf(projectIndicatorCharacters);
+          var projectIndicatorExists = projectIndicatorIndex > -1;
+          var projectName = null;
+          var urlFromLine = cleanLine;
+          if (projectIndicatorExists) {
+            var start = projectIndicatorIndex + projectIndicatorCharacters.length;
+            projectName = cleanLine.substring(start);
+            urlFromLine = cleanLine.replace(cleanLine.substring(projectIndicatorIndex), '').replace(/\/$/, '');
+          }
+          var schemaHttpExists = url.match(/^http:\/\//i);
+          var schemaHttpsExists = url.match(/^https:\/\//i);
+          var schema = '';
+          if (schemaHttpExists) {
+              schema = 'http://';
+          }
+          if (schemaHttpsExists) {
+              schema = 'https://';
+          }
+          var cleanUrl = url.trim().replace(/(\/|@@)$/, '').replace(/^(?:https?:\/\/)?/i, '');
+          var startsWithUrl = cleanUrl.toLowerCase().indexOf(urlFromLine.toLowerCase()) > -1;
+          if (startsWithUrl) {
+            return {
+              url: schema + urlFromLine,
+              project: projectName
+            };
+          }
         }
 
         return {
-            url: null,
-            project: null,
+          url: null,
+          project: null,
         };
     }
 
