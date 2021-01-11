@@ -30,10 +30,7 @@
     "default_title": "WakaTime",
     "default_popup": "popup.html"
   },
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": false
-  },
+  "options_page": "options.html",
   "browser_specific_settings": {
     "gecko": {
       "id": "addon@wakatime.com",
