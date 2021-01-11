@@ -10,12 +10,18 @@
     "postinstall": "gulp postinstall",
     "validate": "npm ls"
   },
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "jest": {
-    "testFileExtensions": ["jest.js"],
+    "testFileExtensions": [
+      "jest.js"
+    ],
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testDirectoryName": "tests",
-    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react"
+    ]
   },
   "private": true,
   "devDependencies": {
