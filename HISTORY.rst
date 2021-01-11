@@ -3,6 +3,13 @@ History
 -------
 
 
+2.0.1 (2021-01-11)
+++++++++++++++++++
+
+- Bugfix options page not opening.
+  `#98 <https://github.com/wakatime/chrome-wakatime/issues/98>`_
+
+
 2.0.0 (2021-01-06)
 ++++++++++++++++++
 
