@@ -8,7 +8,7 @@
 
 .navbar {
   border: none;
-  .box-shadow(0 1px 2px rgba(0,0,0,.3));
+  .box-shadow(0 1px 2px rgba(0,0,0,0.3));
 
   &-brand {
     font-size: 24px;
@@ -19,7 +19,7 @@
       color: #fff;
       .placeholder(@navbar-inverse-link-color);
 
-      &[type=text] {
+      &[type="text"] {
         .box-shadow(inset 0 -1px 0 @navbar-inverse-link-color);
 
         &:focus {
@@ -49,9 +49,9 @@
 
     &:active {
       background-color: darken(@bg, 6%);
-      #gradient > .radial(darken(@bg, 6%) 10%, @bg 11%);
+      #gradient > .radial(darken(@bg, 6%) 10%, @bg 11%);;
       background-size: 1000%;
-      .box-shadow(2px 2px 2px rgba(0,0,0,.3));
+      .box-shadow(2px 2px 2px rgba(0,0,0,0.3));
     }
   }
 }
@@ -67,7 +67,7 @@
   text-transform: uppercase;
   border-right: none;
   border-bottom: none;
-  .box-shadow(1px 1px 2px rgba(0,0,0,.3));
+  .box-shadow(1px 1px 2px rgba(0,0,0,0.3));
   .transition(all 0.2s);
 
   &-link {
@@ -107,7 +107,7 @@
 
 body {
   -webkit-font-smoothing: antialiased;
-  letter-spacing: .1px;
+  letter-spacing: 0.1px;
   text-rendering: optimizeLegibility;
 }
 
@@ -118,7 +118,7 @@ p {
 input,
 button {
   -webkit-font-smoothing: antialiased;
-  letter-spacing: .1px;
+  letter-spacing: 0.1px;
   text-rendering: optimizeLegibility;
 }
 
@@ -137,14 +137,14 @@ label {
 textarea,
 textarea.form-control,
 input.form-control,
-input[type=text],
-input[type=password],
-input[type=email],
-input[type=number],
-[type=text].form-control,
-[type=password].form-control,
-[type=email].form-control,
-[type=tel].form-control,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+[type="text"].form-control,
+[type="password"].form-control,
+[type="email"].form-control,
+[type="tel"].form-control,
 [contenteditable].form-control {
   padding: 0;
   border: none;
@@ -343,27 +343,27 @@ input[type="checkbox"],
 }
 
 .has-warning {
-  input:not([type=checkbox]),
+  input:not([type="checkbox"]),
   .form-control,
-  input:not([type=checkbox]):focus,
+  input:not([type="checkbox"]):focus,
   .form-control:focus {
     .box-shadow(inset 0 -2px 0 @brand-warning);
   }
 }
 
 .has-error {
-  input:not([type=checkbox]),
+  input:not([type="checkbox"]),
   .form-control,
-  input:not([type=checkbox]):focus,
+  input:not([type="checkbox"]):focus,
   .form-control:focus {
     .box-shadow(inset 0 -2px 0 @brand-danger);
   }
 }
 
 .has-success {
-  input:not([type=checkbox]),
+  input:not([type="checkbox"]),
   .form-control,
-  input:not([type=checkbox]):focus,
+  input:not([type="checkbox"]):focus,
   .form-control:focus {
     .box-shadow(inset 0 -2px 0 @brand-success);
   }
@@ -405,7 +405,6 @@ input[type="checkbox"],
   }
 
   &.nav-justified {
-
     & > li > a,
     & > li > a:hover,
     & > .active > a,
@@ -421,7 +420,7 @@ input[type="checkbox"],
 
 .dropdown-menu {
   border: none;
-  .box-shadow(0 1px 4px rgba(0,0,0,.3));
+  .box-shadow(0 1px 4px rgba(0,0,0,0.3));
 }
 
 // Indicators =================================================================
@@ -523,7 +522,6 @@ input[type="checkbox"],
 }
 
 .list-group {
-
   &-item {
     padding: 15px;
   }
@@ -541,7 +539,7 @@ input[type="checkbox"],
 .panel {
   border: none;
   border-radius: 2px;
-  .box-shadow(0 1px 4px rgba(0,0,0,.3));
+  .box-shadow(0 1px 4px rgba(0,0,0,0.3));
 
   &-heading {
     border-bottom: none;
@@ -554,14 +552,18 @@ input[type="checkbox"],
 
 .popover {
   border: none;
-  .box-shadow(0 1px 4px rgba(0,0,0,.3));
+  .box-shadow(0 1px 4px rgba(0,0,0,0.3));
 }
 
 .carousel {
   &-caption {
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       color: inherit;
     }
   }
 }
-

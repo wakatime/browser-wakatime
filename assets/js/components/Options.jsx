@@ -1,14 +1,14 @@
 /* global browser */
 
-var React = require('react');
-var reactCreateClass = require('create-react-class');
-var ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGroup');
+var React = require("react");
+var reactCreateClass = require("create-react-class");
+var ReactCSSTransitionGroup = require("react-transition-group/CSSTransitionGroup");
 
-var config = require('../config');
+var config = require("../config");
 
 // React components
-var Alert = require('./Alert.jsx');
-var SitesList = require('./SitesList.jsx');
+var Alert = require("./Alert.jsx");
+var SitesList = require("./SitesList.jsx");
 
 /**
  * One thing to keep in  mind is that you cannot use this.refs.blacklist if
@@ -17,200 +17,225 @@ var SitesList = require('./SitesList.jsx');
  * @type {*|Function}
  */
 var Options = reactCreateClass({
+  getInitialState: function () {
+    return {
+      theme: config.theme,
+      blacklist: "",
+      whitelist: "",
+      loggingType: config.loggingType,
+      loggingStyle: config.loggingStyle,
+      displayAlert: false,
+      alertType: config.alert.success.type,
+      alertText: config.alert.success.text,
+    };
+  },
 
-    getInitialState: function () {
-        return {
-            theme: config.theme,
-            blacklist: '',
-            whitelist: '',
-            loggingType: config.loggingType,
-            loggingStyle: config.loggingStyle,
-            displayAlert: false,
-            alertType: config.alert.success.type,
-            alertText: config.alert.success.text
-        };
-    },
+  componentDidMount: function () {
+    this.restoreSettings();
+  },
 
-    componentDidMount: function () {
-        this.restoreSettings();
-    },
+  restoreSettings: function () {
+    var that = this;
 
-    restoreSettings: function () {
-        var that = this;
-
-        browser.storage.sync.get({
-            theme: config.theme,
-            blacklist: '',
-            whitelist: '',
-            loggingType: config.loggingType,
-            loggingStyle: config.loggingStyle
-        }).then(function (items) {
-            that.setState({
-                theme: items.theme,
-                blacklist: items.blacklist,
-                whitelist: items.whitelist,
-                loggingType: items.loggingType,
-                loggingStyle: items.loggingStyle
-            });
-
-            that.refs.theme.value = items.theme;
-            that.refs.loggingType.value = items.loggingType;
-            that.refs.loggingStyle.value = items.loggingStyle;
+    browser.storage.sync
+      .get({
+        theme: config.theme,
+        blacklist: "",
+        whitelist: "",
+        loggingType: config.loggingType,
+        loggingStyle: config.loggingStyle,
+      })
+      .then(function (items) {
+        that.setState({
+          theme: items.theme,
+          blacklist: items.blacklist,
+          whitelist: items.whitelist,
+          loggingType: items.loggingType,
+          loggingStyle: items.loggingStyle,
         });
-    },
 
-    _handleSubmit: function (e) {
-        e.preventDefault();
+        that.refs.theme.value = items.theme;
+        that.refs.loggingType.value = items.loggingType;
+        that.refs.loggingStyle.value = items.loggingStyle;
+      });
+  },
 
-        this.saveSettings();
-    },
+  _handleSubmit: function (e) {
+    e.preventDefault();
 
-    saveSettings: function () {
-        var that = this;
+    this.saveSettings();
+  },
 
-        var theme = this.refs.theme.value.trim();
-        var loggingType = this.refs.loggingType.value.trim();
-        var loggingStyle = this.refs.loggingStyle.value.trim();
-        // Trimming blacklist and whitelist removes blank lines and spaces.
-        var blacklist = that.state.blacklist.trim();
-        var whitelist = that.state.whitelist.trim();
+  saveSettings: function () {
+    var that = this;
 
-        // Sync options with google storage.
-        browser.storage.sync.set({
-            theme: theme,
-            blacklist: blacklist,
-            whitelist: whitelist,
-            loggingType: loggingType,
-            loggingStyle: loggingStyle
-        }).then(function () {
-            // Set state to be newly entered values.
-            that.setState({
-                theme: theme,
-                blacklist: blacklist,
-                whitelist: whitelist,
-                loggingType: loggingType,
-                loggingStyle: loggingStyle,
-                displayAlert: true
-            });
+    var theme = this.refs.theme.value.trim();
+    var loggingType = this.refs.loggingType.value.trim();
+    var loggingStyle = this.refs.loggingStyle.value.trim();
+    // Trimming blacklist and whitelist removes blank lines and spaces.
+    var blacklist = that.state.blacklist.trim();
+    var whitelist = that.state.whitelist.trim();
+
+    // Sync options with google storage.
+    browser.storage.sync
+      .set({
+        theme: theme,
+        blacklist: blacklist,
+        whitelist: whitelist,
+        loggingType: loggingType,
+        loggingStyle: loggingStyle,
+      })
+      .then(function () {
+        // Set state to be newly entered values.
+        that.setState({
+          theme: theme,
+          blacklist: blacklist,
+          whitelist: whitelist,
+          loggingType: loggingType,
+          loggingStyle: loggingStyle,
+          displayAlert: true,
         });
-    },
+      });
+  },
 
-    _displayBlackOrWhiteList: function () {
-        var loggingStyle = this.refs.loggingStyle.value.trim();
+  _displayBlackOrWhiteList: function () {
+    var loggingStyle = this.refs.loggingStyle.value.trim();
 
-        this.setState({loggingStyle: loggingStyle});
-    },
+    this.setState({ loggingStyle: loggingStyle });
+  },
 
-    _updateBlacklistState: function(sites){
-        this.setState({
-            blacklist: sites
-        });
-    },
+  _updateBlacklistState: function (sites) {
+    this.setState({
+      blacklist: sites,
+    });
+  },
 
-    _updateWhitelistState: function(sites){
-        this.setState({
-            whitelist: sites
-        });
-    },
+  _updateWhitelistState: function (sites) {
+    this.setState({
+      whitelist: sites,
+    });
+  },
 
-    render: function () {
+  render: function () {
+    var that = this;
 
-        var that = this;
-
-        var alert = function() {
-            if(that.state.displayAlert === true){
-
-                setTimeout(function () {
-                    that.setState({displayAlert:false});
-                }, 2000);
-
-                return(
-                    <Alert key={that.state.alertText} type={that.state.alertType} text={that.state.alertText} />
-                );
-            }
-        };
-
-        var loggingStyle = function () {
-
-            if (that.state.loggingStyle == 'blacklist') {
-                return (
-                    <SitesList
-                        handleChange={that._updateBlacklistState}
-                        label="Blacklist"
-                        sites={that.state.blacklist}
-                        helpText="Sites that you don't want to show in your reports." />
-                );
-            }
-
-            return (
-              <SitesList
-                  handleChange={that._updateWhitelistState}
-                  label="Whitelist"
-                  sites={that.state.whitelist}
-                  placeholder="http://google.com&#10;http://myproject.com@@MyProject"
-                  helpText="Sites that you want to show in your reports. You can assign URL to project by adding @@YourProject at the end of line." />
-            );
-
-        };
+    var alert = function () {
+      if (that.state.displayAlert === true) {
+        setTimeout(function () {
+          that.setState({ displayAlert: false });
+        }, 2000);
 
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12">
-
-                        <ReactCSSTransitionGroup transitionName="alert" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-                            {alert()}
-                        </ReactCSSTransitionGroup>
-
-                        <form className="form-horizontal" onSubmit={this._handleSubmit}>
-
-                            <div className="form-group">
-                                <label className="col-lg-2 control-label">Logging style</label>
-
-                                <div className="col-lg-10">
-                                    <select className="form-control" ref="loggingStyle" defaultValue="blacklist" onChange={this._displayBlackOrWhiteList}>
-                                        <option value="blacklist">All except blacklisted sites</option>
-                                        <option value="whitelist">Only whitelisted sites</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {loggingStyle()}
-
-                            <div className="form-group">
-                                <label className="col-lg-2 control-label">Logging type</label>
-
-                                <div className="col-lg-10">
-                                    <select className="form-control" ref="loggingType" defaultValue="domain">
-                                        <option value="domain">Only the domain</option>
-                                        <option value="url">Entire URL</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="theme" className="col-lg-2 control-label">Theme</label>
-
-                                <div className="col-lg-10">
-                                    <select className="form-control" ref="theme" defaultValue="light">
-                                        <option value="light">Light</option>
-                                        <option value="dark">Dark</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <div className="col-lg-10 col-lg-offset-2">
-                                    <button type="submit" className="btn btn-primary">Save</button>
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
+          <Alert
+            key={that.state.alertText}
+            type={that.state.alertType}
+            text={that.state.alertText}
+          />
         );
-    }
+      }
+    };
+
+    var loggingStyle = function () {
+      if (that.state.loggingStyle == "blacklist") {
+        return (
+          <SitesList
+            handleChange={that._updateBlacklistState}
+            label="Blacklist"
+            sites={that.state.blacklist}
+            helpText="Sites that you don't want to show in your reports."
+          />
+        );
+      }
+
+      return (
+        <SitesList
+          handleChange={that._updateWhitelistState}
+          label="Whitelist"
+          sites={that.state.whitelist}
+          placeholder="http://google.com&#10;http://myproject.com@@MyProject"
+          helpText="Sites that you want to show in your reports. You can assign URL to project by adding @@YourProject at the end of line."
+        />
+      );
+    };
+
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <ReactCSSTransitionGroup
+              transitionName="alert"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}
+            >
+              {alert()}
+            </ReactCSSTransitionGroup>
+
+            <form className="form-horizontal" onSubmit={this._handleSubmit}>
+              <div className="form-group">
+                <label className="col-lg-2 control-label">Logging style</label>
+
+                <div className="col-lg-10">
+                  <select
+                    className="form-control"
+                    ref="loggingStyle"
+                    defaultValue="blacklist"
+                    onChange={this._displayBlackOrWhiteList}
+                  >
+                    <option value="blacklist">
+                      All except blacklisted sites
+                    </option>
+                    <option value="whitelist">Only whitelisted sites</option>
+                  </select>
+                </div>
+              </div>
+
+              {loggingStyle()}
+
+              <div className="form-group">
+                <label className="col-lg-2 control-label">Logging type</label>
+
+                <div className="col-lg-10">
+                  <select
+                    className="form-control"
+                    ref="loggingType"
+                    defaultValue="domain"
+                  >
+                    <option value="domain">Only the domain</option>
+                    <option value="url">Entire URL</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="theme" className="col-lg-2 control-label">
+                  Theme
+                </label>
+
+                <div className="col-lg-10">
+                  <select
+                    className="form-control"
+                    ref="theme"
+                    defaultValue="light"
+                  >
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <div className="col-lg-10 col-lg-offset-2">
+                  <button type="submit" className="btn btn-primary">
+                    Save
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  },
 });
 
 module.exports = Options;

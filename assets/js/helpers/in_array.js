@@ -6,13 +6,13 @@
  * @returns {boolean}
  */
 function in_array(needle, haystack) {
-    for (var i = 0; i < haystack.length; i ++) {
-        if (needle == haystack[i]) {
-            return true;
-        }
+  for (var i = 0; i < haystack.length; i++) {
+    if (needle == haystack[i]) {
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 module.exports = in_array;
