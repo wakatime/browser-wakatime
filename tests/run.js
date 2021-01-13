@@ -12,7 +12,7 @@ mocha.setup({ ui: "bdd", reporter: "spec" });
 phantom.injectJs("beforeeach.js");
 
 // Tests
-phantom.injectJs("helpers/changeExtensionTooltip.spec.js");
+phantom.injectJs(".." + "/helpers/changeExtensionTooltip.spec.js");
 
 // Execute
 mocha.run(function (failures) {

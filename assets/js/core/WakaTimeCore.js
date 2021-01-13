@@ -154,9 +154,9 @@ class WakaTimeCore {
    * @returns {object}
    */
   getHeartbeat(url, list) {
-    const projectIndicatorCharacters = "@@";
+    var projectIndicatorCharacters = "@@";
 
-    const lines = list.split("\n");
+    var lines = list.split("\n");
     for (var i = 0; i < lines.length; i++) {
       // strip (http:// or https://) and trailing (`/` or `@@`)
       var cleanLine = lines[i]
