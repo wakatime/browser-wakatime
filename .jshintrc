@@ -6,5 +6,5 @@
   "undef": true,
   "unused": true,
   "trailing": true,
-  "predef": [ "chrome" ]
+  "predef": ["chrome"]
 }
