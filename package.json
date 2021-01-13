@@ -9,9 +9,22 @@
     "postinstall": "clap postinstall",
     "validate": "npm ls"
   },
-  "pre-commit": [
-    "lint"
-  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  },
+  "lint-staged": {
+    "*.{js|jsx|ts|tsx}": [
+      "eslint",
+      "prettier --write",
+      "git add"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
   "jest": {
     "testFileExtensions": [
       "jest.js"
