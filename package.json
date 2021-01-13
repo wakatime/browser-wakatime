@@ -60,7 +60,6 @@
     "mocha-traceur": "^2.1.0",
     "phantomjs": "^2.1.7",
     "popper.js": "^1.14.6",
-    "precommit-hook": "^3.0.0",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "sinon": "^4.2.2",
