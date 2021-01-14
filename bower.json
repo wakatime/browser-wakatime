@@ -1,12 +1,6 @@
 {
   "name": "WakaTime",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
   "dependencies": {
     "font-awesome": "~4.6.3",
     "bootstrap": "~3.3.4"

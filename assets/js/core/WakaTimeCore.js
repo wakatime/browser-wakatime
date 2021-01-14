@@ -32,7 +32,7 @@ class WakaTimeCore {
     $.ajax({
       url: config.summariesApiUrl + '?start=' + today + '&end=' + today,
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         deferredObject.resolve(data.data[0].grand_total);
       },
       error: (xhr, status, err) => {
@@ -56,7 +56,7 @@ class WakaTimeCore {
     $.ajax({
       url: config.currentUserApiUrl,
       dataType: 'json',
-      success: data => {
+      success: (data) => {
         deferredObject.resolve(data.data);
       },
       error: (xhr, status, err) => {
@@ -80,14 +80,14 @@ class WakaTimeCore {
         blacklist: '',
         whitelist: '',
       })
-      .then(items => {
+      .then((items) => {
         if (items.loggingEnabled === true) {
           changeExtensionState('allGood');
 
-          browser.idle.queryState(config.detectionIntervalInSeconds).then(newState => {
+          browser.idle.queryState(config.detectionIntervalInSeconds).then((newState) => {
             if (newState === 'active') {
               // Get current tab URL.
-              browser.tabs.query({ currentWindow: true, active: true }).then(tabs => {
+              browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
                 if (tabs.length == 0) return;
 
                 var currentActiveTab = tabs[0];
@@ -141,9 +141,9 @@ class WakaTimeCore {
    * @returns {object}
    */
   getHeartbeat(url, list) {
-    const projectIndicatorCharacters = '@@';
+    var projectIndicatorCharacters = '@@';
 
-    const lines = list.split('\n');
+    var lines = list.split('\n');
     for (var i = 0; i < lines.length; i++) {
       // strip (http:// or https://) and trailing (`/` or `@@`)
       var cleanLine = lines[i]
@@ -241,7 +241,7 @@ class WakaTimeCore {
   sendHeartbeat(heartbeat, debug) {
     var payload = null;
 
-    this._getLoggingType().done(loggingType => {
+    this._getLoggingType().done((loggingType) => {
       // Get only the domain from the entity.
       // And send that in heartbeat
       if (loggingType == 'domain') {
@@ -283,7 +283,7 @@ class WakaTimeCore {
           // nothing to do here
         },
       },
-      success: response => {
+      success: (response) => {
         deferredObject.resolve(this);
       },
       error: (xhr, status, err) => {

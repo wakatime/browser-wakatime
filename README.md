@@ -1,10 +1,8 @@
-chrome-wakatime
-===============
+# chrome-wakatime
 
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
 Note: Activity from this Chrome extension will not display on leaderboards, so installing this extension may lower your rank.
-
 
 ## Installation
 
@@ -20,7 +18,6 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 
 5. Use in conjunction with [other WakaTime plugins](https://wakatime.com/plugins).
 
-
 ## Screenshots
 
 ![SC open](./screenshots/sc_6-green.png)
@@ -29,12 +26,12 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 
 ![Options SC](./screenshots/sc_8-options.png)
 
-
 ## Development instructions
 
 > For development purposes only.
 
 To get started, install NPM and Bower dependencies, and do an initial build with Gulp:
+
 ```
 npm start
 ```
@@ -57,7 +54,7 @@ Run tests:
 npm test
 ```
 
-Lint code *(Both JS and JSX)*:
+Lint code _(Both JS and JSX)_:
 
 ```
 jsxhint --jsx-only .
@@ -67,16 +64,14 @@ jsxhint --jsx-only .
 
 There is a precommit hook that lints the code before commiting the changes.
 
-
 ### Load unpacked in Chrome
 
 1. Clone repository to disk
 2. Remove `browser_specific_settings` key from manifest.json (only necessary for firefox)
-2. Go to `Settings` → `Extensions`
-3. Enable `Developer mode`
-4. Click `Load unpacked extension...`
-5. Select repository directory
-
+3. Go to `Settings` → `Extensions`
+4. Enable `Developer mode`
+5. Click `Load unpacked extension...`
+6. Select repository directory
 
 ### Troubleshooting
 

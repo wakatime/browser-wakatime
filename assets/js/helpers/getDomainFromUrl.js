@@ -5,9 +5,9 @@
  * @returns {string}
  */
 function getDomainFromUrl(url) {
-    var parts = url.split('/');
+  var parts = url.split('/');
 
-    return parts[0] + "//" + parts[2];
+  return parts[0] + '//' + parts[2];
 }
 
 module.exports = getDomainFromUrl;

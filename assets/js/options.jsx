@@ -10,7 +10,4 @@ var ReactDOM = require('react-dom');
 // React components
 var Options = require('./components/Options.jsx');
 
-ReactDOM.render(
-    <Options />,
-    document.getElementById('wakatime-options')
-);
+ReactDOM.render(<Options />, document.getElementById('wakatime-options'));

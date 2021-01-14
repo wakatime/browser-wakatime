@@ -7,25 +7,24 @@
  * @returns {boolean}
  */
 function contains(url, list) {
-    var lines = list.split('\n');
+  var lines = list.split('\n');
 
-    for (var i = 0; i < lines.length; i ++) {
+  for (var i = 0; i < lines.length; i++) {
+    // Trim all lines from the list one by one
+    var cleanLine = lines[i].trim();
 
-        // Trim all lines from the list one by one
-        var cleanLine = lines[i].trim();
+    // If by any chance one line in the list is empty, ignore it
+    if (cleanLine === '') continue;
 
-        // If by any chance one line in the list is empty, ignore it
-        if(cleanLine === '') continue;
+    var lineRe = new RegExp(cleanLine.replace('.', '.').replace('*', '.*'));
 
-        var lineRe = new RegExp(cleanLine.replace('.', '\.').replace('*', '.*'));
-
-        // If url matches the current line return true
-        if (lineRe.test(url)) {
-            return true;
-        }
+    // If url matches the current line return true
+    if (lineRe.test(url)) {
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 module.exports = contains;
