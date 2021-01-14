@@ -253,8 +253,7 @@ dd {
 
 .dl-horizontal {
   dd {
-    &:extend(.clearfix
-      all); // Clear the floated `dt` if an empty `dd` is present
+    &:extend(.clearfix all); // Clear the floated `dt` if an empty `dd` is present
   }
 
   @media (min-width: @dl-horizontal-breakpoint) {
@@ -312,7 +311,7 @@ blockquote {
     color: @blockquote-small-color;
 
     &:before {
-      content: "\2014 \00A0"; // em dash, nbsp
+      content: '\2014 \00A0'; // em dash, nbsp
     }
   }
 }
@@ -333,10 +332,10 @@ blockquote.pull-right {
   small,
   .small {
     &:before {
-      content: "";
+      content: '';
     }
     &:after {
-      content: "\00A0 \2014"; // nbsp, em dash
+      content: '\00A0 \2014'; // nbsp, em dash
     }
   }
 }

@@ -1,7 +1,7 @@
 /* global browser */
 
-var React = require("react");
-var reactCreateClass = require("create-react-class");
+var React = require('react');
+var reactCreateClass = require('create-react-class');
 var MainList = reactCreateClass({
   _openOptionsPage: function () {
     if (browser.runtime.openOptionsPage) {
@@ -9,7 +9,7 @@ var MainList = reactCreateClass({
       browser.runtime.openOptionsPage();
     } else {
       // Reasonable fallback.
-      window.open(browser.runtime.getURL("options.html"));
+      window.open(browser.runtime.getURL('options.html'));
     }
   },
 
@@ -20,11 +20,7 @@ var MainList = reactCreateClass({
       if (that.props.loggedIn === true) {
         return (
           <div>
-            <a
-              href="#"
-              className="list-group-item"
-              onClick={that.props.logoutUser}
-            >
+            <a href="#" className="list-group-item" onClick={that.props.logoutUser}>
               <i className="fa fa-fw fa-sign-out"></i>
               Logout
             </a>
@@ -33,11 +29,7 @@ var MainList = reactCreateClass({
       }
 
       return (
-        <a
-          target="_blank"
-          href="https://wakatime.com/login"
-          className="list-group-item"
-        >
+        <a target="_blank" href="https://wakatime.com/login" className="list-group-item">
           <i className="fa fa-fw fa-sign-in"></i>
           Login
         </a>
@@ -62,10 +54,7 @@ var MainList = reactCreateClass({
             </div>
           </div>
         );
-      } else if (
-        that.props.loggingEnabled === false &&
-        that.props.loggedIn === true
-      ) {
+      } else if (that.props.loggingEnabled === false && that.props.loggedIn === true) {
         return (
           <div className="row">
             <div className="col-xs-12">
@@ -108,11 +97,7 @@ var MainList = reactCreateClass({
         {loggingStatus()}
 
         <div className="list-group">
-          <a
-            href="#"
-            className="list-group-item"
-            onClick={this._openOptionsPage}
-          >
+          <a href="#" className="list-group-item" onClick={this._openOptionsPage}>
             <i className="fa fa-fw fa-cogs"></i>
             Options
           </a>

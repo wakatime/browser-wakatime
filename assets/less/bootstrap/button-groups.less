@@ -192,9 +192,7 @@
     .border-bottom-radius(0);
   }
 }
-.btn-group-vertical
-  > .btn-group:last-child:not(:first-child)
-  > .btn:first-child {
+.btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child {
   .border-top-radius(0);
 }
 
@@ -233,11 +231,11 @@
 // See https://github.com/twbs/bootstrap/pull/12794 and
 // https://github.com/twbs/bootstrap/pull/14559 for more information.
 
-[data-toggle="buttons"] {
+[data-toggle='buttons'] {
   > .btn,
   > .btn-group > .btn {
-    input[type="radio"],
-    input[type="checkbox"] {
+    input[type='radio'],
+    input[type='checkbox'] {
       position: absolute;
       clip: rect(0, 0, 0, 0);
       pointer-events: none;

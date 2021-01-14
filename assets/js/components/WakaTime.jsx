@@ -1,20 +1,20 @@
 /* global browser */
 
-var React = require("react");
-var reactCreateClass = require("create-react-class");
-var $ = require("jquery");
+var React = require('react');
+var reactCreateClass = require('create-react-class');
+var $ = require('jquery');
 
-var config = require("../config");
+var config = require('../config');
 
 // React components
-var NavBar = require("./NavBar.jsx");
-var MainList = require("./MainList.jsx");
+var NavBar = require('./NavBar.jsx');
+var MainList = require('./MainList.jsx');
 
 // Core
-var WakaTimeCore = require("../core/WakaTimeCore").default;
+var WakaTimeCore = require('../core/WakaTimeCore').default;
 
 // Helpers
-var changeExtensionState = require("../helpers/changeExtensionState");
+var changeExtensionState = require('../helpers/changeExtensionState');
 
 var Wakatime = reactCreateClass({
   getInitialState: function () {
@@ -26,7 +26,7 @@ var Wakatime = reactCreateClass({
       },
       loggedIn: false,
       loggingEnabled: config.loggingEnabled,
-      totalTimeLoggedToday: "0 minutes",
+      totalTimeLoggedToday: '0 minutes',
     };
   },
 
@@ -45,9 +45,9 @@ var Wakatime = reactCreateClass({
             that.setState({ loggingEnabled: items.loggingEnabled });
 
             if (items.loggingEnabled === true) {
-              changeExtensionState("allGood");
+              changeExtensionState('allGood');
             } else {
-              changeExtensionState("notLogging");
+              changeExtensionState('notLogging');
             }
           });
 
@@ -68,7 +68,7 @@ var Wakatime = reactCreateClass({
 
         wakatime.recordHeartbeat();
       } else {
-        changeExtensionState("notSignedIn");
+        changeExtensionState('notSignedIn');
       }
     });
   },
@@ -80,7 +80,7 @@ var Wakatime = reactCreateClass({
 
     $.ajax({
       url: config.logoutUserUrl,
-      method: "GET",
+      method: 'GET',
       success: function () {
         deferredObject.resolve(that);
       },
@@ -108,7 +108,7 @@ var Wakatime = reactCreateClass({
         loggingEnabled: false,
       });
 
-      changeExtensionState("notSignedIn");
+      changeExtensionState('notSignedIn');
     });
   },
 
@@ -117,7 +117,7 @@ var Wakatime = reactCreateClass({
       loggingEnabled: false,
     });
 
-    changeExtensionState("notLogging");
+    changeExtensionState('notLogging');
 
     browser.storage.sync.set({
       loggingEnabled: false,
@@ -129,7 +129,7 @@ var Wakatime = reactCreateClass({
       loggingEnabled: true,
     });
 
-    changeExtensionState("allGood");
+    changeExtensionState('allGood');
 
     browser.storage.sync.set({
       loggingEnabled: true,

@@ -7,13 +7,13 @@
   // Common styles for all sizes of grid columns, widths 1-12
   .col(@index) {
     // initial
-    @item: ~".col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}";
+    @item: ~'.col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}';
     .col((@index + 1), @item);
   }
   .col(@index, @list) when (@index =< @grid-columns) {
     // general; "=<" isn't a typo
-    @item: ~".col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}";
-    .col((@index + 1), ~"@{list}, @{item}");
+    @item: ~'.col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}';
+    .col((@index + 1), ~'@{list}, @{item}');
   }
   .col(@index, @list) when (@index > @grid-columns) {
     // terminal
@@ -32,13 +32,13 @@
 .float-grid-columns(@class) {
   .col(@index) {
     // initial
-    @item: ~".col-@{class}-@{index}";
+    @item: ~'.col-@{class}-@{index}';
     .col((@index + 1), @item);
   }
   .col(@index, @list) when (@index =< @grid-columns) {
     // general
-    @item: ~".col-@{class}-@{index}";
-    .col((@index + 1), ~"@{list}, @{item}");
+    @item: ~'.col-@{class}-@{index}';
+    .col((@index + 1), ~'@{list}, @{item}');
   }
   .col(@index, @list) when (@index > @grid-columns) {
     // terminal

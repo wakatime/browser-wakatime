@@ -1,6 +1,6 @@
 /* global browser */
 
-var config = require("../config");
+var config = require('../config');
 
 /**
  * It changes the extension title
@@ -8,10 +8,10 @@ var config = require("../config");
  * @param text
  */
 function changeExtensionTooltip(text) {
-  if (text === "") {
+  if (text === '') {
     text = config.name;
   } else {
-    text = config.name + " - " + text;
+    text = config.name + ' - ' + text;
   }
 
   browser.browserAction.setTitle({ title: text });

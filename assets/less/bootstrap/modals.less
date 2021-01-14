@@ -31,7 +31,7 @@
   // When fading in the modal, animate it to slide down
   &.fade .modal-dialog {
     .translate(0, -25%);
-    .transition-transform(~"0.3s ease-out");
+    .transition-transform(~'0.3s ease-out');
   }
   &.in .modal-dialog {
     .translate(0, 0);
@@ -110,8 +110,7 @@
   padding: @modal-inner-padding;
   text-align: right; // right align buttons
   border-top: 1px solid @modal-footer-border-color;
-  &:extend(.clearfix
-    all); // clear it in case folks use .pull-* classes on buttons
+  &:extend(.clearfix all); // clear it in case folks use .pull-* classes on buttons
 
   // Properly space out buttons
   .btn + .btn {

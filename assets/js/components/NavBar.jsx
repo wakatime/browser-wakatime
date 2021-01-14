@@ -1,5 +1,5 @@
-var React = require("react");
-var reactCreateClass = require("create-react-class");
+var React = require('react');
+var reactCreateClass = require('create-react-class');
 
 var NavBar = reactCreateClass({
   render: function () {
@@ -54,19 +54,12 @@ var NavBar = reactCreateClass({
               <span className="sr-only">Toggle navigation</span>
               <i className="fa fa-fw fa-cogs"></i>
             </button>
-            <a
-              target="_blank"
-              className="navbar-brand"
-              href="https://wakatime.com"
-            >
+            <a target="_blank" className="navbar-brand" href="https://wakatime.com">
               WakaTime
               <img src="graphics/wakatime-logo-48.png" />
             </a>
           </div>
-          <div
-            className="collapse navbar-collapse"
-            id="bs-example-navbar-collapse-1"
-          >
+          <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             {signedInAs()}
             <ul className="nav navbar-nav">
               {customRules()}
@@ -85,19 +78,13 @@ var NavBar = reactCreateClass({
                 </a>
                 <ul className="dropdown-menu" role="menu">
                   <li>
-                    <a
-                      target="_blank"
-                      href="https://github.com/wakatime/chrome-wakatime/issues"
-                    >
+                    <a target="_blank" href="https://github.com/wakatime/chrome-wakatime/issues">
                       <i className="fa fa-fw fa-bug"></i>
                       Report an Issue
                     </a>
                   </li>
                   <li>
-                    <a
-                      target="_blank"
-                      href="https://github.com/wakatime/chrome-wakatime"
-                    >
+                    <a target="_blank" href="https://github.com/wakatime/chrome-wakatime">
                       <i className="fa fa-fw fa-github"></i>
                       View on GitHub
                     </a>

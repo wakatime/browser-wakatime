@@ -3,16 +3,16 @@
  * Using phantomjs to render page and execute scripts
  */
 
-var node_modules = "../node_modules/";
-phantom.injectJs(node_modules + "mocha/mocha.js");
-phantom.injectJs(node_modules + "sinon-chrome/src/phantom-tweaks.js");
-mocha.setup({ ui: "bdd", reporter: "spec" });
+var node_modules = '../node_modules/';
+phantom.injectJs(node_modules + 'mocha/mocha.js');
+phantom.injectJs(node_modules + 'sinon-chrome/src/phantom-tweaks.js');
+mocha.setup({ ui: 'bdd', reporter: 'spec' });
 
 // Setup
-phantom.injectJs("beforeeach.js");
+phantom.injectJs('beforeeach.js');
 
 // Tests
-phantom.injectJs(".." + "/helpers/changeExtensionTooltip.spec.js");
+phantom.injectJs('..' + '/helpers/changeExtensionTooltip.spec.js');
 
 // Execute
 mocha.run(function (failures) {

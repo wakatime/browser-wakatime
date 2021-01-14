@@ -1,10 +1,10 @@
-var React = require("react");
-var reactCreateClass = require("create-react-class");
+var React = require('react');
+var reactCreateClass = require('create-react-class');
 
 var SitesList = reactCreateClass({
   getDefaultProps: function () {
     return {
-      placeholder: "http://google.com",
+      placeholder: 'http://google.com',
     };
   },
 

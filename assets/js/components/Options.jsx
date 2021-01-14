@@ -1,14 +1,14 @@
 /* global browser */
 
-var React = require("react");
-var reactCreateClass = require("create-react-class");
-var ReactCSSTransitionGroup = require("react-transition-group/CSSTransitionGroup");
+var React = require('react');
+var reactCreateClass = require('create-react-class');
+var ReactCSSTransitionGroup = require('react-transition-group/CSSTransitionGroup');
 
-var config = require("../config");
+var config = require('../config');
 
 // React components
-var Alert = require("./Alert.jsx");
-var SitesList = require("./SitesList.jsx");
+var Alert = require('./Alert.jsx');
+var SitesList = require('./SitesList.jsx');
 
 /**
  * One thing to keep in  mind is that you cannot use this.refs.blacklist if
@@ -20,8 +20,8 @@ var Options = reactCreateClass({
   getInitialState: function () {
     return {
       theme: config.theme,
-      blacklist: "",
-      whitelist: "",
+      blacklist: '',
+      whitelist: '',
       loggingType: config.loggingType,
       loggingStyle: config.loggingStyle,
       displayAlert: false,
@@ -40,8 +40,8 @@ var Options = reactCreateClass({
     browser.storage.sync
       .get({
         theme: config.theme,
-        blacklist: "",
-        whitelist: "",
+        blacklist: '',
+        whitelist: '',
         loggingType: config.loggingType,
         loggingStyle: config.loggingStyle,
       })
@@ -136,7 +136,7 @@ var Options = reactCreateClass({
     };
 
     var loggingStyle = function () {
-      if (that.state.loggingStyle == "blacklist") {
+      if (that.state.loggingStyle == 'blacklist') {
         return (
           <SitesList
             handleChange={that._updateBlacklistState}
@@ -181,9 +181,7 @@ var Options = reactCreateClass({
                     defaultValue="blacklist"
                     onChange={this._displayBlackOrWhiteList}
                   >
-                    <option value="blacklist">
-                      All except blacklisted sites
-                    </option>
+                    <option value="blacklist">All except blacklisted sites</option>
                     <option value="whitelist">Only whitelisted sites</option>
                   </select>
                 </div>
@@ -195,11 +193,7 @@ var Options = reactCreateClass({
                 <label className="col-lg-2 control-label">Logging type</label>
 
                 <div className="col-lg-10">
-                  <select
-                    className="form-control"
-                    ref="loggingType"
-                    defaultValue="domain"
-                  >
+                  <select className="form-control" ref="loggingType" defaultValue="domain">
                     <option value="domain">Only the domain</option>
                     <option value="url">Entire URL</option>
                   </select>
@@ -212,11 +206,7 @@ var Options = reactCreateClass({
                 </label>
 
                 <div className="col-lg-10">
-                  <select
-                    className="form-control"
-                    ref="theme"
-                    defaultValue="light"
-                  >
+                  <select className="form-control" ref="theme" defaultValue="light">
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>
                   </select>
