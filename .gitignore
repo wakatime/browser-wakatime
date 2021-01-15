@@ -34,3 +34,6 @@ vendor/bower_components
 public/
 web-ext-artifacts/
 .web-extension-id
+
+# Distribution folders
+dist
