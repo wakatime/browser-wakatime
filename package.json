@@ -2,13 +2,11 @@
   "name": "chrome-wakatime",
   "private": true,
   "scripts": {
-    "gulp": "gulp",
     "postinstall": "clap postinstall",
     "lint": "clap lint",
     "start": "clap build",
     "test": "clap test",
-    "validate": "npm ls",
-    "watch": "gulp watch"
+    "validate": "npm ls"
   },
   "husky": {
     "hooks": {
@@ -57,11 +55,13 @@
     "@types/node": "^14.14.20",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/shelljs": "^0.8.8",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
     "@xarc/run": "^1.0.4",
     "babel-jest": "^22.1.0",
     "bower": "^1.7.9",
+    "browserify": "^17.0.0",
     "chai": "^4.1.2",
     "del": "^3.0.0",
     "eslint": "^7.17.0",
@@ -91,6 +91,7 @@
     "prettier-plugin-packagejson": "^2.2.9",
     "prettier-plugin-sort-json": "0.0.1",
     "rimraf": "^3.0.2",
+    "shelljs": "^0.8.4",
     "sinon": "^4.2.2",
     "sinon-chai": "^2.8.0",
     "sinon-chrome": "^2.2.4",

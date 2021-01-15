@@ -6,37 +6,6 @@ var fs = require('fs');
 
 /*
  |--------------------------------------------------------------------------
- | Pre-defined Gulp Tasks
- |--------------------------------------------------------------------------
- |
- | Tasks outside the scope of Elixir can be predefined before setting it up.
- |
- */
-
-gulp.task('postinstall', function (cb) {
-  // .pem files cause Chrome to show a bunch of warnings
-  //so we remove them on postinstall
-  del('node_modules/**/*.pem', cb);
-});
-
-gulp.task('webextension', function (cb) {
-  if (!fs.existsSync('public/js')) {
-    !fs.existsSync('public') && fs.mkdirSync('public');
-    fs.mkdirSync('public/js');
-  }
-
-  fs.copyFileSync(
-    'node_modules/webextension-polyfill/dist/browser-polyfill.min.js',
-    'public/js/browser-polyfill.min.js',
-  );
-  fs.copyFileSync(
-    'node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map',
-    'public/js/browser-polyfill.min.js.map',
-  );
-});
-
-/*
- |--------------------------------------------------------------------------
  | Elixir Asset Management
  |--------------------------------------------------------------------------
  |
@@ -48,13 +17,7 @@ gulp.task('webextension', function (cb) {
 
 elixir.config.assetsPath = 'assets/';
 
-elixir.extend('webextension', function () {
-  return gulp.start('webextension');
-});
-
 elixir(function (mix) {
-  mix.webextension();
-  mix.copy('node_modules/font-awesome/fonts', 'public/fonts');
   mix.browserify('app.jsx', 'public/js/app.js', 'assets/js');
   mix.browserify('events.js', 'public/js/events.js', 'assets/js');
   mix.browserify('options.jsx', 'public/js/options.js', 'assets/js');
