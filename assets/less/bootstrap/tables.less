@@ -1,19 +1,44 @@
+// stylelint-disable selector-max-type, selector-max-compound-selectors, selector-no-qualifying-type
+
 //
 // Tables
 // --------------------------------------------------
 
+
 table {
   background-color: @table-bg;
+
+  // Table cell sizing
+  //
+  // Reset default table behavior
+
+  col[class*="col-"] {
+    position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
+    display: table-column;
+    float: none;
+  }
+
+  td,
+  th {
+    &[class*="col-"] {
+      position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
+      display: table-cell;
+      float: none;
+    }
+  }
 }
+
 caption {
   padding-top: @table-cell-padding;
   padding-bottom: @table-cell-padding;
   color: @text-muted;
   text-align: left;
 }
+
 th {
   text-align: left;
 }
+
 
 // Baseline styles
 
@@ -62,6 +87,7 @@ th {
   }
 }
 
+
 // Condensed table w/ half padding
 
 .table-condensed {
@@ -76,6 +102,7 @@ th {
     }
   }
 }
+
 
 // Bordered version
 //
@@ -101,6 +128,7 @@ th {
   }
 }
 
+
 // Zebra-striping
 //
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
@@ -110,6 +138,7 @@ th {
     background-color: @table-bg-accent;
   }
 }
+
 
 // Hover effect
 //
@@ -121,25 +150,6 @@ th {
   }
 }
 
-// Table cell sizing
-//
-// Reset default table behavior
-
-table col[class*='col-'] {
-  position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
-  float: none;
-  display: table-column;
-}
-table {
-  td,
-  th {
-    &[class*='col-'] {
-      position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
-      float: none;
-      display: table-cell;
-    }
-  }
-}
 
 // Table backgrounds
 //
@@ -153,6 +163,7 @@ table {
 .table-row-variant(warning; @state-warning-bg);
 .table-row-variant(danger; @state-danger-bg);
 
+
 // Responsive tables
 //
 // Wrap your tables in `.table-responsive` and we'll make them mobile friendly
@@ -160,12 +171,12 @@ table {
 // will display normally.
 
 .table-responsive {
+  min-height: .01%; // Workaround for IE9 bug (see https://github.com/twbs/bootstrap/issues/14837)
   overflow-x: auto;
-  min-height: 0.01%; // Workaround for IE9 bug (see https://github.com/twbs/bootstrap/issues/14837)
 
   @media screen and (max-width: @screen-xs-max) {
     width: 100%;
-    margin-bottom: (@line-height-computed * 0.75);
+    margin-bottom: (@line-height-computed * .75);
     overflow-y: hidden;
     -ms-overflow-style: -ms-autohiding-scrollbar;
     border: 1px solid @table-border-color;
@@ -219,6 +230,7 @@ table {
           }
         }
       }
+
     }
   }
 }

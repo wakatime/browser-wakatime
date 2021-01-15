@@ -2,11 +2,12 @@
 // Scaffolding
 // --------------------------------------------------
 
+
 // Reset the box-sizing
 //
 // Heads up! This reset may cause conflicts with some third-party widgets.
 // For recommendations on resolving such conflicts, see
-// http://getbootstrap.com/getting-started/#third-box-sizing
+// https://getbootstrap.com/docs/3.4/getting-started/#third-box-sizing
 * {
   .box-sizing(border-box);
 }
@@ -14,6 +15,7 @@
 *:after {
   .box-sizing(border-box);
 }
+
 
 // Body reset
 
@@ -40,6 +42,7 @@ textarea {
   line-height: inherit;
 }
 
+
 // Links
 
 a {
@@ -57,6 +60,7 @@ a {
   }
 }
 
+
 // Figures
 //
 // We reset this here because previously Normalize had no `figure` margins. This
@@ -65,6 +69,7 @@ a {
 figure {
   margin: 0;
 }
+
 
 // Images
 
@@ -91,7 +96,7 @@ img {
   background-color: @thumbnail-bg;
   border: 1px solid @thumbnail-border;
   border-radius: @thumbnail-border-radius;
-  .transition(all 0.2s ease-in-out);
+  .transition(all .2s ease-in-out);
 
   // Keep them at most 100% wide
   .img-responsive(inline-block);
@@ -102,6 +107,7 @@ img {
   border-radius: 50%; // set radius in percents
 }
 
+
 // Horizontal rules
 
 hr {
@@ -111,23 +117,24 @@ hr {
   border-top: 1px solid @hr-border;
 }
 
+
 // Only display content to screen readers
 //
-// See: http://a11yproject.com/posts/how-to-hide-content
+// See: https://a11yproject.com/posts/how-to-hide-content
 
 .sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
-  margin: -1px;
   padding: 0;
+  margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
 
 // Use in conjunction with .sr-only to only display content when it's focused.
-// Useful for "Skip to main content" links; see http://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G1
+// Useful for "Skip to main content" links; see https://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G1
 // Credit: HTML5 Boilerplate
 
 .sr-only-focusable {
@@ -142,12 +149,13 @@ hr {
   }
 }
 
+
 // iOS "clickable elements" fix for role="button"
 //
 // Fixes "clickability" issue (and more generally, the firing of events such as focus as well)
 // for traditionally non-focusable elements with role="button"
 // see https://developer.mozilla.org/en-US/docs/Web/Events/click#Safari_Mobile
 
-[role='button'] {
+[role="button"] {
   cursor: pointer;
 }

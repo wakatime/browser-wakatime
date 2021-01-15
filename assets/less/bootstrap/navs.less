@@ -1,13 +1,16 @@
+// stylelint-disable selector-no-qualifying-type, selector-max-type
+
 //
 // Navs
 // --------------------------------------------------
+
 
 // Base class
 // --------------------------------------------------
 
 .nav {
-  margin-bottom: 0;
   padding-left: 0; // Override default ul/ol
+  margin-bottom: 0;
   list-style: none;
   &:extend(.clearfix all);
 
@@ -34,8 +37,8 @@
       &:focus {
         color: @nav-disabled-link-hover-color;
         text-decoration: none;
-        background-color: transparent;
         cursor: @cursor-disabled;
+        background-color: transparent;
       }
     }
   }
@@ -67,6 +70,7 @@
   }
 }
 
+
 // Tabs
 // -------------------------
 
@@ -85,8 +89,7 @@
       border: 1px solid transparent;
       border-radius: @border-radius-base @border-radius-base 0 0;
       &:hover {
-        border-color: @nav-tabs-link-hover-border-color @nav-tabs-link-hover-border-color
-          @nav-tabs-border-color;
+        border-color: @nav-tabs-link-hover-border-color @nav-tabs-link-hover-border-color @nav-tabs-border-color;
       }
     }
 
@@ -96,10 +99,10 @@
       &:hover,
       &:focus {
         color: @nav-tabs-active-link-hover-color;
+        cursor: default;
         background-color: @nav-tabs-active-link-hover-bg;
         border: 1px solid @nav-tabs-active-link-hover-border-color;
         border-bottom-color: transparent;
-        cursor: default;
       }
     }
   }
@@ -109,6 +112,7 @@
     .nav-tabs-justified();
   }
 }
+
 
 // Pills
 // -------------------------
@@ -136,6 +140,7 @@
   }
 }
 
+
 // Stacked pills
 .nav-stacked {
   > li {
@@ -146,6 +151,7 @@
     }
   }
 }
+
 
 // Nav variations
 // --------------------------------------------------
@@ -159,8 +165,8 @@
   > li {
     float: none;
     > a {
-      text-align: center;
       margin-bottom: 5px;
+      text-align: center;
     }
   }
 
@@ -211,6 +217,7 @@
   }
 }
 
+
 // Tabbable tabs
 // -------------------------
 
@@ -223,6 +230,7 @@
     display: block;
   }
 }
+
 
 // Dropdowns
 // -------------------------
