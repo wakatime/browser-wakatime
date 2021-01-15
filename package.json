@@ -39,6 +39,7 @@
     "verbose": true
   },
   "dependencies": {
+    "@types/firefox-webext-browser": "^82.0.0",
     "bootstrap": "3.4.1",
     "classnames": "^2.2.5",
     "create-react-class": "^15.6.3",
@@ -63,6 +64,7 @@
     "babel-jest": "^22.1.0",
     "bower": "^1.7.9",
     "chai": "^4.1.2",
+    "css-loader": "^5.0.1",
     "del": "^3.0.0",
     "eslint": "^7.17.0",
     "eslint-config-kentcdodds": "^17.3.0",
@@ -73,6 +75,7 @@
     "eslint-plugin-sort-keys-fix": "^1.1.1",
     "eslint-plugin-typescript-sort-keys": "^1.5.0",
     "gulp": "^3.9.1",
+    "html-webpack-plugin": "^5.0.0-beta.5",
     "husky": "^4.3.7",
     "jest": "^26.6.3",
     "jest-cli": "^22.1.4",
@@ -94,6 +97,7 @@
     "sinon": "^4.2.2",
     "sinon-chai": "^2.8.0",
     "sinon-chrome": "^2.2.4",
+    "style-loader": "^2.0.0",
     "traceur": "^0.0.111",
     "ts-loader": "^8.0.14",
     "ts-node": "^9.1.1",

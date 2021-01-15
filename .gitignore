@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+report.*.json
 
 # Runtime data
 pids
@@ -37,3 +38,4 @@ web-ext-artifacts/
 
 # Distribution folders
 dist
+css

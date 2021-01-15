@@ -14,11 +14,11 @@ module.exports = {
     'kentcdodds/jest',
     'kentcdodds/possible-errors',
     'plugin:@typescript-eslint/recommended',
-    'plugin:import/errors',
+    'plugin:import/warnings',
     'plugin:import/typescript',
-    'plugin:prettier/recommended',
-    'plugin:react/recommended',
     'plugin:typescript-sort-keys/recommended',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
   ],
   globals: {
     browser: true,
@@ -33,8 +33,13 @@ module.exports = {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
   },
-  plugins: ['react', '@typescript-eslint', 'typescript-sort-keys', 'sort-keys-fix'],
+  plugins: ['@typescript-eslint', 'typescript-sort-keys', 'react', 'sort-keys-fix'],
   rules: {
+    '@typescript-eslint/no-use-before-define': ['error'],
+    'import/extensions': 'off',
+    'no-use-before-define': 'off',
+    'no-var': 'error',
+    'prefer-const': 'error',
     'prettier/prettier': 'error',
     'sort-keys-fix/sort-keys-fix': 'error',
   },
