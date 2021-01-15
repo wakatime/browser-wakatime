@@ -54,11 +54,7 @@ elixir.extend('webextension', function () {
 
 elixir(function (mix) {
   mix.webextension();
-  mix.copy('node_modules/bootstrap/less', 'assets/less/bootstrap');
-  mix.copy('node_modules/bootstrap/fonts', 'public/fonts');
-  mix.copy('node_modules/font-awesome/less', 'assets/less/font-awesome');
   mix.copy('node_modules/font-awesome/fonts', 'public/fonts');
-  mix.less('app.less');
   mix.browserify('app.jsx', 'public/js/app.js', 'assets/js');
   mix.browserify('events.js', 'public/js/events.js', 'assets/js');
   mix.browserify('options.jsx', 'public/js/options.js', 'assets/js');
