@@ -1,22 +1,15 @@
+// stylelint-disable selector-list-comma-newline-after, selector-no-qualifying-type
+
 //
 // Typography
 // --------------------------------------------------
 
+
 // Headings
 // -------------------------
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: @headings-font-family;
   font-weight: @headings-font-weight;
   line-height: @headings-line-height;
@@ -24,18 +17,15 @@ h6,
 
   small,
   .small {
-    font-weight: normal;
+    font-weight: 400;
     line-height: 1;
     color: @headings-small-color;
   }
 }
 
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3 {
+h1, .h1,
+h2, .h2,
+h3, .h3 {
   margin-top: @line-height-computed;
   margin-bottom: (@line-height-computed / 2);
 
@@ -44,12 +34,9 @@ h3,
     font-size: 65%;
   }
 }
-h4,
-.h4,
-h5,
-.h5,
-h6,
-.h6 {
+h4, .h4,
+h5, .h5,
+h6, .h6 {
   margin-top: (@line-height-computed / 2);
   margin-bottom: (@line-height-computed / 2);
 
@@ -59,30 +46,13 @@ h6,
   }
 }
 
-h1,
-.h1 {
-  font-size: @font-size-h1;
-}
-h2,
-.h2 {
-  font-size: @font-size-h2;
-}
-h3,
-.h3 {
-  font-size: @font-size-h3;
-}
-h4,
-.h4 {
-  font-size: @font-size-h4;
-}
-h5,
-.h5 {
-  font-size: @font-size-h5;
-}
-h6,
-.h6 {
-  font-size: @font-size-h6;
-}
+h1, .h1 { font-size: @font-size-h1; }
+h2, .h2 { font-size: @font-size-h2; }
+h3, .h3 { font-size: @font-size-h3; }
+h4, .h4 { font-size: @font-size-h4; }
+h5, .h5 { font-size: @font-size-h5; }
+h6, .h6 { font-size: @font-size-h6; }
+
 
 // Body text
 // -------------------------
@@ -102,6 +72,7 @@ p {
   }
 }
 
+
 // Emphasis & misc
 // -------------------------
 
@@ -113,37 +84,21 @@ small,
 
 mark,
 .mark {
+  padding: .2em;
   background-color: @state-warning-bg;
-  padding: 0.2em;
 }
 
 // Alignment
-.text-left {
-  text-align: left;
-}
-.text-right {
-  text-align: right;
-}
-.text-center {
-  text-align: center;
-}
-.text-justify {
-  text-align: justify;
-}
-.text-nowrap {
-  white-space: nowrap;
-}
+.text-left           { text-align: left; }
+.text-right          { text-align: right; }
+.text-center         { text-align: center; }
+.text-justify        { text-align: justify; }
+.text-nowrap         { white-space: nowrap; }
 
 // Transformation
-.text-lowercase {
-  text-transform: lowercase;
-}
-.text-uppercase {
-  text-transform: uppercase;
-}
-.text-capitalize {
-  text-transform: capitalize;
-}
+.text-lowercase      { text-transform: lowercase; }
+.text-uppercase      { text-transform: uppercase; }
+.text-capitalize     { text-transform: capitalize; }
 
 // Contextual colors
 .text-muted {
@@ -187,6 +142,7 @@ mark,
   .bg-variant(@state-danger-bg);
 }
 
+
 // Page header
 // -------------------------
 
@@ -195,6 +151,7 @@ mark,
   margin: (@line-height-computed * 2) 0 @line-height-computed;
   border-bottom: 1px solid @page-header-border-color;
 }
+
 
 // Lists
 // -------------------------
@@ -225,8 +182,8 @@ ol {
 
   > li {
     display: inline-block;
-    padding-left: 5px;
     padding-right: 5px;
+    padding-left: 5px;
   }
 }
 
@@ -240,7 +197,7 @@ dd {
   line-height: @line-height-base;
 }
 dt {
-  font-weight: bold;
+  font-weight: 700;
 }
 dd {
   margin-left: 0; // Undo browser default
@@ -270,16 +227,17 @@ dd {
   }
 }
 
+
 // Misc
 // -------------------------
 
 // Abbreviations and acronyms
-abbr[title],
 // Add data-* attribute to help out our tooltip plugin, per https://github.com/twbs/bootstrap/issues/5257
+abbr[title],
 abbr[data-original-title] {
   cursor: help;
-  border-bottom: 1px dotted @abbr-border-color;
 }
+
 .initialism {
   font-size: 90%;
   .text-uppercase();
@@ -311,7 +269,7 @@ blockquote {
     color: @blockquote-small-color;
 
     &:before {
-      content: '\2014 \00A0'; // em dash, nbsp
+      content: "\2014 \00A0"; // em dash, nbsp
     }
   }
 }
@@ -323,19 +281,17 @@ blockquote {
 blockquote.pull-right {
   padding-right: 15px;
   padding-left: 0;
+  text-align: right;
   border-right: 5px solid @blockquote-border-color;
   border-left: 0;
-  text-align: right;
 
   // Account for citation
   footer,
   small,
   .small {
-    &:before {
-      content: '';
-    }
+    &:before { content: ""; }
     &:after {
-      content: '\00A0 \2014'; // nbsp, em dash
+      content: "\00A0 \2014"; // nbsp, em dash
     }
   }
 }
