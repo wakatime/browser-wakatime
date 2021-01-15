@@ -1,23 +1,4 @@
 {
-  "manifest_version": 2,
-  "name": "WakaTime",
-  "version": "2.0.1",
-  "description": "Automatic time tracking for Chrome.",
-  "homepage_url": "https://wakatime.com",
-  "devtools_page": "devtools.html",
-  "icons": {
-    "16": "graphics/wakatime-logo-16.png",
-    "48": "graphics/wakatime-logo-48.png",
-    "128": "graphics/wakatime-logo-128.png"
-  },
-  "permissions": [
-    "https://api.wakatime.com/*",
-    "https://wakatime.com/*",
-    "alarms",
-    "tabs",
-    "storage",
-    "idle"
-  ],
   "background": {
     "scripts": ["public/js/browser-polyfill.min.js", "public/js/events.js"],
     "persistent": false
@@ -30,14 +11,33 @@
     "default_title": "WakaTime",
     "default_popup": "popup.html"
   },
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": false
-  },
   "browser_specific_settings": {
     "gecko": {
       "id": "addon@wakatime.com",
       "strict_min_version": "48.0"
     }
-  }
+  },
+  "description": "Automatic time tracking for Chrome.",
+  "devtools_page": "devtools.html",
+  "homepage_url": "https://wakatime.com",
+  "icons": {
+    "16": "graphics/wakatime-logo-16.png",
+    "48": "graphics/wakatime-logo-48.png",
+    "128": "graphics/wakatime-logo-128.png"
+  },
+  "manifest_version": 2,
+  "name": "WakaTime",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": false
+  },
+  "permissions": [
+    "https://api.wakatime.com/*",
+    "https://wakatime.com/*",
+    "alarms",
+    "tabs",
+    "storage",
+    "idle"
+  ],
+  "version": "2.0.1"
 }
