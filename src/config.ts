@@ -12,7 +12,7 @@ type LoggingStyle = 'whitelist' | 'blacklist';
  * Logging type
  */
 type LoggingType = 'domain' | 'url';
-type SuccessOrFailType = 'success' | 'danger';
+export type SuccessOrFailType = 'success' | 'danger';
 /**
  * Predefined alert type and text for success and failure.
  */
