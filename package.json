@@ -24,18 +24,6 @@
       "prettier --write"
     ]
   },
-  "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testDirectoryName": "tests",
-    "testFileExtensions": [
-      "jest.js"
-    ],
-    "testURL": "http://localhost/",
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react"
-    ],
-    "verbose": true
-  },
   "dependencies": {
     "bootstrap": "3.4.1",
     "classnames": "^2.2.5",
