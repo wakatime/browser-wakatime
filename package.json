@@ -46,7 +46,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-transition-group": "^1.0.0",
-    "webextension-polyfill": "^0.4.0"
+    "webextension-polyfill": "^0.4.0",
+    "webextension-polyfill-ts": "^0.22.0"
   },
   "devDependencies": {
     "@types/chrome": "0.0.128",
