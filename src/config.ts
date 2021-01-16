@@ -113,11 +113,13 @@ const config: Config = {
     notSignedIn: 'red',
   },
 
-  currentUserApiUrl: 'https://wakatime.com/api/v1/users/current',
+  currentUserApiUrl:
+    process.env.CURRENT_USER_API_URL ?? 'https://wakatime.com/api/v1/users/current',
 
   detectionIntervalInSeconds: 60,
 
-  heartbeatApiUrl: 'https://wakatime.com/api/v1/users/current/heartbeats',
+  heartbeatApiUrl:
+    process.env.HEART_BEAT_API_URL ?? 'https://wakatime.com/api/v1/users/current/heartbeats',
 
   loggingEnabled: true,
 
@@ -125,13 +127,14 @@ const config: Config = {
 
   loggingType: 'domain',
 
-  logoutUserUrl: 'https://wakatime.com/logout',
+  logoutUserUrl: process.env.LOGOUT_USER_URL ?? 'https://wakatime.com/logout',
 
   name: 'WakaTime',
 
   states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
 
-  summariesApiUrl: 'https://wakatime.com/api/v1/users/current/summaries',
+  summariesApiUrl:
+    process.env.SUMMARIES_API_URL ?? 'https://wakatime.com/api/v1/users/current/summaries',
 
   theme: 'light',
 
