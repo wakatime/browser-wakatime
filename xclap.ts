@@ -41,6 +41,7 @@ load({
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
   'test-jest-update': exec('jest -u'),
   'test-js': 'phantomjs tests/run.js',
+  'watch-jest': exec('jest --watch'),
   webpack: [exec('webpack --mode production')],
   'webpack:dev': [exec('webpack --mode development')],
 });
