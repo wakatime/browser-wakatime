@@ -60,7 +60,6 @@
     "@typescript-eslint/parser": "^4.13.0",
     "@xarc/run": "^1.0.4",
     "babel-jest": "^22.1.0",
-    "bower": "^1.7.9",
     "browserify": "^17.0.0",
     "chai": "^4.1.2",
     "del": "^3.0.0",
