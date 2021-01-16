@@ -15,5 +15,5 @@
     "baseUrl": "./",
     "paths": {}
   },
-  "exclude": ["**/lib/", "**/*.test.ts"]
+  "exclude": []
 }
