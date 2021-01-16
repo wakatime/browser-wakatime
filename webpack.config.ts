@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as webpack from 'webpack';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
 export default (): webpack.Configuration[] => {
   const cfgs: webpack.Configuration[] = [];
@@ -19,7 +20,7 @@ export default (): webpack.Configuration[] => {
       filename: '[name].js',
       path: path.join(__dirname, 'dist', 'chrome'),
     },
-    plugins: [],
+    plugins: [new CleanWebpackPlugin()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
