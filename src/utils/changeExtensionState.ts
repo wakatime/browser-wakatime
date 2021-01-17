@@ -1,4 +1,4 @@
-import config, { ApiStates } from '../config';
+import config, { ApiStates } from '../config/config';
 
 import changeExtensionIcon from './changeExtensionIcon';
 import changeExtensionTooltip from './changeExtensionTooltip';

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { User, UserPayload } from '../types/user';
-import config from '../config';
+import config from '../config/config';
 
 type NameType = 'currentUser';
 export const name: NameType = 'currentUser';
