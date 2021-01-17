@@ -13,7 +13,7 @@ class BrowserMock {
     },
   };
 }
-
-export const browser = new BrowserMock();
-
-export default { browser };
+//TODO: Improve mocking
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+window.browser = new BrowserMock();

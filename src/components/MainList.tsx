@@ -1,5 +1,4 @@
 import React from 'react';
-import { browser } from 'webextension-polyfill-ts';
 
 export interface MainListProps {
   disableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
