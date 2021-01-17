@@ -12,7 +12,7 @@ const fontFolder = join(publicFolder, 'fonts');
 const graphicsFolder = join(__dirname, 'graphics');
 const srcFolder = join(__dirname, 'src');
 const htmlFolder = join(srcFolder, 'html');
-const manifestFile = join(__dirname, 'manifest.json');
+const manifestFolder = join(srcFolder, 'manifests');
 
 const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Configuration => {
   const cfg: webpack.Configuration = {
@@ -43,7 +43,7 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
           { from: graphicsFolder, to: 'graphics' },
           { from: htmlFolder },
           // TODO: Create a mechanism to have a firefox manifest vs chrome
-          { from: manifestFile },
+          { from: join(manifestFolder, `${browser}.json`), to: 'manifest.json' },
         ],
       }),
     ],
