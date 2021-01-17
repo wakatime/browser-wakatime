@@ -1,7 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 import config from '../config';
 
-type ColorIconTypes = 'gray' | 'red' | 'white';
+type ColorIconTypes = 'gray' | 'red' | 'white' | '';
 
 /**
  * It changes the extension icon color.
