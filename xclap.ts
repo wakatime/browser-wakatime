@@ -44,4 +44,5 @@ load({
   'watch-jest': exec('jest --watch'),
   webpack: [exec('webpack --mode production')],
   'webpack:dev': [exec('webpack --mode development')],
+  'webpack:watch': exec('webpack --mode development --watch'),
 });
