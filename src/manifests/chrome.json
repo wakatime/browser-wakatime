@@ -1,7 +1,7 @@
 {
   "background": {
     "persistent": false,
-    "scripts": ["background.js"]
+    "scripts": ["public/js/browser-polyfill.min.js", "background.js"]
   },
   "browser_action": {
     "default_icon": {
@@ -11,7 +11,6 @@
     "default_popup": "popup.html",
     "default_title": "WakaTime"
   },
-  "browser_specific_settings": {},
   "description": "Automatic time tracking for Chrome.",
   "devtools_page": "devtools.html",
   "homepage_url": "https://wakatime.com",
