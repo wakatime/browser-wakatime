@@ -32,8 +32,8 @@
     "font-awesome": "4.6.3",
     "jquery": "^3.0.0",
     "moment": "^2.13.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-transition-group": "^1.0.0",
     "webextension-polyfill-ts": "^0.22.0"
   },
