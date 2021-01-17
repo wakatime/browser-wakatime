@@ -13,6 +13,8 @@ module.exports = {
     'kentcdodds/import',
     'kentcdodds/jest',
     'kentcdodds/possible-errors',
+    'plugin:jest-dom/recommended',
+    'plugin:testing-library/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
     'plugin:import/typescript',

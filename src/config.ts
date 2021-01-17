@@ -3,16 +3,16 @@ import { browser } from 'webextension-polyfill-ts';
 /**
  * Logging
  */
-type ApiStates = 'allGood' | 'notLogging' | 'notSignedIn' | 'blacklisted' | 'whitelisted';
+export type ApiStates = 'allGood' | 'notLogging' | 'notSignedIn' | 'blacklisted' | 'whitelisted';
 /**
  * Supported logging style
  */
-type LoggingStyle = 'whitelist' | 'blacklist';
+export type LoggingStyle = 'whitelist' | 'blacklist';
 /**
  * Logging type
  */
-type LoggingType = 'domain' | 'url';
-type SuccessOrFailType = 'success' | 'danger';
+export type LoggingType = 'domain' | 'url';
+export type SuccessOrFailType = 'success' | 'danger';
 /**
  * Predefined alert type and text for success and failure.
  */
@@ -31,10 +31,10 @@ interface SuccessOrFailAlert {
  *  Different colors for different states of the extension
  */
 interface Colors {
-  allGood: string;
-  lightTheme: string;
-  notLogging: string;
-  notSignedIn: string;
+  allGood: '';
+  lightTheme: 'white';
+  notLogging: 'gray';
+  notSignedIn: 'red';
 }
 /**
  * Tooltip messages

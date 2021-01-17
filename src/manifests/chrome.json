@@ -1,0 +1,38 @@
+{
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "graphics/wakatime-logo-19.png",
+      "38": "graphics/wakatime-logo-38.png"
+    },
+    "default_popup": "popup.html",
+    "default_title": "WakaTime"
+  },
+  "browser_specific_settings": {},
+  "description": "Automatic time tracking for Chrome.",
+  "devtools_page": "devtools.html",
+  "homepage_url": "https://wakatime.com",
+  "icons": {
+    "16": "graphics/wakatime-logo-16.png",
+    "48": "graphics/wakatime-logo-48.png",
+    "128": "graphics/wakatime-logo-128.png"
+  },
+  "manifest_version": 2,
+  "name": "WakaTime",
+  "options_ui": {
+    "chrome_style": false,
+    "page": "options.html"
+  },
+  "permissions": [
+    "https://api.wakatime.com/*",
+    "https://wakatime.com/*",
+    "alarms",
+    "tabs",
+    "storage",
+    "idle"
+  ],
+  "version": "2.0.1"
+}
