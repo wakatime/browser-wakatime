@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import store from './stores/store';
+import createStore from './stores/createStore';
+import checkCurrentUser from './utils/checkCurrentUser';
 const container = document.getElementById('wakatime');
+
+const store = createStore('WakaTime-Options');
+checkCurrentUser(store)(30 * 1000);
 
 const openOptions = async (): Promise<void> => {
   await browser.runtime.openOptionsPage();

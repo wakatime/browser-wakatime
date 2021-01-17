@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
-import { User } from '../types/user';
+import { User, UserPayload } from '../types/user';
 import config from '../config';
 
 type NameType = 'currentUser';
 export const name: NameType = 'currentUser';
 
 export const fetchCurrentUser = createAsyncThunk<User, undefined>(`[${name}]`, async () => {
-  const userPayload: AxiosResponse<User> = await axios.get(config.currentUserApiUrl);
-  return userPayload.data;
+  const userPayload: AxiosResponse<UserPayload> = await axios.get(config.currentUserApiUrl);
+  return userPayload.data.data;
 });
 
 export interface CurrentUser {
@@ -24,6 +24,7 @@ const currentUser = createSlice({
       state.user = payload;
     });
     builder.addCase(fetchCurrentUser.rejected, (state, { error }) => {
+      state.user = undefined;
       state.error = error;
     });
   },

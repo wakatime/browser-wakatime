@@ -19,14 +19,14 @@ const browserPolyfill = join(
 );
 const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Configuration => {
   const cfg: webpack.Configuration = {
-    devtool: isProd ? 'none' : 'inline-source-map',
+    devtool: 'inline-source-map',
     entry: {
       background: [join(srcFolder, 'background.ts')],
       devtools: [join(srcFolder, 'devtools.ts')],
       options: [join(srcFolder, 'options.tsx')],
       popup: [join(srcFolder, 'popup.tsx')],
     },
-    mode: isProd ? 'production' : 'development',
+    // mode: isProd ? 'production' : 'development',
     module: {
       rules: [
         {
@@ -75,7 +75,10 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
   };
   return cfg;
 };
-export default (env: Record<string, string>): webpack.Configuration[] => {
-  const isProd = env.mode === 'production';
+export default (
+  env: Record<string, string>,
+  arv: Record<string, string>,
+): webpack.Configuration[] => {
+  const isProd = arv.mode !== 'development';
   return [getConfigByBrowser(isProd, 'chrome'), getConfigByBrowser(isProd, 'firefox')];
 };
