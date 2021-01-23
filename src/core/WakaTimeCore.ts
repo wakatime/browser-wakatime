@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import moment from 'moment';
 import { Tabs } from 'webextension-polyfill-ts';
 import { User } from '../types/user';
-import config from '../config';
+import config from '../config/config';
 import { SummariesPayload, GrandTotal } from '../types/summaries';
 
 class WakaTimeCore {

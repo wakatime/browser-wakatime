@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
-import config from '../config';
+import config from '../config/config';
 
 type ColorIconTypes = 'gray' | 'red' | 'white' | '';
 

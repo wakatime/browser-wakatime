@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { SuccessOrFailType } from '../config';
+import { SuccessOrFailType } from '../config/config';
 interface AlertProps {
   text: string;
   type: SuccessOrFailType;
