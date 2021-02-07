@@ -4,8 +4,14 @@
 import * as fs from 'fs';
 import { join } from 'path';
 import * as shelljs from 'shelljs';
+import waitOn from 'wait-on';
 const { load, exec, serial, concurrent } = require('@xarc/run');
 
+const waitForFilesTask = (...files: string[]) => (): Promise<unknown> => {
+  return waitOn({
+    resources: [...files],
+  });
+};
 const makePublicFolder = () => {
   if (!fs.existsSync('public/js')) {
     if (!fs.existsSync('public')) {
@@ -43,13 +49,25 @@ load({
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
   'test-jest-update': exec('jest -u'),
   'test-js': 'phantomjs tests/run.js',
+  'wait:legacy-files': waitForFilesTask(
+    'manifest.json',
+    'public/js/browser-polyfill.min.js',
+    'public/js/events.js',
+    'options.html',
+  ),
   watch: concurrent('watch-jest', 'webpack:watch', 'remotedev-server'),
   'watch-jest': exec('jest --watch'),
   'web-ext:run:chrome': concurrent('web-ext:run:chrome-next', 'web-ext:run:chrome-legacy'),
-  'web-ext:run:chrome-legacy': exec('web-ext run -t chromium --source-dir .'),
+  'web-ext:run:chrome-legacy': [
+    'wait:legacy-files',
+    exec('web-ext run -t chromium --source-dir .'),
+  ],
   'web-ext:run:chrome-next': exec('web-ext run -t chromium --source-dir dist/chrome'),
   'web-ext:run:firefox': concurrent('web-ext:run:firefox-next', 'web-ext:run:firefox-legacy'),
-  'web-ext:run:firefox-legacy': exec('web-ext run -t firefox-desktop --source-dir .'),
+  'web-ext:run:firefox-legacy': [
+    'wait:legacy-files',
+    exec('web-ext run -t firefox-desktop --source-dir .'),
+  ],
   'web-ext:run:firefox-next': exec('web-ext run -t firefox-desktop --source-dir dist/firefox'),
   webpack: ['clean:webpack', exec('webpack --mode production')],
   'webpack:dev': ['clean:webpack', exec('webpack --mode development')],
