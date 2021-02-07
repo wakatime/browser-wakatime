@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { join } from 'path';
 import * as webpack from 'webpack';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 
 type BrowserTypes = 'chrome' | 'firefox';
@@ -40,7 +39,6 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       path: join(__dirname, 'dist', browser),
     },
     plugins: [
-      new CleanWebpackPlugin(),
       new CopyPlugin({
         patterns: [
           { from: cssFolder, to: 'public/css' },

@@ -1,3 +1,4 @@
+import { EHOSTUNREACH } from 'constants';
 import { configureStore, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import { reduxBatch } from '@manaflair/redux-batch';
@@ -18,12 +19,10 @@ const preloadedState: RootState = {
 
 export type RootStore = Store<RootState>;
 export default (appName: string): RootStore => {
-  const enhancers = [reduxBatch];
+  const enhancers = [];
+  enhancers.push(reduxBatch);
   if (!isProd()) {
     enhancers.push(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       devToolsEnhancer({ hostname: 'localhost', name: appName, port: 8000, realtime: true }),
     );
   }
