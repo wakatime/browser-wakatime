@@ -63,13 +63,25 @@ const copyFromNodeModules = () => {
   );
 };
 load({
-  build: [serial('postinstall', exec('gulp')), 'webpack'],
-  clean: [exec('rimraf public coverage vendor'), 'clean:webpack'],
+  build: [
+    serial('postinstall', exec('gulp')),
+    'webpack',
+    concurrent(
+      exec('web-ext build'),
+      exec(`web-ext build -a dist/firefox/web-ext-artifacts --source-dir ${ffNextBuildFolder}`),
+    ),
+  ],
+  clean: [exec('rimraf public coverage vendor web-ext-artifacts'), 'clean:webpack'],
   'clean:webpack': exec('rimraf dist'),
   dev: [
     'clean',
     'postinstall',
     concurrent('webpack:watch', 'web-ext:run:firefox-next', 'web-ext:run:chrome-next'),
+  ],
+  'dev:legacy': [
+    'clean',
+    'postinstall',
+    concurrent(exec('gulp watch'), 'web-ext:run:firefox-legacy', 'web-ext:run:chrome-legacy'),
   ],
   eslint: exec('eslint src . --fix'),
   less: exec('lessc assets/less/app.less public/css/app.css'),
