@@ -9,9 +9,36 @@ const { load, exec, serial, concurrent } = require('@xarc/run');
 
 const waitForFilesTask = (...files: string[]) => (): Promise<unknown> => {
   return waitOn({
+    delay: 2000,
+    interval: 3000,
     resources: [...files],
+    verbose: true,
   });
 };
+const nextBuildFolder = join(__dirname, 'dist');
+const ffNextBuildFolder = join(nextBuildFolder, 'firefox');
+const chromeNextBuildFolder = join(nextBuildFolder, 'chrome');
+const filesNeededForNextBuild = [
+  'manifest.json',
+  'background.js',
+  'options.js',
+  'options.html',
+  'popup.js',
+  'popup.html',
+  'public/js/browser-polyfill.min.js',
+  'public/css/app.css',
+  'graphics/wakatime-logo-16.png',
+];
+const chromeNextBuildFileWaitTask = waitForFilesTask(
+  nextBuildFolder,
+  chromeNextBuildFolder,
+  ...filesNeededForNextBuild.map((f) => join(chromeNextBuildFolder, f)),
+);
+const ffNextBuildFileWaitTask = waitForFilesTask(
+  nextBuildFolder,
+  ffNextBuildFolder,
+  ...filesNeededForNextBuild.map((f) => join(ffNextBuildFolder, f)),
+);
 const makePublicFolder = () => {
   if (!fs.existsSync('public/js')) {
     if (!fs.existsSync('public')) {
@@ -39,6 +66,11 @@ load({
   build: [serial('postinstall', exec('gulp')), 'webpack'],
   clean: [exec('rimraf public coverage vendor'), 'clean:webpack'],
   'clean:webpack': exec('rimraf dist'),
+  dev: [
+    'clean',
+    'postinstall',
+    concurrent('webpack:watch', 'web-ext:run:firefox-next', 'web-ext:run:chrome-next'),
+  ],
   eslint: exec('eslint src . --fix'),
   less: exec('lessc assets/less/app.less public/css/app.css'),
   lint: ['prettier', 'eslint'],
@@ -62,13 +94,19 @@ load({
     'wait:legacy-files',
     exec('web-ext run -t chromium --source-dir .'),
   ],
-  'web-ext:run:chrome-next': exec('web-ext run -t chromium --source-dir dist/chrome'),
+  'web-ext:run:chrome-next': [
+    chromeNextBuildFileWaitTask,
+    exec('web-ext run -t chromium --source-dir dist/chrome'),
+  ],
   'web-ext:run:firefox': concurrent('web-ext:run:firefox-next', 'web-ext:run:firefox-legacy'),
   'web-ext:run:firefox-legacy': [
     'wait:legacy-files',
     exec('web-ext run -t firefox-desktop --source-dir .'),
   ],
-  'web-ext:run:firefox-next': exec('web-ext run -t firefox-desktop --source-dir dist/firefox'),
+  'web-ext:run:firefox-next': [
+    ffNextBuildFileWaitTask,
+    exec('web-ext run -t firefox-desktop --source-dir dist/firefox'),
+  ],
   webpack: ['clean:webpack', exec('webpack --mode production')],
   'webpack:dev': ['clean:webpack', exec('webpack --mode development')],
   'webpack:watch': ['clean:webpack', exec('webpack --mode development --watch')],

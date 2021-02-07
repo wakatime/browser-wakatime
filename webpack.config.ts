@@ -40,7 +40,6 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       path: join(__dirname, 'dist', browser),
     },
     plugins: [
-      new CleanWebpackPlugin(),
       new CopyPlugin({
         patterns: [
           { from: cssFolder, to: 'public/css' },

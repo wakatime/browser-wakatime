@@ -2,6 +2,7 @@
   "name": "chrome-wakatime",
   "private": true,
   "scripts": {
+    "dev": "clap dev",
     "postinstall": "clap postinstall",
     "lint": "clap lint",
     "start": "clap build",
@@ -16,13 +17,13 @@
     }
   },
   "lint-staged": {
+    "*.json": [
+      "prettier --write"
+    ],
     "*.{js|jsx|ts|tsx}": [
       "eslint",
       "prettier --write",
       "git add"
-    ],
-    "*.json": [
-      "prettier --write"
     ]
   },
   "dependencies": {
