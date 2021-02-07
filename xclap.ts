@@ -76,7 +76,7 @@ load({
   dev: [
     'clean',
     'postinstall',
-    concurrent('webpack:watch', 'web-ext:run:firefox-next', 'web-ext:run:chrome-next'),
+    concurrent('watch', 'web-ext:run:firefox-next', 'web-ext:run:chrome-next'),
   ],
   'dev:legacy': [
     'clean',
