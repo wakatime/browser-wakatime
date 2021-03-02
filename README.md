@@ -64,7 +64,7 @@ jsxhint --jsx-only .
 
 There is a precommit hook that lints the code before commiting the changes.
 
-### Load unpacked in Chrome
+### Load unpacked in Chrome (current in chrome store)
 
 1. Clone repository to disk
 2. Remove `browser_specific_settings` key from manifest.json (only necessary for firefox)
@@ -73,8 +73,12 @@ There is a precommit hook that lints the code before commiting the changes.
 5. Click `Load unpacked extension...`
 6. Select repository directory
 
+![load reportistory directory](./screenshots/load-repo-folder.png)
+
 ### Troubleshooting
 
 Check for errors by inspecting the extension.
 
 ![inspecting extension](./screenshots/wakatime-chrome-debug.gif)
+
+The extension is going through a refactor, the new build [instructions are here](./DEVELOPMENT.md)
