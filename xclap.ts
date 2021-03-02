@@ -45,7 +45,6 @@ load({
     'clean',
     'webpack',
     concurrent(
-      exec('web-ext build'),
       exec(`web-ext build -a dist/firefox/web-ext-artifacts --source-dir ${ffNextBuildFolder}`),
     ),
   ],
