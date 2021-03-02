@@ -1,3 +1,9 @@
+# This repository is currently migrating the build process
+
+We are currently migrating from using [gulp](https://gulpjs.com/) -> [webpack](https://www.google.com/search?q=webpack&oq=webpack&aqs=chrome.0.69i59l3j69i60l3j69i61l2.1368j0j4&sourceid=chrome&ie=UTF-8) for asset bundling. The currently published build will be left in place until this is complete
+
+![build locations](./screenshots/repo-build.png)
+
 ## Pre-requisites
 
 - node v11.15.0
@@ -12,3 +18,11 @@ This will allow you to run varios tasks
 
 In devmode you can open [local remote devtools](http://localhost:8000)
 ![remote redux devtools](./screenshots/remote-redux-devtools.png)
+
+## Development instructions
+
+```
+    nvm use
+    npm install
+    npm run dev
+```
