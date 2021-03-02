@@ -1,4 +1,3 @@
-import { EHOSTUNREACH } from 'constants';
 import { configureStore, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import { reduxBatch } from '@manaflair/redux-batch';
