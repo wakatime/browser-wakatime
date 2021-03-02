@@ -38,6 +38,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'typescript-sort-keys', 'sort-keys-fix'],
   rules: {
     'prettier/prettier': 'error',
+    'react/react-in-jsx-scope': 'off', // No longer required in react 17
     'sort-keys-fix/sort-keys-fix': 'error',
   },
   settings: {

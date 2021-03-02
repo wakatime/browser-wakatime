@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface MainListProps {
   disableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   enableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;

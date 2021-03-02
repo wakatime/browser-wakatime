@@ -1,7 +1,20 @@
 // babel.config.js
 module.exports = {
+  plugins: [
+    [
+      '@babel/plugin-transform-react-jsx',
+      {
+        runtime: 'automatic',
+      },
+    ],
+  ],
   presets: [
-    '@babel/preset-react',
+    [
+      '@babel/preset-react',
+      {
+        runtime: 'automatic',
+      },
+    ],
     [
       '@babel/preset-env',
       {

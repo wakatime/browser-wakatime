@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { join } from 'path';
 import waitOn from 'wait-on';
-import remotedev from 'remotedev-server';
+
+const remotedev = require('remotedev-server');
 
 const { load, exec, concurrent } = require('@xarc/run');
 
@@ -41,6 +42,7 @@ const ffNextBuildFileWaitTask = waitForFilesTask(
 
 load({
   build: [
+    'clean',
     'webpack',
     concurrent(
       exec('web-ext build'),
