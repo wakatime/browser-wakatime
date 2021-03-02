@@ -2,12 +2,10 @@
 import { join } from 'path';
 import * as webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 type BrowserTypes = 'chrome' | 'firefox';
 
-const publicFolder = join(__dirname, 'public');
-const cssFolder = join(publicFolder, 'css');
-const fontFolder = join(publicFolder, 'fonts');
 const graphicsFolder = join(__dirname, 'graphics');
 const srcFolder = join(__dirname, 'src');
 const htmlFolder = join(srcFolder, 'html');
@@ -29,6 +27,35 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
     module: {
       rules: [
         {
+          test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 10000,
+                outputPath: 'imgs',
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(eot|ttf|wav|mp3)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[name].[contenthash].[ext]',
+                outputPath: 'fonts',
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(less|css)$/,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
+        },
+        {
           test: /\.(js|jsx|ts|tsx)$/,
           use: 'babel-loader',
         },
@@ -39,17 +66,20 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       path: join(__dirname, 'dist', browser),
     },
     plugins: [
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+      }),
       new CopyPlugin({
         patterns: [
-          { from: cssFolder, to: 'public/css' },
-          { from: fontFolder, to: 'public/fonts' },
+          // { from: cssFolder, to: 'public/css' },
+          // { from: fontFolder, to: 'public/fonts' },
           { from: graphicsFolder, to: 'graphics' },
           { from: htmlFolder },
           // TODO: Create a mechanism to have a firefox manifest vs chrome
           { from: join(manifestFolder, `${browser}.json`), to: 'manifest.json' },
           {
             from: browserPolyfill,
-            to: 'public/js/browser-polyfill.min.js',
+            to: 'browser-polyfill.min.js',
           },
         ],
       }),
@@ -68,7 +98,7 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       }),
     ],
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.less', '.eot'],
     },
   };
   return cfg;

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './less/app.less';
 
 const container = document.getElementById('wakatime-options');
 

@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createStore from './stores/createStore';
 import checkCurrentUser from './utils/checkCurrentUser';
-const container = document.getElementById('wakatime');
+import './less/app.less';
 
+const container = document.getElementById('wakatime');
 const store = createStore('WakaTime-Options');
 checkCurrentUser(store)(30 * 1000);
 
