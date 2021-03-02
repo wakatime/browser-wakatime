@@ -64,7 +64,7 @@ const copyFromNodeModules = () => {
 };
 load({
   build: [
-    serial('postinstall', exec('gulp')),
+    serial('postinstall'),
     'webpack',
     concurrent(
       exec('web-ext build'),
@@ -77,11 +77,6 @@ load({
     'clean',
     'postinstall',
     concurrent('watch', 'web-ext:run:firefox-next', 'web-ext:run:chrome-next'),
-  ],
-  'dev:legacy': [
-    'clean',
-    'postinstall',
-    concurrent(exec('gulp watch'), 'web-ext:run:firefox-legacy', 'web-ext:run:chrome-legacy'),
   ],
   eslint: exec('eslint src . --fix'),
   less: exec('lessc assets/less/app.less public/css/app.css'),
