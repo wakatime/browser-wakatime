@@ -63,9 +63,7 @@ load({
       port: 8000,
     });
   },
-  'remotedev-server:docker': exec(
-    `docker run -p 8000:8000 --name remotedev jhen0409/remotedev-server`,
-  ),
+  'remotedev-server:docker': exec(`docker run -i -p 8000:8000 jhen0409/remotedev-server`),
   test: ['build', 'lint', 'test-jest'],
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
   'test-jest-update': exec('jest -u'),

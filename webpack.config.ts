@@ -16,14 +16,14 @@ const browserPolyfill = join(
 );
 const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Configuration => {
   const cfg: webpack.Configuration = {
-    devtool: 'inline-source-map',
+    devtool: isProd ? undefined : 'inline-source-map',
     entry: {
       background: [join(srcFolder, 'background.ts')],
       devtools: [join(srcFolder, 'devtools.ts')],
       options: [join(srcFolder, 'options.tsx')],
       popup: [join(srcFolder, 'popup.tsx')],
     },
-    // mode: isProd ? 'production' : 'development',
+    mode: isProd ? 'production' : 'development',
     module: {
       rules: [
         {
@@ -33,6 +33,7 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
               loader: 'url-loader',
               options: {
                 limit: 10000,
+                name: '[name].[ext]',
                 outputPath: 'imgs',
               },
             },
@@ -44,7 +45,7 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
             {
               loader: 'file-loader',
               options: {
-                name: '[name].[contenthash].[ext]',
+                name: '[name].[ext]',
                 outputPath: 'fonts',
               },
             },
