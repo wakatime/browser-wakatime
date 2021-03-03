@@ -2,22 +2,10 @@ import { configureStore, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import { reduxBatch } from '@manaflair/redux-batch';
 import devToolsEnhancer from 'remote-redux-devtools';
-import currentUserReducer, {
-  initialState as InitalCurrentUser,
-  CurrentUser,
-} from '../reducers/currentUser';
+import reducer, { preloadedState, PopupState } from '../reducers/popup';
 import isProd from '../utils/isProd';
 
-export interface RootState {
-  currentUser: CurrentUser;
-}
-
-const preloadedState: RootState = {
-  currentUser: InitalCurrentUser,
-};
-
-export type RootStore = Store<RootState>;
-export default (appName: string): RootStore => {
+export default (appName: string): Store<PopupState> => {
   const enhancers = [];
   enhancers.push(reduxBatch);
   if (!isProd()) {
@@ -30,9 +18,7 @@ export default (appName: string): RootStore => {
     enhancers,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     preloadedState,
-    reducer: {
-      currentUser: currentUserReducer,
-    },
+    reducer,
   });
 
   return store;

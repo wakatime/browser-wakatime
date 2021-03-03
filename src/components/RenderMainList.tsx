@@ -1,3 +1,7 @@
+import { useSelector } from 'react-redux';
+import React from 'react';
+import { PopupState } from '../reducers/popup';
+
 export interface MainListProps {
   disableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   enableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
@@ -10,7 +14,7 @@ const openOptionsPage = async (): Promise<void> => {
   await browser.runtime.openOptionsPage();
 };
 
-export default function MainList({
+export function RenderMainList({
   disableLogging,
   enableLogging,
   loggedIn,
@@ -79,6 +83,31 @@ export default function MainList({
           </a>
         )}
       </div>
+    </div>
+  );
+}
+
+export default function ConnectedMainList(): JSX.Element {
+  const loggedIn = useSelector((s: PopupState): boolean => !!s.currentUser.user);
+  const loggingEnabled = false;
+  const disableLogging = () => {
+    // TODO:
+  };
+  const enabledLogging = () => {
+    // TODO:
+  };
+  const logoutUser = () => {
+    // TODO:
+  };
+  return (
+    <div>
+      <RenderMainList
+        disableLogging={disableLogging}
+        enableLogging={enabledLogging}
+        loggedIn={loggedIn}
+        loggingEnabled={loggingEnabled}
+        logoutUser={logoutUser}
+      />
     </div>
   );
 }
