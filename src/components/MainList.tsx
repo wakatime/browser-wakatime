@@ -1,5 +1,7 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import React from 'react';
+import config from '../config/config';
+
 import { PopupState } from '../reducers/popup';
 
 export interface MainListProps {
@@ -88,6 +90,7 @@ export function RenderMainList({
 }
 
 export default function ConnectedMainList(): JSX.Element {
+  const dispatch = useDispatch();
   const loggedIn = useSelector((s: PopupState): boolean => !!s.currentUser.user);
   const loggingEnabled = false;
   const disableLogging = () => {
@@ -96,8 +99,8 @@ export default function ConnectedMainList(): JSX.Element {
   const enabledLogging = () => {
     // TODO:
   };
-  const logoutUser = () => {
-    // TODO:
+  const onLogoutUser = () => {
+    window.open(config.logoutUserUrl);
   };
   return (
     <div>
@@ -106,7 +109,7 @@ export default function ConnectedMainList(): JSX.Element {
         enableLogging={enabledLogging}
         loggedIn={loggedIn}
         loggingEnabled={loggingEnabled}
-        logoutUser={logoutUser}
+        logoutUser={onLogoutUser}
       />
     </div>
   );

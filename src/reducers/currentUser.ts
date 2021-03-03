@@ -6,7 +6,8 @@ import config from '../config/config';
 type NameType = 'currentUser';
 export const name: NameType = 'currentUser';
 
-export const fetchCurrentUser = createAsyncThunk<User, undefined>(`[${name}]`, async () => {
+const typePrefix = `[${name}`;
+export const fetchCurrentUser = createAsyncThunk<User, undefined>(typePrefix, async () => {
   const userPayload: AxiosResponse<UserPayload> = await axios.get(config.currentUserApiUrl);
   return userPayload.data.data;
 });
