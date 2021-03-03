@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import MainList from './RenderMainList';
+import { RenderMainList as MainList } from './MainList';
 
 type onClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 describe('MainList', () => {

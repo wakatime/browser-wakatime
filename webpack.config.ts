@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { join } from 'path';
 import * as webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';

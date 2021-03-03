@@ -1,8 +1,8 @@
-import { RootStore } from '../stores/createPopupStore';
+import { PopupStore } from '../stores/popupStore';
 import { fetchCurrentUser } from '../reducers/currentUser';
 
 type unsub = () => void;
-export default (store: RootStore) => (time: number): unsub => {
+export default (store: PopupStore) => (time: number): unsub => {
   const fetchUser = () => {
     store.dispatch(fetchCurrentUser());
   };
