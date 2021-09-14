@@ -1,8 +1,8 @@
 import config from './config';
 
 describe('wakatime config', () => {
-  it('snapshot of config', () => {
-    expect(config).toMatchInlineSnapshot(`
+    it('snapshot of config', () => {
+        expect(config).toMatchInlineSnapshot(`
       Object {
         "alert": Object {
           "failure": Object {
@@ -47,5 +47,5 @@ describe('wakatime config', () => {
         "version": "test-version",
       }
     `);
-  });
+    });
 });
