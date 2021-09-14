@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import {browser} from 'webextension-polyfill-ts';
 import config from '../config/config';
 
 /**
@@ -6,11 +6,11 @@ import config from '../config/config';
  *
  */
 export default async function changeExtensionTooltip(text: string): Promise<void> {
-  if (text === '') {
-    text = config.name;
-  } else {
-    text = `${config.name} - ${text}`;
-  }
+    if (text === '') {
+        text = config.name;
+    } else {
+        text = `${config.name} - ${text}`;
+    }
 
-  await browser.browserAction.setTitle({ title: text });
+    await browser.browserAction.setTitle({title: text});
 }

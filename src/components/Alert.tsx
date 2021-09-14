@@ -1,11 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
-import { SuccessOrFailType } from '../config/config';
+import {SuccessOrFailType} from '../config/config';
+
 interface AlertProps {
-  text: string;
-  type: SuccessOrFailType;
+    text: string;
+    type: SuccessOrFailType;
 }
 
-export default function Alert({ type, text }: AlertProps): JSX.Element {
-  return <div className={classNames('alert', `alert-${type}`)}>{text}</div>;
+export default function Alert({type, text}: AlertProps): JSX.Element {
+    return <div className={classNames('alert', `alert-${type}`)}>{text}</div>;
 }

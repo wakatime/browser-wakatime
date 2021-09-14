@@ -20,6 +20,10 @@ function changeExtensionState(state) {
       changeExtensionIcon(config.colors.allGood);
       changeExtensionTooltip(config.tooltips.allGood);
       break;
+case 'allGoodOverride':
+            changeExtensionIcon(config.colors.allGoodOverride);
+            changeExtensionTooltip(config.tooltips.allGoodOverride);
+            break;
     case 'notLogging':
       changeExtensionIcon(config.colors.notLogging);
       changeExtensionTooltip(config.tooltips.notLogging);

@@ -41,6 +41,27 @@ var NavBar = reactCreateClass({
       }
     };
 
+var project_name = function () {
+                
+            if(that.props.show_project_editor === false ){
+                    return (
+                        <p className="navbar-text" onClick={that.props.toggleEditor}> Project: <b>{that.props.projectName}</b></p>
+                    );
+                    }else{
+                        return (
+                            <p className="navbar-text" > Project: <input type = "text" defaultValue = {that.props.projectName} onBlur={that.props.toggleEditor} onChange={that.props.updateEditor} onKeyPress={that.props.handleKeyPress} ></input></p>
+                        );
+                    }
+        };
+
+        var ranking = function () {
+
+            if (config.rankingDisplayType == 'global' && that.props.global_rank) {
+                return ( <p className="navbar-text"> Global Ranking: <b>{that.props.global_rank} / 5000 </b></p> );
+            }
+
+        };
+
     return (
       <nav className="navbar navbar-default" role="navigation">
         <div className="container-fluid">
@@ -61,6 +82,8 @@ var NavBar = reactCreateClass({
           </div>
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             {signedInAs()}
+{project_name()}
+                        {ranking()}
             <ul className="nav navbar-nav">
               {customRules()}
               {dashboard()}

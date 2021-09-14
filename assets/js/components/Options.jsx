@@ -22,9 +22,12 @@ var Options = reactCreateClass({
       theme: config.theme,
       blacklist: '',
       whitelist: '',
+idelist: '',
+projectType: 'last',
       loggingType: config.loggingType,
       loggingStyle: config.loggingStyle,
       displayAlert: false,
+defaultProjectName: config.defaultProjectName,
       alertType: config.alert.success.type,
       alertText: config.alert.success.text,
     };
@@ -42,16 +45,22 @@ var Options = reactCreateClass({
         theme: config.theme,
         blacklist: '',
         whitelist: '',
+idelist: '',
+            projectType: 'last',
         loggingType: config.loggingType,
         loggingStyle: config.loggingStyle,
+defaultProjectName: config.defaultProjectName,
       })
       .then(function (items) {
         that.setState({
           theme: items.theme,
           blacklist: items.blacklist,
           whitelist: items.whitelist,
+idelist: items.idelist,
+                projectType: items.projectType,
           loggingType: items.loggingType,
           loggingStyle: items.loggingStyle,
+defaultProjectName: items.defaultProjectName,
         });
 
         that.refs.theme.value = items.theme;
@@ -82,8 +91,11 @@ var Options = reactCreateClass({
         theme: theme,
         blacklist: blacklist,
         whitelist: whitelist,
+idelist: items.idelist,
+                projectType: items.projectType,
         loggingType: loggingType,
         loggingStyle: loggingStyle,
+defaultProjectName: items.defaultProjectName,
       })
       .then(function () {
         // Set state to be newly entered values.
@@ -91,9 +103,12 @@ var Options = reactCreateClass({
           theme: theme,
           blacklist: blacklist,
           whitelist: whitelist,
+idelist: items.idelist,
+                projectType: items.projectType,
           loggingType: loggingType,
           loggingStyle: loggingStyle,
           displayAlert: true,
+defaultProjectName: items.defaultProjectName,
         });
       });
   },
@@ -115,6 +130,24 @@ var Options = reactCreateClass({
       whitelist: sites,
     });
   },
+
+_updateDefaultProjectState: function(event){
+        this.setState({
+            defaultProjectName: event.target.value
+        });
+    },
+
+_updateIdelistState: function(sites){
+            this.setState({
+                idelist: sites
+            });
+    },
+       
+    _updateTypeState: function(type){
+            this.setState({
+                projectType: type
+            });
+    },
 
   render: function () {
     var that = this;
@@ -158,6 +191,47 @@ var Options = reactCreateClass({
       );
     };
 
+ var ideList = function () {
+            
+            return (
+                <SitesList
+                    handleChange={that._updateIdelistState}
+                    label="Idelist"
+                    sites={that.state.idelist}
+                    helpText="Sites that you want to show in your reports as codeing." />
+            );
+        };
+        
+        var projectType = function () {
+            
+            return (
+                <div className="form-group">
+                <label className="col-lg-2 control-label">Project Selection</label>
+
+                <div className="col-lg-10">
+                    <select className="form-control" ref="projectType" defaultValue="last" onChange={that._updateTypeState}>
+                        <option value="last">The last project reported to Wakatime</option>
+                        <option value="unknown">Unknown/New project</option>
+                    </select>
+                </div>
+            </div>
+            );
+        };
+        
+        var defaultProjectName = function () {
+            
+            return (
+                <div className="form-group">
+                <label className="col-lg-2 control-label">Default Project Name</label>
+
+                <div className="col-lg-10">
+                    <input className="form-control" ref="defaultProjectName" defaultValue="Unknown Project" onChange={that._updateDefaultProjectState} />
+                </div>
+            </div>
+            );
+        };
+
+
     return (
       <div className="container">
         <div className="row">
@@ -187,7 +261,13 @@ var Options = reactCreateClass({
                 </div>
               </div>
 
-              {loggingStyle()}
+                          {(defaultProjectName())}
+
+                            {projectType()}
+
+                            {loggingStyle()}
+
+                            {ideList()}
 
               <div className="form-group">
                 <label className="col-lg-2 control-label">Logging type</label>

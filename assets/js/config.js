@@ -25,9 +25,20 @@ var config = {
   logoutUserUrl: 'https://wakatime.com/logout',
   // Gets stats from the WakaTime API
   summariesApiUrl: 'https://wakatime.com/api/v1/users/current/summaries',
+ // Default Project Type
+    projectType: 'last',
+     // Default Project Name if projectname == null
+    defaultProjectName: 'Unknown Project',
+  // Default ranking display type
+    rankingDisplayType: 'global',
+    // Projectname reported to wakatime
+    projectName: null,
+ // The url to rank the user from wakatime
+    rankingUrl: 'https://wakatime.com/api/v1/leaders',
   // Different colors for different states of the extension
   colors: {
     allGood: '',
+allGoodOverride: 'override',
     notLogging: 'gray',
     notSignedIn: 'red',
     lightTheme: 'white',
@@ -35,6 +46,7 @@ var config = {
   // Tooltips for each of the extension states
   tooltips: {
     allGood: '',
+allGoodOverride: 'Project name has been overridden',
     notLogging: 'Not logging',
     notSignedIn: 'Not signed In',
     blacklisted: 'This URL is blacklisted',
@@ -43,7 +55,7 @@ var config = {
   // Default theme
   theme: 'light',
   // Valid extension states
-  states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+  states: ['allGood', 'allGoodOverride','notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
   // Predefined alert type and text for success and failure.
   alert: {
     success: {
