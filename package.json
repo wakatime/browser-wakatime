@@ -107,7 +107,7 @@
     "remote-redux-devtools": "^0.5.16",
     "remotedev-server": "^0.3.1",
     "rimraf": "^3.0.2",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "sinon": "^4.2.2",
     "sinon-chai": "^2.8.0",
     "sinon-chrome": "^2.2.4",
