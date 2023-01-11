@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom/extend-expect';
+
 class BrowserMock {
   runtime = {
     getBackgroundPage() {

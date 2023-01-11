@@ -6,7 +6,7 @@ describe('Alert Component', () => {
   it('should render with proper text on success type', () => {
     const text = 'Test Text';
     const { container } = render(<Alert text={text} type="success" />);
-    expect(screen.getByText(text)).toBeTruthy();
+    expect(screen.getByText(text)).toBeInTheDocument();
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div
@@ -20,7 +20,7 @@ describe('Alert Component', () => {
   it('should render wtih proper text on danger type', () => {
     const text = 'Test Text';
     const { container } = render(<Alert text={text} type="danger" />);
-    expect(screen.getByText(text)).toBeTruthy();
+    expect(screen.getByText(text)).toBeInTheDocument();
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div

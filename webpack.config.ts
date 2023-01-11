@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { join } from 'path';
 import * as webpack from 'webpack';
+// eslint-disable-next-line
 import CopyPlugin from 'copy-webpack-plugin';
 
 type BrowserTypes = 'chrome' | 'firefox';

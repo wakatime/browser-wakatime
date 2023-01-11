@@ -1,8 +1,4 @@
-var del = require('del');
-var gulp = require('gulp');
 var elixir = require('laravel-elixir');
-var exec = require('child_process').exec;
-var fs = require('fs');
 
 /*
  |--------------------------------------------------------------------------
