@@ -91,10 +91,9 @@ load({
   postinstall: ['clean', makePublicFolder, copyFromNodeModules, 'less'],
   prettier: [exec('prettier --write .')],
   'remotedev-server': exec('remotedev --hostname=localhost --port=8000'),
-  test: ['build', 'lint', 'test-jest', 'test-js'],
+  test: ['build', 'lint', 'test-jest'],
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
   'test-jest-update': exec('jest -u'),
-  'test-js': 'phantomjs tests/run.js',
   'wait:legacy-files': waitForFilesTask(
     'manifest.json',
     'public/js/browser-polyfill.min.js',
