@@ -3,18 +3,18 @@ import config from './config';
 describe('wakatime config', () => {
   it('snapshot of config', () => {
     expect(config).toMatchInlineSnapshot(`
-      Object {
-        "alert": Object {
-          "failure": Object {
+      {
+        "alert": {
+          "failure": {
             "text": "There was an error while saving the options!",
             "type": "danger",
           },
-          "success": Object {
+          "success": {
             "text": "Options have been saved!",
             "type": "success",
           },
         },
-        "colors": Object {
+        "colors": {
           "allGood": "",
           "lightTheme": "white",
           "notLogging": "gray",
@@ -28,7 +28,7 @@ describe('wakatime config', () => {
         "loggingType": "domain",
         "logoutUserUrl": "https://wakatime.com/logout",
         "name": "WakaTime",
-        "states": Array [
+        "states": [
           "allGood",
           "notLogging",
           "notSignedIn",
@@ -37,7 +37,7 @@ describe('wakatime config', () => {
         ],
         "summariesApiUrl": "https://wakatime.com/api/v1/users/current/summaries",
         "theme": "light",
-        "tooltips": Object {
+        "tooltips": {
           "allGood": "",
           "blacklisted": "This URL is blacklisted",
           "notLogging": "Not logging",

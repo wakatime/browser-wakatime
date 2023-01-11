@@ -14,12 +14,12 @@ module.exports = {
     'kentcdodds/jest',
     'kentcdodds/possible-errors',
     'plugin:jest-dom/recommended',
-    'plugin:testing-library/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
     'plugin:import/typescript',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
     'plugin:typescript-sort-keys/recommended',
   ],
   globals: {
@@ -39,6 +39,7 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'sort-keys-fix/sort-keys-fix': 'error',
+    'testing-library/no-debug': 'off',
   },
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],

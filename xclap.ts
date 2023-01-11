@@ -7,14 +7,16 @@ import * as shelljs from 'shelljs';
 import waitOn from 'wait-on';
 const { load, exec, serial, concurrent } = require('@xarc/run');
 
-const waitForFilesTask = (...files: string[]) => (): Promise<unknown> => {
-  return waitOn({
-    delay: 2000,
-    interval: 3000,
-    resources: [...files],
-    verbose: true,
-  });
-};
+const waitForFilesTask =
+  (...files: string[]) =>
+  (): Promise<unknown> => {
+    return waitOn({
+      delay: 2000,
+      interval: 3000,
+      resources: [...files],
+      verbose: true,
+    });
+  };
 const nextBuildFolder = join(__dirname, 'dist');
 const ffNextBuildFolder = join(nextBuildFolder, 'firefox');
 const chromeNextBuildFolder = join(nextBuildFolder, 'chrome');
@@ -64,7 +66,7 @@ const copyFromNodeModules = () => {
 };
 load({
   build: [
-    serial('postinstall', exec('gulp')),
+    serial('postinstall'),
     'webpack',
     concurrent(
       exec('web-ext build'),
@@ -89,17 +91,16 @@ load({
   postinstall: ['clean', makePublicFolder, copyFromNodeModules, 'less'],
   prettier: [exec('prettier --write .')],
   'remotedev-server': exec('remotedev --hostname=localhost --port=8000'),
-  test: ['build', 'lint', 'test-jest', 'test-js'],
+  test: ['build', 'lint', 'test-jest'],
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
   'test-jest-update': exec('jest -u'),
-  'test-js': 'phantomjs tests/run.js',
   'wait:legacy-files': waitForFilesTask(
     'manifest.json',
     'public/js/browser-polyfill.min.js',
     'public/js/events.js',
     'options.html',
   ),
-  watch: concurrent('watch-jest', 'webpack:watch', 'remotedev-server'),
+  watch: concurrent('watch-jest', 'webpack:watch'),
   'watch-jest': exec('jest --watch'),
   'web-ext:run:chrome': concurrent('web-ext:run:chrome-next', 'web-ext:run:chrome-legacy'),
   'web-ext:run:chrome-legacy': [
