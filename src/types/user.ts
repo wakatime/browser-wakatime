@@ -4,6 +4,10 @@ export interface UserPayload {
   data: User;
 }
 
+export interface AxiosUserResponse {
+  data: User;
+}
+
 export interface User {
   bio: null;
   color_scheme: string;

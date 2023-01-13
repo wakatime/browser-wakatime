@@ -14,6 +14,7 @@ describe('wakatime config', () => {
             "type": "success",
           },
         },
+        "apiKey": "",
         "colors": {
           "allGood": "",
           "lightTheme": "white",

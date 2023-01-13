@@ -47,6 +47,10 @@ interface Tooltips {
 
 export interface Config {
   alert: Alert;
+  /**
+   * API key use to query wakatime  api
+   */
+  apiKey: '';
   colors: Colors;
   /**
    * Url from which to detect if the user is logged in
@@ -103,6 +107,8 @@ const config: Config = {
       type: 'success',
     },
   },
+
+  apiKey: '',
 
   colors: {
     allGood: '',

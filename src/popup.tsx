@@ -1,10 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+import WakaTime from './components/WakaTime';
 import createStore from './stores/createStore';
 import checkCurrentUser from './utils/checkCurrentUser';
-const container = document.getElementById('wakatime');
 
+/* This is a fix for Bootstrap requiring jQuery */
+global.jQuery = require('jquery');
+require('bootstrap');
+
+const container = document.getElementById('wakatime');
+const root = createRoot(container!);
 const store = createStore('WakaTime-Options');
 checkCurrentUser(store)(30 * 1000);
 
@@ -12,10 +18,9 @@ const openOptions = async (): Promise<void> => {
   await browser.runtime.openOptionsPage();
 };
 
-ReactDOM.render(
+root.render(
   <Provider store={store}>
-    <h1>POPUP GO HERE</h1>
+    <WakaTime />
     <div onClick={openOptions}>Open options</div>
   </Provider>,
-  container,
 );
