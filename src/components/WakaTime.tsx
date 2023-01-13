@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setValue } from '../reducers/apiKey';
+import { ReduxSelector } from '../types/store';
+import { setUser } from '../reducers/currentUser';
 import WakaTimeCore from '../core/WakaTimeCore';
 import config from '../config/config';
 import changeExtensionState from '../utils/changeExtensionState';
@@ -7,58 +11,54 @@ import MainList from './MainList';
 
 const API_KEY = 'waka_3766d693-bff3-4c63-8bf5-b439f3e12301';
 
-export default function WakaTime() {
+export default function WakaTime(): JSX.Element {
+  const dispatch = useDispatch();
+
   const defaultState = {
-    apiKey: '',
-    loading: true,
     loggedIn: false,
     loggingEnabled: config.loggingEnabled,
     totalTimeLoggedToday: '0 minutes',
-    user: {
-      email: '',
-      full_name: '',
-      photo: '',
-    },
   };
   const [state, setState] = useState(defaultState);
+  const apiKeyFromRedux: string = useSelector((selector: ReduxSelector) => selector.apiKey.value);
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (): Promise<void> => {
     // await browser.storage.sync.set({ apiKey: API_KEY });
-    const { apiKey } = await browser.storage.sync.get({ apiKey: config.apiKey });
+    let apiKey = '';
+    if (!apiKeyFromRedux) {
+      const storage = await browser.storage.sync.get({
+        apiKey: config.apiKey,
+      });
+      apiKey = storage.apiKey as string;
+      dispatch(setValue(apiKey));
+    }
 
     if (!apiKey) {
-      changeExtensionState('notSignedIn');
+      await changeExtensionState('notSignedIn');
     }
 
     try {
-      const data = await WakaTimeCore.checkAuth(apiKey as string);
+      const data = await WakaTimeCore.checkAuth(apiKey);
+      dispatch(setUser(data));
       const items = await browser.storage.sync.get({ loggingEnabled: config.loggingEnabled });
 
       if (items.loggingEnabled === true) {
-        changeExtensionState('allGood');
+        await changeExtensionState('allGood');
       } else {
-        changeExtensionState('notLogging');
+        await changeExtensionState('notLogging');
       }
 
-      const totalTimeLoggedToday = await WakaTimeCore.getTotalTimeLoggedToday(apiKey as string);
+      const totalTimeLoggedToday = await WakaTimeCore.getTotalTimeLoggedToday(apiKey);
       setState({
         ...state,
-        apiKey,
-        loading: false,
         loggedIn: true,
-        loggingEnabled: items.loggingEnabled,
+        loggingEnabled: items.loggingEnabled as boolean,
         totalTimeLoggedToday: totalTimeLoggedToday.text,
-        user: {
-          email: data.email,
-          full_name: data.full_name,
-          photo: data.photo,
-        },
       });
 
       await WakaTimeCore.recordHeartbeat();
-    } catch (err) {
-      changeExtensionState('notSignedIn');
-      setState({ ...defaultState, loading: false });
+    } catch (err: unknown) {
+      await changeExtensionState('notSignedIn');
     }
   };
 
@@ -66,28 +66,28 @@ export default function WakaTime() {
     fetchUserData();
   }, []);
 
-  const disableLogging = () => {
+  const disableLogging = async () => {
     setState({
       ...state,
       loggingEnabled: false,
     });
 
-    changeExtensionState('notLogging');
+    await changeExtensionState('notLogging');
 
-    browser.storage.sync.set({
+    await browser.storage.sync.set({
       loggingEnabled: false,
     });
   };
 
-  const enableLogging = () => {
+  const enableLogging = async () => {
     setState({
       ...state,
       loggingEnabled: true,
     });
 
-    changeExtensionState('allGood');
+    await changeExtensionState('allGood');
 
-    browser.storage.sync.set({
+    await browser.storage.sync.set({
       loggingEnabled: true,
     });
   };
@@ -97,16 +97,12 @@ export default function WakaTime() {
 
     setState(defaultState);
 
-    changeExtensionState('notSignedIn');
+    await changeExtensionState('notSignedIn');
   };
-
-  // if (state.loading === true) {
-  //   return <div>Loading</div>
-  // }
 
   return (
     <div>
-      <NavBar user={state.user} loggedIn={state.loggedIn} />
+      <NavBar />
       <div className="container">
         <div className="row">
           <div className="col-md-12">

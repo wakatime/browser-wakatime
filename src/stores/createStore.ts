@@ -2,11 +2,10 @@ import { configureStore, Store } from '@reduxjs/toolkit';
 import { logger } from 'redux-logger';
 import { reduxBatch } from '@manaflair/redux-batch';
 import devToolsEnhancer from 'remote-redux-devtools';
-import currentUserReducer, {
-  initialState as InitalCurrentUser,
-  CurrentUser,
-} from '../reducers/currentUser';
+import currentUserReducer, { initialState as InitalCurrentUser } from '../reducers/currentUser';
+import apiKeyReducer from '../reducers/apiKey';
 import isProd from '../utils/isProd';
+import { CurrentUser } from '../types/user';
 
 export interface RootState {
   currentUser: CurrentUser;
@@ -31,6 +30,7 @@ export default (appName: string): RootStore => {
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     preloadedState,
     reducer: {
+      apiKey: apiKeyReducer,
       currentUser: currentUserReducer,
     },
   });

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setValue } from '../reducers/apiKey';
+import { ReduxSelector } from '../types/store';
+import { User } from '../types/user';
 import config from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
+import WakaTimeCore from '../core/WakaTimeCore';
+import { setUser } from '../reducers/currentUser';
+import changeExtensionState from '../utils/changeExtensionState';
 
-type Props = {
-  loggedIn: boolean;
-  user: any;
-};
-
-export default function NavBar({ loggedIn, user }: Props) {
+export default function NavBar(): JSX.Element {
   const [state, setState] = useState({
     apiKey: '',
     apiKeyError: '',
@@ -22,8 +24,13 @@ export default function NavBar({ loggedIn, user }: Props) {
     fetch();
   }, []);
 
+  const dispatch = useDispatch();
+  const user: User | undefined = useSelector(
+    (selector: ReduxSelector) => selector.currentUser.user,
+  );
+
   const signedInAs = () => {
-    if (loggedIn === true) {
+    if (user) {
       return (
         <p className="navbar-text">
           Signed in as <b>{user.full_name}</b>
@@ -35,7 +42,7 @@ export default function NavBar({ loggedIn, user }: Props) {
   };
 
   const customRules = () => {
-    if (loggedIn === true) {
+    if (user) {
       return (
         <li>
           <a target="_blank" href="https://wakatime.com/settings/rules" rel="noreferrer">
@@ -50,7 +57,7 @@ export default function NavBar({ loggedIn, user }: Props) {
   };
 
   const dashboard = () => {
-    if (loggedIn === true) {
+    if (user) {
       return (
         <li>
           <a target="_blank" href="https://wakatime.com/dashboard" rel="noreferrer">
@@ -151,6 +158,15 @@ export default function NavBar({ loggedIn, user }: Props) {
                         if (state.apiKeyError === '' && state.apiKey !== '') {
                           setState({ ...state, loading: true });
                           await browser.storage.sync.set({ apiKey: state.apiKey });
+                          dispatch(setValue(state.apiKey));
+
+                          try {
+                            const data = await WakaTimeCore.checkAuth(state.apiKey);
+                            dispatch(setUser(data));
+                          } catch (err: unknown) {
+                            dispatch(setUser(undefined));
+                            await changeExtensionState('notSignedIn');
+                          }
                           setState({ ...state, loading: false });
                         }
                       }}

@@ -31,7 +31,6 @@ class WakaTimeCore {
   }
 
   async checkAuth(api_key = ''): Promise<User> {
-    console.log('api_keyapi_keyapi_keyapi_key', api_key);
     const userPayload: AxiosResponse<AxiosUserResponse> = await axios.get(
       config.currentUserApiUrl,
       { params: { api_key } },
