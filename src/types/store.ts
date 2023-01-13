@@ -1,10 +1,12 @@
 import { CurrentUser } from './user';
 
 export interface ApiKeyReducer {
-  value: string;
+  apiKey: string;
+  loggingEnabled: boolean;
+  totalTimeLoggedToday: string;
 }
 
 export interface ReduxSelector {
-  apiKey: ApiKeyReducer;
+  config: ApiKeyReducer;
   currentUser: CurrentUser;
 }

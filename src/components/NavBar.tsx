@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setValue } from '../reducers/apiKey';
+import { configLogout, setApiKey } from '../reducers/configReducer';
+import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
 import config from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
-import WakaTimeCore from '../core/WakaTimeCore';
-import { setUser } from '../reducers/currentUser';
-import changeExtensionState from '../utils/changeExtensionState';
+import { fetchUserData } from '../utils/user';
 
 export default function NavBar(): JSX.Element {
   const [state, setState] = useState({
@@ -158,15 +157,11 @@ export default function NavBar(): JSX.Element {
                         if (state.apiKeyError === '' && state.apiKey !== '') {
                           setState({ ...state, loading: true });
                           await browser.storage.sync.set({ apiKey: state.apiKey });
-                          dispatch(setValue(state.apiKey));
+                          dispatch(configLogout());
+                          dispatch(userLogout());
+                          dispatch(setApiKey(state.apiKey));
 
-                          try {
-                            const data = await WakaTimeCore.checkAuth(state.apiKey);
-                            dispatch(setUser(data));
-                          } catch (err: unknown) {
-                            dispatch(setUser(undefined));
-                            await changeExtensionState('notSignedIn');
-                          }
+                          await fetchUserData(state.apiKey, dispatch);
                           setState({ ...state, loading: false });
                         }
                       }}

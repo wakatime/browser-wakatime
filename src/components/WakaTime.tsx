@@ -1,69 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setValue } from '../reducers/apiKey';
-import { ReduxSelector } from '../types/store';
-import { setUser } from '../reducers/currentUser';
-import WakaTimeCore from '../core/WakaTimeCore';
+import { ApiKeyReducer, ReduxSelector } from '../types/store';
 import config from '../config/config';
+import { fetchUserData } from '../utils/user';
 import changeExtensionState from '../utils/changeExtensionState';
 import NavBar from './NavBar';
 import MainList from './MainList';
-
-const API_KEY = 'waka_3766d693-bff3-4c63-8bf5-b439f3e12301';
 
 export default function WakaTime(): JSX.Element {
   const dispatch = useDispatch();
 
   const defaultState = {
-    loggedIn: false,
     loggingEnabled: config.loggingEnabled,
     totalTimeLoggedToday: '0 minutes',
   };
   const [state, setState] = useState(defaultState);
-  const apiKeyFromRedux: string = useSelector((selector: ReduxSelector) => selector.apiKey.value);
-
-  const fetchUserData = async (): Promise<void> => {
-    // await browser.storage.sync.set({ apiKey: API_KEY });
-    let apiKey = '';
-    if (!apiKeyFromRedux) {
-      const storage = await browser.storage.sync.get({
-        apiKey: config.apiKey,
-      });
-      apiKey = storage.apiKey as string;
-      dispatch(setValue(apiKey));
-    }
-
-    if (!apiKey) {
-      await changeExtensionState('notSignedIn');
-    }
-
-    try {
-      const data = await WakaTimeCore.checkAuth(apiKey);
-      dispatch(setUser(data));
-      const items = await browser.storage.sync.get({ loggingEnabled: config.loggingEnabled });
-
-      if (items.loggingEnabled === true) {
-        await changeExtensionState('allGood');
-      } else {
-        await changeExtensionState('notLogging');
-      }
-
-      const totalTimeLoggedToday = await WakaTimeCore.getTotalTimeLoggedToday(apiKey);
-      setState({
-        ...state,
-        loggedIn: true,
-        loggingEnabled: items.loggingEnabled as boolean,
-        totalTimeLoggedToday: totalTimeLoggedToday.text,
-      });
-
-      await WakaTimeCore.recordHeartbeat();
-    } catch (err: unknown) {
-      await changeExtensionState('notSignedIn');
-    }
-  };
+  const {
+    apiKey: apiKeyFromRedux,
+    loggingEnabled,
+    totalTimeLoggedToday,
+  }: ApiKeyReducer = useSelector((selector: ReduxSelector) => selector.config);
 
   useEffect(() => {
-    fetchUserData();
+    fetchUserData(apiKeyFromRedux, dispatch);
   }, []);
 
   const disableLogging = async () => {
@@ -109,10 +68,9 @@ export default function WakaTime(): JSX.Element {
             <MainList
               disableLogging={disableLogging}
               enableLogging={enableLogging}
-              loggingEnabled={state.loggingEnabled}
-              totalTimeLoggedToday={state.totalTimeLoggedToday}
+              loggingEnabled={loggingEnabled}
+              totalTimeLoggedToday={totalTimeLoggedToday}
               logoutUser={logoutUser}
-              loggedIn={state.loggedIn}
             />
           </div>
         </div>

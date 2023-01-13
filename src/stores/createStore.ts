@@ -1,22 +1,25 @@
-import { configureStore, Store } from '@reduxjs/toolkit';
+import { configureStore, Store, combineReducers } from '@reduxjs/toolkit';
 import { logger } from 'redux-logger';
 import { reduxBatch } from '@manaflair/redux-batch';
 import devToolsEnhancer from 'remote-redux-devtools';
 import currentUserReducer, { initialState as InitalCurrentUser } from '../reducers/currentUser';
-import apiKeyReducer from '../reducers/apiKey';
+import configReducer, { initialConfigState } from '../reducers/configReducer';
 import isProd from '../utils/isProd';
-import { CurrentUser } from '../types/user';
 
-export interface RootState {
-  currentUser: CurrentUser;
-}
+// Create the root reducer separately so we can extract the RootState type
+const rootReducer = combineReducers({
+  config: configReducer,
+  currentUser: currentUserReducer,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 const preloadedState: RootState = {
+  config: initialConfigState,
   currentUser: InitalCurrentUser,
 };
 
-export type RootStore = Store<RootState>;
-export default (appName: string): RootStore => {
+export default (appName: string): Store<RootState> => {
   const enhancers = [];
   enhancers.push(reduxBatch);
   if (!isProd()) {
@@ -29,10 +32,7 @@ export default (appName: string): RootStore => {
     enhancers,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     preloadedState,
-    reducer: {
-      apiKey: apiKeyReducer,
-      currentUser: currentUserReducer,
-    },
+    reducer: rootReducer,
   });
 
   return store;
