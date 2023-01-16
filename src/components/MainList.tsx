@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { ReduxSelector } from '../types/store';
+import { User } from '../types/user';
 
 export interface MainListProps {
   disableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   enableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
-  loggedIn: boolean;
   loggingEnabled: boolean;
   logoutUser: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   totalTimeLoggedToday?: string;
@@ -15,14 +17,17 @@ const openOptionsPage = async (): Promise<void> => {
 export default function MainList({
   disableLogging,
   enableLogging,
-  loggedIn,
   loggingEnabled,
   logoutUser,
   totalTimeLoggedToday,
 }: MainListProps): JSX.Element {
+  const user: User | undefined = useSelector(
+    (selector: ReduxSelector) => selector.currentUser.user,
+  );
+
   return (
     <div>
-      {loggedIn && (
+      {user && (
         <div className="row">
           <div className="col-xs-12">
             <blockquote>
@@ -34,7 +39,7 @@ export default function MainList({
           </div>
         </div>
       )}
-      {loggingEnabled && loggedIn && (
+      {loggingEnabled && user && (
         <div className="row">
           <div className="col-xs-12">
             <p>
@@ -45,7 +50,7 @@ export default function MainList({
           </div>
         </div>
       )}
-      {!loggingEnabled && loggedIn && (
+      {!loggingEnabled && user && (
         <div className="row">
           <div className="col-xs-12">
             <p>
@@ -61,7 +66,7 @@ export default function MainList({
           <i className="fa fa-fw fa-cogs"></i>
           Options
         </a>
-        {loggedIn && (
+        {user && (
           <div>
             <a href="#" className="list-group-item" onClick={logoutUser}>
               <i className="fa fa-fw fa-sign-out"></i>
@@ -69,7 +74,7 @@ export default function MainList({
             </a>
           </div>
         )}
-        {!loggedIn && (
+        {!user && (
           <a
             target="_blank"
             rel="noreferrer"

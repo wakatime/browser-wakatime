@@ -1,12 +1,11 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { renderWithProviders } from '../utils/test-utils';
 import MainList from './MainList';
 
 type onClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 describe('MainList', () => {
   let disableLogging: onClick;
   let enableLogging: onClick;
-  let loggedIn: boolean;
   let loggingEnabled: boolean;
   let logoutUser: onClick;
   let totalTimeLoggedToday: string;
@@ -14,17 +13,15 @@ describe('MainList', () => {
     disableLogging = jest.fn();
     enableLogging = jest.fn();
     loggingEnabled = false;
-    loggedIn = false;
     logoutUser = jest.fn();
     totalTimeLoggedToday = '1/1/1999';
   });
   it('should render properly', () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <MainList
         disableLogging={disableLogging}
         enableLogging={enableLogging}
         loggingEnabled={loggingEnabled}
-        loggedIn={loggedIn}
         logoutUser={logoutUser}
         totalTimeLoggedToday={totalTimeLoggedToday}
       />,

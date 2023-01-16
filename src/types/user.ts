@@ -4,6 +4,10 @@ export interface UserPayload {
   data: User;
 }
 
+export interface AxiosUserResponse {
+  data: User;
+}
+
 export interface User {
   bio: null;
   color_scheme: string;
@@ -41,4 +45,10 @@ export interface User {
   website: string;
   weekday_start: number;
   writes_only: boolean;
+}
+
+export interface CurrentUser {
+  error?: unknown;
+  pending?: boolean;
+  user?: User;
 }
