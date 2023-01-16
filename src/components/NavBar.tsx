@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { configLogout, setApiKey } from '../reducers/configReducer';
 import { userLogout } from '../reducers/currentUser';
-import { ReduxSelector } from '../types/store';
+import { ApiKeyReducer, ReduxSelector } from '../types/store';
 import { User } from '../types/user';
-import config from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { fetchUserData } from '../utils/user';
 
@@ -14,19 +13,19 @@ export default function NavBar(): JSX.Element {
     apiKeyError: '',
     loading: false,
   });
-  useEffect(() => {
-    const fetch = async () => {
-      const { apiKey } = await browser.storage.sync.get({ apiKey: config.apiKey });
-      setState({ ...state, apiKey });
-    };
-
-    fetch();
-  }, []);
 
   const dispatch = useDispatch();
+
+  const { apiKey: apiKeyFromRedux }: ApiKeyReducer = useSelector(
+    (selector: ReduxSelector) => selector.config,
+  );
   const user: User | undefined = useSelector(
     (selector: ReduxSelector) => selector.currentUser.user,
   );
+
+  useEffect(() => {
+    setState({ ...state, apiKey: apiKeyFromRedux });
+  }, [apiKeyFromRedux]);
 
   const signedInAs = () => {
     if (user) {
