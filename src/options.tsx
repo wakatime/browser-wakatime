@@ -1,6 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import Options from './components/Options';
+
+/* This is a fix for Bootstrap requiring jQuery */
+global.jQuery = require('jquery');
+require('bootstrap');
 
 const container = document.getElementById('wakatime-options');
+const root = createRoot(container!);
 
-ReactDOM.render(<h1>OPTIONS GO HERE</h1>, container);
+root.render(<Options />);
