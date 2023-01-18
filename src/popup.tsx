@@ -14,13 +14,8 @@ const root = createRoot(container!);
 const store = createStore('WakaTime-Options');
 checkCurrentUser(store)(30 * 1000);
 
-const openOptions = async (): Promise<void> => {
-  await browser.runtime.openOptionsPage();
-};
-
 root.render(
   <Provider store={store}>
     <WakaTime />
-    <div onClick={openOptions}>Open options</div>
   </Provider>,
 );
