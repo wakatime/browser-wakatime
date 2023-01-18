@@ -1,13 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import changeExtensionState from '../utils/changeExtensionState';
+import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
+import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
 
 export interface MainListProps {
-  disableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
-  enableLogging: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   loggingEnabled: boolean;
-  logoutUser: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   totalTimeLoggedToday?: string;
 }
 const openOptionsPage = async (): Promise<void> => {
@@ -15,15 +15,33 @@ const openOptionsPage = async (): Promise<void> => {
 };
 
 export default function MainList({
-  disableLogging,
-  enableLogging,
   loggingEnabled,
-  logoutUser,
   totalTimeLoggedToday,
 }: MainListProps): JSX.Element {
+  const dispatch = useDispatch();
+
   const user: User | undefined = useSelector(
     (selector: ReduxSelector) => selector.currentUser.user,
   );
+
+  const logoutUser = async (): Promise<void> => {
+    await browser.storage.sync.set({ apiKey: '' });
+    dispatch(configLogout());
+    dispatch(userLogout());
+    await changeExtensionState('notSignedIn');
+  };
+
+  const enableLogging = async (): Promise<void> => {
+    dispatch(setLoggingEnabled(true));
+    await browser.storage.sync.set({ loggingEnabled: true });
+    await changeExtensionState('allGood');
+  };
+
+  const disableLogging = async (): Promise<void> => {
+    dispatch(setLoggingEnabled(false));
+    await browser.storage.sync.set({ loggingEnabled: false });
+    await changeExtensionState('notLogging');
+  };
 
   return (
     <div>
