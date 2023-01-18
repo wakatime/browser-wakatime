@@ -152,7 +152,7 @@ var Options = reactCreateClass({
           handleChange={that._updateWhitelistState}
           label="Whitelist"
           sites={that.state.whitelist}
-          placeholder="http://google.com&#10;http://myproject.com@@MyProject"
+          placeholder="http://google.com&#10;http://myproject.com/MyProject"
           helpText="Sites that you want to show in your reports. You can assign URL to project by adding @@YourProject at the end of line."
         />
       );

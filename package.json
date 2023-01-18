@@ -41,7 +41,7 @@
     "react-redux": "^8.0.5",
     "react-transition-group": "^4.4.5",
     "redux-logger": "^4.0.0",
-    "webextension-polyfill-ts": "^0.26.0"
+    "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
@@ -65,7 +65,9 @@
     "@types/redux-logger": "^3.0.9",
     "@types/remote-redux-devtools": "^0.5.4",
     "@types/shelljs": "^0.8.8",
+    "@types/sinon-chrome": "^2.2.11",
     "@types/wait-on": "^5.2.0",
+    "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@xarc/run": "^1.0.4",
