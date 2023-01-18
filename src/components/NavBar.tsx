@@ -74,20 +74,24 @@ export default function NavBar(): JSX.Element {
     <nav className="navbar navbar-default" role="navigation">
       <div className="container-fluid">
         <div className="navbar-header">
-          <button
-            type="button"
-            className="navbar-toggle collapsed"
-            data-toggle="collapse"
-            data-target="#bs-example-navbar-collapse-1"
-          >
-            <span className="sr-only">Toggle navigation</span>
-            <i className="fa fa-fw fa-cogs"></i>
-          </button>
           <a target="_blank" className="navbar-brand" href="https://wakatime.com" rel="noreferrer">
             WakaTime
             <img src="graphics/wakatime-logo-48.png" />
           </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#bs-example-navbar-collapse-1"
+            aria-controls="bs-example-navbar-collapse-1"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="sr-only">Toggle navigation</span>
+            <i className="fa fa-fw fa-cogs"></i>
+          </button>
         </div>
+        <br />
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           {signedInAs()}
           <ul className="nav navbar-nav">
