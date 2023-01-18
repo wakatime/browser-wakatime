@@ -5,6 +5,26 @@ import WakaTimeCore from '../core/WakaTimeCore';
 import { setUser } from '../reducers/currentUser';
 import changeExtensionState from './changeExtensionState';
 
+export const logUserIn = async (apiKey: string): Promise<void> => {
+  if (!apiKey) {
+    await changeExtensionState('notSignedIn');
+    return;
+  }
+
+  try {
+    await WakaTimeCore.checkAuth(apiKey);
+    const items = await browser.storage.sync.get({ loggingEnabled: config.loggingEnabled });
+
+    if (items.loggingEnabled === true) {
+      await changeExtensionState('allGood');
+    } else {
+      await changeExtensionState('notLogging');
+    }
+  } catch (err: unknown) {
+    await changeExtensionState('notSignedIn');
+  }
+};
+
 export const fetchUserData = async (
   apiKey: string,
   dispatch: Dispatch<AnyAction>,
@@ -18,7 +38,7 @@ export const fetchUserData = async (
   }
 
   if (!apiKey) {
-    await changeExtensionState('notSignedIn');
+    return changeExtensionState('notSignedIn');
   }
 
   try {

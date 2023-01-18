@@ -28,3 +28,11 @@ canvas#icon {
 div#status {
   display: none;
 }
+
+[type='text'].border-danger,
+.border-danger {
+  box-shadow: inset 0 -2px 0 @brand-danger;
+  &:focus {
+    .box-shadow(inset 0 -2px 0 @brand-danger);
+  }
+}

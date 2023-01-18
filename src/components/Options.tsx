@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
+import apiKeyInvalid from '../utils/apiKey';
+import { logUserIn } from '../utils/user';
 import Alert from './Alert';
 import SitesList from './SitesList';
 
 interface State {
   alertText: string;
   alertType: SuccessOrFailType;
+  apiKey: string;
   blacklist: string;
   displayAlert: boolean;
   loading: boolean;
@@ -18,6 +21,7 @@ export default function Options(): JSX.Element {
   const [state, setState] = useState<State>({
     alertText: config.alert.success.text,
     alertType: config.alert.success.type,
+    apiKey: '',
     blacklist: '',
     displayAlert: false,
     loading: false,
@@ -31,6 +35,7 @@ export default function Options(): JSX.Element {
 
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
+      apiKey: config.apiKey,
       blacklist: '',
       loggingStyle: config.loggingStyle,
       loggingType: config.loggingType,
@@ -39,11 +44,12 @@ export default function Options(): JSX.Element {
     });
     setState({
       ...state,
-      blacklist: items.blacklist,
-      loggingStyle: items.loggingStyle,
-      loggingType: items.loggingType,
-      theme: items.theme,
-      whitelist: items.whitelist,
+      apiKey: items.apiKey as string,
+      blacklist: items.blacklist as string,
+      loggingStyle: items.loggingStyle as string,
+      loggingType: items.loggingType as string,
+      theme: items.theme as string,
+      whitelist: items.whitelist as string,
     });
   };
 
@@ -63,6 +69,7 @@ export default function Options(): JSX.Element {
     if (state.loading) return;
     setState({ ...state, loading: true });
 
+    const apiKey = state.apiKey;
     const theme = state.theme;
     const loggingType = state.loggingType;
     const loggingStyle = state.loggingStyle;
@@ -72,23 +79,26 @@ export default function Options(): JSX.Element {
 
     // Sync options with google storage.
     await browser.storage.sync.set({
-      blacklist: blacklist,
-      loggingStyle: loggingStyle,
-      loggingType: loggingType,
-      theme: theme,
-      whitelist: whitelist,
+      apiKey,
+      blacklist,
+      loggingStyle,
+      loggingType,
+      theme,
+      whitelist,
     });
 
     // Set state to be newly entered values.
     setState({
       ...state,
-      blacklist: blacklist,
+      apiKey,
+      blacklist,
       displayAlert: true,
-      loggingStyle: loggingStyle,
-      loggingType: loggingType,
-      theme: theme,
-      whitelist: whitelist,
+      loggingStyle,
+      loggingType,
+      theme,
+      whitelist,
     });
+    await logUserIn(state.apiKey);
   };
 
   const updateBlacklistState = (sites: string) => {
@@ -142,11 +152,14 @@ export default function Options(): JSX.Element {
     );
   };
 
+  const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
+
   return (
     <div
       className="container"
       style={{
-        height: 515,
+        height: 590,
+        marginTop: 0,
         overflow: 'hidden',
         overflowY: 'scroll',
       }}
@@ -156,6 +169,21 @@ export default function Options(): JSX.Element {
           {alert()}
 
           <form className="form-horizontal">
+            <div className="form-group">
+              <label className="col-lg-2 control-label">API Key</label>
+
+              <div className="col-lg-10">
+                <input
+                  autoFocus={true}
+                  type="text"
+                  className={`form-control ${isApiKeyValid ? '' : 'border-danger'}`}
+                  placeholder="API key"
+                  value={state.apiKey}
+                  onChange={(e) => setState({ ...state, apiKey: e.target.value })}
+                />
+              </div>
+            </div>
+
             <div className="form-group">
               <label className="col-lg-2 control-label">Logging style!</label>
 
