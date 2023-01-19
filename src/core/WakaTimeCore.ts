@@ -52,7 +52,7 @@ class WakaTimeCore {
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to WakaTime for logging.
    */
-  async recordHeartbeat(): Promise<void> {
+  async recordHeartbeat(apiKey: string): Promise<void> {
     const items = await browser.storage.sync.get({
       blacklist: '',
       loggingEnabled: config.loggingEnabled,
@@ -90,6 +90,7 @@ class WakaTimeCore {
                 url: currentActiveTab.url as string,
               },
               debug,
+              apiKey,
             );
           } else {
             await changeExtensionState('blacklisted');
@@ -103,7 +104,7 @@ class WakaTimeCore {
             items.whitelist as string,
           );
           if (heartbeat.url) {
-            await this.sendHeartbeat(heartbeat, debug);
+            await this.sendHeartbeat(heartbeat, debug, apiKey);
           } else {
             await changeExtensionState('whitelisted');
             console.log(`${currentActiveTab.url} is not on a whitelist.`);
@@ -182,8 +183,8 @@ class WakaTimeCore {
    * @param heartbeat
    * @param debug
    */
-  async sendHeartbeat(heartbeat: SendHeartbeat, debug: boolean): Promise<void> {
-    let payload = null;
+  async sendHeartbeat(heartbeat: SendHeartbeat, debug: boolean, apiKey: string): Promise<void> {
+    let payload;
 
     const loggingType = await this.getLoggingType();
     // Get only the domain from the entity.
@@ -191,14 +192,12 @@ class WakaTimeCore {
     if (loggingType == 'domain') {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
       payload = this.preparePayload(heartbeat, 'domain', debug);
-      console.log(payload);
-      await this.sendAjaxRequestToApi(payload);
+      await this.sendPostRequestToApi(payload, apiKey);
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
       payload = this.preparePayload(heartbeat, 'url', debug);
-      console.log(payload);
-      await this.sendAjaxRequestToApi(payload);
+      await this.sendPostRequestToApi(payload, apiKey);
     }
   }
 
@@ -243,7 +242,7 @@ class WakaTimeCore {
    * @param method
    * @returns {*}
    */
-  async sendAjaxRequestToApi(payload: Record<string, unknown>, api_key = '') {
+  async sendPostRequestToApi(payload: Record<string, unknown>, api_key = '') {
     try {
       const response = await axios.post(config.heartbeatApiUrl, payload, {
         params: {
