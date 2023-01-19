@@ -213,13 +213,18 @@ class WakaTimeCore {
    * @private
    */
   preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
-    return {
+    const payload: Record<string, unknown> = {
       entity: heartbeat.url,
-      plugin: 'browser-wakatime/' + config.version,
-      project: heartbeat.project ?? '<<LAST_PROJECT>>',
       time: moment().format('X'),
       type: type,
+      user_agent: 'browser-wakatime/' + config.version,
     };
+
+    if (heartbeat.project) {
+      payload.project = heartbeat.project;
+    }
+
+    return payload;
   }
 
   /**
