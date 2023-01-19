@@ -10,7 +10,7 @@ export default async function changeExtensionIcon(color?: ColorIconTypes): Promi
   if (color) {
     const path = `./graphics/wakatime-logo-38-${color}.png`;
 
-    await browser.browserAction.setIcon({
+    await browser.action.setIcon({
       path: path,
     });
   } else {
@@ -21,7 +21,7 @@ export default async function changeExtensionIcon(color?: ColorIconTypes): Promi
       theme === config.theme
         ? './graphics/wakatime-logo-38.png'
         : './graphics/wakatime-logo-38-white.png';
-    await browser.browserAction.setIcon({
+    await browser.action.setIcon({
       path: path,
     });
   }

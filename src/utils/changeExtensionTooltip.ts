@@ -12,5 +12,5 @@ export default async function changeExtensionTooltip(text: string): Promise<void
     text = `${config.name} - ${text}`;
   }
 
-  await browser.browserAction.setTitle({ title: text });
+  await browser.action.setTitle({ title: text });
 }

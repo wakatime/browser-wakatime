@@ -70,17 +70,6 @@ class WakaTimeCore {
         if (tabs.length == 0) return;
 
         const currentActiveTab = tabs[0];
-        let debug = false;
-
-        // If the current active tab has devtools open
-        if (
-          inArray(
-            currentActiveTab.id,
-            this.tabsWithDevtoolsOpen.map((tab) => tab.id),
-          )
-        ) {
-          debug = true;
-        }
 
         if (items.loggingStyle == 'blacklist') {
           if (!contains(currentActiveTab.url as string, items.blacklist as string)) {
@@ -89,7 +78,6 @@ class WakaTimeCore {
                 project: null,
                 url: currentActiveTab.url as string,
               },
-              debug,
               apiKey,
             );
           } else {
@@ -104,7 +92,7 @@ class WakaTimeCore {
             items.whitelist as string,
           );
           if (heartbeat.url) {
-            await this.sendHeartbeat(heartbeat, debug, apiKey);
+            await this.sendHeartbeat(heartbeat, apiKey);
           } else {
             await changeExtensionState('whitelisted');
             console.log(`${currentActiveTab.url} is not on a whitelist.`);
@@ -183,7 +171,7 @@ class WakaTimeCore {
    * @param heartbeat
    * @param debug
    */
-  async sendHeartbeat(heartbeat: SendHeartbeat, debug: boolean, apiKey: string): Promise<void> {
+  async sendHeartbeat(heartbeat: SendHeartbeat, apiKey: string): Promise<void> {
     let payload;
 
     const loggingType = await this.getLoggingType();
@@ -191,12 +179,12 @@ class WakaTimeCore {
     // And send that in heartbeat
     if (loggingType == 'domain') {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
-      payload = this.preparePayload(heartbeat, 'domain', debug);
+      payload = this.preparePayload(heartbeat, 'domain');
       await this.sendPostRequestToApi(payload, apiKey);
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
-      payload = this.preparePayload(heartbeat, 'url', debug);
+      payload = this.preparePayload(heartbeat, 'url');
       await this.sendPostRequestToApi(payload, apiKey);
     }
   }
@@ -224,10 +212,9 @@ class WakaTimeCore {
    * @returns {*}
    * @private
    */
-  preparePayload(heartbeat: SendHeartbeat, type: string, debug = false): Record<string, unknown> {
+  preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
     return {
       entity: heartbeat.url,
-      is_debugging: debug,
       plugin: 'browser-wakatime/' + config.version,
       project: heartbeat.project ?? '<<LAST_PROJECT>>',
       time: moment().format('X'),
