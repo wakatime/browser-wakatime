@@ -15,7 +15,7 @@ export default function WakaTime(): JSX.Element {
   }: ApiKeyReducer = useSelector((selector: ReduxSelector) => selector.config);
 
   useEffect(() => {
-    fetchUserData(apiKeyFromRedux, dispatch);
+    void fetchUserData(apiKeyFromRedux, dispatch);
   }, []);
 
   return (
