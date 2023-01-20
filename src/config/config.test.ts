@@ -1,5 +1,15 @@
 import config from './config';
 
+jest.mock('webextension-polyfill', () => {
+  return {
+    runtime: {
+      getManifest: () => {
+        return { version: 'test-version' };
+      },
+    },
+  };
+});
+
 describe('wakatime config', () => {
   it('snapshot of config', () => {
     expect(config).toMatchInlineSnapshot(`
