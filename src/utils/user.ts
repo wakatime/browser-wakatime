@@ -58,7 +58,7 @@ export const fetchUserData = async (
     dispatch(setLoggingEnabled(items.loggingEnabled as boolean));
     dispatch(setTotalTimeLoggedToday(totalTimeLoggedTodayResponse.text));
 
-    await WakaTimeCore.recordHeartbeat(apiKey);
+    await WakaTimeCore.recordHeartbeat();
   } catch (err: unknown) {
     await changeExtensionState('notSignedIn');
   }

@@ -1,11 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 import moment from 'moment';
-import { Tabs } from 'webextension-polyfill';
+import browser, { Tabs } from 'webextension-polyfill';
 import { AxiosUserResponse, User } from '../types/user';
 import config from '../config/config';
 import { SummariesPayload, GrandTotal } from '../types/summaries';
 import changeExtensionState from '../utils/changeExtensionState';
-import inArray from '../utils/inArray';
 import contains from '../utils/contains';
 import { SendHeartbeat } from '../types/heartbeats';
 import getDomainFromUrl from '../utils/getDomainFromUrl';
@@ -48,11 +47,23 @@ class WakaTimeCore {
     return userPayload.data.data;
   }
 
+  async getApiKey(): Promise<string> {
+    const storage = await browser.storage.sync.get({
+      apiKey: config.apiKey,
+    });
+    const apiKey = storage.apiKey as string;
+    return apiKey;
+  }
+
   /**
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to WakaTime for logging.
    */
-  async recordHeartbeat(apiKey: string): Promise<void> {
+  async recordHeartbeat(): Promise<void> {
+    const apiKey = await this.getApiKey();
+    if (!apiKey) {
+      return changeExtensionState('notLogging');
+    }
     const items = await browser.storage.sync.get({
       blacklist: '',
       loggingEnabled: config.loggingEnabled,
@@ -234,14 +245,14 @@ class WakaTimeCore {
    * @param method
    * @returns {*}
    */
-  async sendPostRequestToApi(payload: Record<string, unknown>, api_key = '') {
+  async sendPostRequestToApi(payload: Record<string, unknown>, apiKey = '') {
     try {
-      const response = await axios.post(config.heartbeatApiUrl, payload, {
-        params: {
-          api_key,
-        },
+      const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, {
+        body: JSON.stringify(payload),
+        method: 'POST',
       });
-      return response.data;
+      const data = await response.json();
+      return data;
     } catch (err: unknown) {
       await changeExtensionState('notSignedIn');
     }
