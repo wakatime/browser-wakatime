@@ -2,6 +2,16 @@ import React from 'react';
 import { renderWithProviders } from '../utils/test-utils';
 import MainList from './MainList';
 
+jest.mock('webextension-polyfill', () => {
+  return {
+    runtime: {
+      getManifest: () => {
+        return { version: 'test-version' };
+      },
+    },
+  };
+});
+
 describe('MainList', () => {
   let loggingEnabled: boolean;
   let totalTimeLoggedToday: string;
