@@ -228,7 +228,7 @@ class WakaTimeCore {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: 'browser-wakatime/' + config.version,
+      user_agent: `${navigator.userAgent} browser-wakatime/${config.version}`,
     };
 
     if (heartbeat.project) {
