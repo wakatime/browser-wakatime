@@ -224,11 +224,15 @@ class WakaTimeCore {
    * @private
    */
   preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
+    let browserName = 'chrome';
+    if (navigator.userAgent.includes('Firefox')) {
+      browserName = 'firefox';
+    }
     const payload: Record<string, unknown> = {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: `${navigator.userAgent} browser-wakatime/${config.version}`,
+      user_agent: `${navigator.userAgent} ${browserName}-wakatime/${config.version}`,
     };
 
     if (heartbeat.project) {
