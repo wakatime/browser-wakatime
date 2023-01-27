@@ -225,14 +225,18 @@ class WakaTimeCore {
    */
   preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
     let browserName = 'chrome';
+    let userAgent;
     if (navigator.userAgent.includes('Firefox')) {
       browserName = 'firefox';
+      userAgent = navigator.userAgent.match(/Firefox\/\S+/g)![0];
+    } else {
+      userAgent = navigator.userAgent.match(/Chrome\/\S+/g)![0];
     }
     const payload: Record<string, unknown> = {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: `${navigator.userAgent} ${browserName}-wakatime/${config.version}`,
+      user_agent: `${userAgent} ${browserName}-wakatime/${config.version}`,
     };
 
     if (heartbeat.project) {
