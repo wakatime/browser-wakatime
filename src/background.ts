@@ -1,11 +1,32 @@
 import browser from 'webextension-polyfill';
 import WakaTimeCore from './core/WakaTimeCore';
 
+// Add a listener to resolve alarms
+browser.alarms.onAlarm.addListener(async (alarm) => {
+  // |alarm| can be undefined because onAlarm also gets called from
+  // window.setTimeout on old chrome versions.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (alarm && alarm.name == 'heartbeatAlarm') {
+    // Checks if the user is online and if there are cached heartbeats requests,
+    // if so then procedd to send these payload to wakatime api
+    if (navigator.onLine) {
+      const { cachedHeartbeats } = await browser.storage.sync.get({
+        cachedHeartbeats: [],
+      });
+      await browser.storage.sync.set({ cachedHeartbeats: [] });
+      await WakaTimeCore.sendCachedHeartbeatsRequest(cachedHeartbeats as Record<string, unknown>[]);
+    }
+  }
+});
+
+// Create a new alarm for sending cached heartbeats.
+browser.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
+
 /**
  * Whenever a active tab is changed it records a heartbeat with that tab url.
  */
 browser.tabs.onActivated.addListener(async () => {
-  console.log('recording a heartbeat - active tab changed');
+  console.log('recording a heartbeat - active tab changed ');
   await WakaTimeCore.recordHeartbeat();
 });
 

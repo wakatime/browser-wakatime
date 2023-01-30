@@ -262,7 +262,42 @@ class WakaTimeCore {
       const data = await response.json();
       return data;
     } catch (err: unknown) {
+      // Stores the payload of the request to be send later
+      const { cachedHeartbeats } = await browser.storage.sync.get({
+        cachedHeartbeats: [],
+      });
+      cachedHeartbeats.push(payload);
+      await browser.storage.sync.set({ cachedHeartbeats });
       await changeExtensionState('notSignedIn');
+    }
+  }
+
+  /**
+   * Sends cached heartbeats request to wakatime api
+   * @param requests
+   */
+  async sendCachedHeartbeatsRequest(requests: Record<string, unknown>[]): Promise<void> {
+    const apiKey = await this.getApiKey();
+    if (!apiKey) {
+      return changeExtensionState('notLogging');
+    }
+    const chunkSize = 50; // Create batches of max 50 request
+    for (let i = 0; i < requests.length; i += chunkSize) {
+      const chunk = requests.slice(i, i + chunkSize);
+      const requestsPromises: Promise<Response>[] = [];
+      chunk.forEach((request) =>
+        requestsPromises.push(
+          fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, {
+            body: JSON.stringify(request),
+            method: 'POST',
+          }),
+        ),
+      );
+      try {
+        await Promise.all(requestsPromises);
+      } catch (error: unknown) {
+        console.log('Error sending heartbeats');
+      }
     }
   }
 }
