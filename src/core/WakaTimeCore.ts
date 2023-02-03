@@ -68,6 +68,8 @@ class WakaTimeCore {
       blacklist: '',
       loggingEnabled: config.loggingEnabled,
       loggingStyle: config.loggingStyle,
+      socialMediaSites: config.socialMediaSites,
+      trackSocialMedia: config.trackSocialMedia,
       whitelist: '',
     });
     if (items.loggingEnabled === true) {
@@ -82,6 +84,11 @@ class WakaTimeCore {
 
         const currentActiveTab = tabs[0];
 
+        if (!items.trackSocialMedia) {
+          if (contains(currentActiveTab.url as string, items.socialMediaSites as string)) {
+            return changeExtensionState('blacklisted');
+          }
+        }
         if (items.loggingStyle == 'blacklist') {
           if (!contains(currentActiveTab.url as string, items.blacklist as string)) {
             await this.sendHeartbeat(
