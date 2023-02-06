@@ -249,7 +249,7 @@ export default function Options(): JSX.Element {
             </div>
 
             <div className="form-group row">
-              <div className="col-lg-10 col-lg-offset-2 space-between">
+              <div className="col-lg-10 col-lg-offset-2 space-between align-items-center">
                 <div
                   onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
                 >
@@ -258,7 +258,7 @@ export default function Options(): JSX.Element {
                 </div>
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-primary btn-sm"
                   data-toggle="modal"
                   data-target="#socialSitesModal"
                 >
