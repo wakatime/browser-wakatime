@@ -221,13 +221,12 @@ class WakaTimeCore {
   }
 
   generateProjectFromDevSites(url: string): string | null {
-    if (url.startsWith('https://github.dev')) {
-      const newUrl = url.replace('https://github.dev', '');
-      return newUrl.split('/')[2];
-    }
-    if (url.startsWith('https://github.com')) {
-      const newUrl = url.replace('https://github.com', '');
-      return newUrl.split('/')[2];
+    const githubUrls = ['https://github.com', 'https://github.dev'];
+    for (const githubUrl of githubUrls) {
+      if (url.startsWith(githubUrl)) {
+        const newUrl = url.replace(githubUrl, '');
+        return newUrl.split('/')[2];
+      }
     }
     return null;
   }
