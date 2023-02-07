@@ -82,11 +82,14 @@ class WakaTimeCore {
 
         const currentActiveTab = tabs[0];
 
+        // Checks dev websites
+        const project = this.generateProjectFromDevSites(currentActiveTab.url as string);
+
         if (items.loggingStyle == 'blacklist') {
           if (!contains(currentActiveTab.url as string, items.blacklist as string)) {
             await this.sendHeartbeat(
               {
-                project: null,
+                project,
                 url: currentActiveTab.url as string,
               },
               apiKey,
@@ -103,7 +106,10 @@ class WakaTimeCore {
             items.whitelist as string,
           );
           if (heartbeat.url) {
-            await this.sendHeartbeat(heartbeat, apiKey);
+            await this.sendHeartbeat(
+              { ...heartbeat, project: heartbeat.project ?? project },
+              apiKey,
+            );
           } else {
             await changeExtensionState('whitelisted');
             console.log(`${currentActiveTab.url} is not on a whitelist.`);
@@ -212,6 +218,18 @@ class WakaTimeCore {
     });
 
     return items.loggingType;
+  }
+
+  generateProjectFromDevSites(url: string): string | null {
+    if (url.startsWith('https://github.dev')) {
+      const newUrl = url.replace('https://github.dev', '');
+      return newUrl.split('/')[2];
+    }
+    if (url.startsWith('https://github.com')) {
+      const newUrl = url.replace('https://github.com', '');
+      return newUrl.split('/')[2];
+    }
+    return null;
   }
 
   /**
