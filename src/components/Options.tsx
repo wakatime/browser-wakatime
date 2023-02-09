@@ -14,7 +14,9 @@ interface State {
   loading: boolean;
   loggingStyle: string;
   loggingType: string;
+  socialMediaSites: string;
   theme: string;
+  trackSocialMedia: boolean;
   whitelist: string;
 }
 export default function Options(): JSX.Element {
@@ -27,7 +29,9 @@ export default function Options(): JSX.Element {
     loading: false,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
+    socialMediaSites: config.socialMediaSites,
     theme: config.theme,
+    trackSocialMedia: config.trackSocialMedia,
     whitelist: '',
   });
 
@@ -39,7 +43,9 @@ export default function Options(): JSX.Element {
       blacklist: '',
       loggingStyle: config.loggingStyle,
       loggingType: config.loggingType,
+      socialMediaSites: config.socialMediaSites,
       theme: config.theme,
+      trackSocialMedia: true,
       whitelist: '',
     });
     setState({
@@ -48,7 +54,9 @@ export default function Options(): JSX.Element {
       blacklist: items.blacklist as string,
       loggingStyle: items.loggingStyle as string,
       loggingType: items.loggingType as string,
+      socialMediaSites: items.socialMediaSites as string,
       theme: items.theme as string,
+      trackSocialMedia: items.trackSocialMedia as boolean,
       whitelist: items.whitelist as string,
     });
   };
@@ -73,6 +81,8 @@ export default function Options(): JSX.Element {
     const theme = state.theme;
     const loggingType = state.loggingType;
     const loggingStyle = state.loggingStyle;
+    const trackSocialMedia = state.trackSocialMedia;
+    const socialMediaSites = state.socialMediaSites;
     // Trimming blacklist and whitelist removes blank lines and spaces.
     const blacklist = state.blacklist.trim();
     const whitelist = state.whitelist.trim();
@@ -83,7 +93,9 @@ export default function Options(): JSX.Element {
       blacklist,
       loggingStyle,
       loggingType,
+      socialMediaSites,
       theme,
+      trackSocialMedia,
       whitelist,
     });
 
@@ -95,7 +107,9 @@ export default function Options(): JSX.Element {
       displayAlert: true,
       loggingStyle,
       loggingType,
+      socialMediaSites,
       theme,
+      trackSocialMedia,
       whitelist,
     });
     await logUserIn(state.apiKey);
@@ -231,6 +245,68 @@ export default function Options(): JSX.Element {
                   <option value="light">Light</option>
                   <option value="dark">Dark</option>
                 </select>
+              </div>
+            </div>
+
+            <div className="form-group row">
+              <div className="col-lg-10 col-lg-offset-2 space-between align-items-center">
+                <div
+                  onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
+                >
+                  <input type="checkbox" checked={state.trackSocialMedia} />
+                  <span>Track social media sites</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  data-toggle="modal"
+                  data-target="#socialSitesModal"
+                >
+                  Sites
+                </button>
+                <div
+                  className="modal fade"
+                  id="socialSitesModal"
+                  role="dialog"
+                  aria-labelledby="socialSitesModalLabel"
+                >
+                  <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <button
+                          type="button"
+                          className="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 className="modal-title" id="socialSitesModalLabel">
+                          Social Media Sites
+                        </h4>
+                      </div>
+                      <div className="modal-body">
+                        <SitesList
+                          handleChange={(sites: string) =>
+                            setState({
+                              ...state,
+                              socialMediaSites: sites,
+                            })
+                          }
+                          label="Social"
+                          sites={state.socialMediaSites}
+                          helpText="Sites that you don't want to show in your reports."
+                          rows={5}
+                        />
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" data-dismiss="modal">
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

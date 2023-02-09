@@ -5,6 +5,7 @@ type Props = {
   helpText: string;
   label: string;
   placeholder?: string;
+  rows?: number;
   sites: string;
 };
 
@@ -12,6 +13,7 @@ export default function SitesList({
   handleChange,
   label,
   placeholder,
+  rows,
   sites,
   helpText,
 }: Props): JSX.Element {
@@ -28,7 +30,7 @@ export default function SitesList({
       <div className="col-lg-10">
         <textarea
           className="form-control"
-          rows={3}
+          rows={rows ?? 3}
           onChange={textareaChange}
           placeholder={placeholder ?? 'http://google.com'}
           value={sites}
