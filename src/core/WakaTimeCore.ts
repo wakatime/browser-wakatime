@@ -229,11 +229,11 @@ class WakaTimeCore {
   }
 
   generateProjectFromDevSites(url: string): string | null {
-    const githubUrls = ['https://github.com', 'https://github.dev'];
+    const githubUrls = ['https://github.com/', 'https://github.dev/'];
     for (const githubUrl of githubUrls) {
       if (url.startsWith(githubUrl)) {
         const newUrl = url.replace(githubUrl, '');
-        return newUrl.split('/')[2];
+        return newUrl.split('/')[1] || null;
       }
     }
     return null;
