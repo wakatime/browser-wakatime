@@ -1,6 +1,9 @@
+/* eslint-disable no-fallthrough */
+/* eslint-disable default-case */
 import axios, { AxiosResponse } from 'axios';
 import moment from 'moment';
 import browser, { Tabs } from 'webextension-polyfill';
+import { IDBPDatabase, openDB } from 'idb';
 import { AxiosUserResponse, User } from '../types/user';
 import config from '../config/config';
 import { SummariesPayload, GrandTotal } from '../types/summaries';
@@ -11,8 +14,34 @@ import getDomainFromUrl from '../utils/getDomainFromUrl';
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
+  db: IDBPDatabase | undefined;
   constructor() {
     this.tabsWithDevtoolsOpen = [];
+  }
+
+  /**
+   * Creates a IndexDB using idb https://github.com/jakearchibald/idb
+   * a library that adds promises to IndexedDB and makes it easy to use
+   */
+  async createDB() {
+    const dbConnection = await openDB('wakatime', 1, {
+      upgrade(db, oldVersion) {
+        // Create a store of objects
+        const store = db.createObjectStore('cacheHeartbeats', {
+          // The `time` property of the object will be the key, and be incremented automatically
+          keyPath: 'time',
+        });
+        // Switch over the oldVersion, *without breaks*, to allow the database to be incrementally upgraded.
+        switch (oldVersion) {
+          case 0:
+          // Placeholder to execute when database is created (oldVersion is 0)
+          case 1:
+            // Create an index called `type` based on the `type` property of objects in the store
+            store.createIndex('time', 'time');
+        }
+      },
+    });
+    this.db = dbConnection;
   }
 
   setTabsWithDevtoolsOpen(tabs: Tabs.Tab[]): void {
@@ -260,21 +289,18 @@ class WakaTimeCore {
    * @param method
    * @returns {*}
    */
-  async sendPostRequestToApi(payload: Record<string, unknown>, apiKey = '') {
+  async sendPostRequestToApi(payload: Record<string, unknown>, apiKey = ''): Promise<void> {
     try {
       const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, {
         body: JSON.stringify(payload),
         method: 'POST',
       });
-      const data = await response.json();
-      return data;
+      await response.json();
     } catch (err: unknown) {
-      // Stores the payload of the request to be send later
-      const { cachedHeartbeats } = await browser.storage.sync.get({
-        cachedHeartbeats: [],
-      });
-      cachedHeartbeats.push(payload);
-      await browser.storage.sync.set({ cachedHeartbeats });
+      if (this.db) {
+        await this.db.add('cacheHeartbeats', payload);
+      }
+
       await changeExtensionState('notSignedIn');
     }
   }
@@ -283,27 +309,27 @@ class WakaTimeCore {
    * Sends cached heartbeats request to wakatime api
    * @param requests
    */
-  async sendCachedHeartbeatsRequest(requests: Record<string, unknown>[]): Promise<void> {
+  async sendCachedHeartbeatsRequest(): Promise<void> {
     const apiKey = await this.getApiKey();
     if (!apiKey) {
       return changeExtensionState('notLogging');
     }
-    const chunkSize = 50; // Create batches of max 50 request
-    for (let i = 0; i < requests.length; i += chunkSize) {
-      const chunk = requests.slice(i, i + chunkSize);
-      const requestsPromises: Promise<Response>[] = [];
-      chunk.forEach((request) =>
-        requestsPromises.push(
-          fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, {
-            body: JSON.stringify(request),
-            method: 'POST',
-          }),
-        ),
-      );
-      try {
-        await Promise.all(requestsPromises);
-      } catch (error: unknown) {
-        console.log('Error sending heartbeats');
+
+    if (this.db) {
+      const requests = await this.db.getAll('cacheHeartbeats');
+      await this.db.clear('cacheHeartbeats');
+      const chunkSize = 50; // Create batches of max 50 request
+      for (let i = 0; i < requests.length; i += chunkSize) {
+        const chunk = requests.slice(i, i + chunkSize);
+        const requestsPromises: Promise<void>[] = [];
+        chunk.forEach((request: Record<string, unknown>) =>
+          requestsPromises.push(this.sendPostRequestToApi(request, apiKey)),
+        );
+        try {
+          await Promise.all(requestsPromises);
+        } catch (error: unknown) {
+          console.log('Error sending heartbeats');
+        }
       }
     }
   }

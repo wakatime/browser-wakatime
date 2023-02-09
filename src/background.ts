@@ -10,11 +10,7 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
     // Checks if the user is online and if there are cached heartbeats requests,
     // if so then procedd to send these payload to wakatime api
     if (navigator.onLine) {
-      const { cachedHeartbeats } = await browser.storage.sync.get({
-        cachedHeartbeats: [],
-      });
-      await browser.storage.sync.set({ cachedHeartbeats: [] });
-      await WakaTimeCore.sendCachedHeartbeatsRequest(cachedHeartbeats as Record<string, unknown>[]);
+      await WakaTimeCore.sendCachedHeartbeatsRequest();
     }
   }
 });
@@ -53,4 +49,12 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
       await WakaTimeCore.recordHeartbeat();
     }
   }
+});
+
+/**
+ * Creates IndexedDB
+ * https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+ */
+self.addEventListener('activate', async () => {
+  await WakaTimeCore.createDB();
 });
