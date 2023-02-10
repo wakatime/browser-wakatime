@@ -6,8 +6,8 @@ We are currently migrating from using [gulp](https://gulpjs.com/) -> [webpack](h
 
 ## Pre-requisites
 
-- node v11.15.0
-- npm 6.7.0
+- node v18.13.0
+- npm 8.19.3
 
 It is suggested you use [nvm](https://github.com/nvm-sh/nvm) to manage your node version
 
@@ -22,7 +22,7 @@ In devmode you can open [local remote devtools](http://localhost:8000)
 ## Development instructions
 
 ```
-    nvm use
+    nvm use 18
     npm install
     npm run dev
 ```
