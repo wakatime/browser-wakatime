@@ -37,6 +37,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'typescript-sort-keys', 'sort-keys-fix'],
   rules: {
+    'no-await-in-loop': 'off',
     'prettier/prettier': 'error',
     'sort-keys-fix/sort-keys-fix': 'error',
     'testing-library/no-debug': 'off',

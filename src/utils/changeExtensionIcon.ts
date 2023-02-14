@@ -7,22 +7,23 @@ type ColorIconTypes = 'gray' | 'red' | 'white' | '';
  * It changes the extension icon color.
  */
 export default async function changeExtensionIcon(color?: ColorIconTypes): Promise<void> {
+  let path;
   if (color) {
-    const path = `./graphics/wakatime-logo-38-${color}.png`;
-
-    await browser.browserAction.setIcon({
-      path: path,
-    });
+    path = `./graphics/wakatime-logo-38-${color}.png`;
   } else {
     const { theme } = await browser.storage.sync.get({
       theme: config.theme,
     });
-    const path =
+    path =
       theme === config.theme
         ? './graphics/wakatime-logo-38.png'
         : './graphics/wakatime-logo-38-white.png';
-    await browser.browserAction.setIcon({
-      path: path,
-    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (browser.browserAction) {
+    await browser.browserAction.setIcon({ path: path }); // Support for FF with manifest V2
+  } else {
+    await browser.action.setIcon({ path: path }); // Support for Chrome with manifest V3
   }
 }

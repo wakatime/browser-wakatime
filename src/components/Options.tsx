@@ -1,29 +1,37 @@
 import React, { useRef, useState, useEffect } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
+import apiKeyInvalid from '../utils/apiKey';
+import { logUserIn } from '../utils/user';
 import Alert from './Alert';
 import SitesList from './SitesList';
 
 interface State {
   alertText: string;
   alertType: SuccessOrFailType;
+  apiKey: string;
   blacklist: string;
   displayAlert: boolean;
   loading: boolean;
   loggingStyle: string;
   loggingType: string;
+  socialMediaSites: string;
   theme: string;
+  trackSocialMedia: boolean;
   whitelist: string;
 }
 export default function Options(): JSX.Element {
   const [state, setState] = useState<State>({
     alertText: config.alert.success.text,
     alertType: config.alert.success.type,
+    apiKey: '',
     blacklist: '',
     displayAlert: false,
     loading: false,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
+    socialMediaSites: config.socialMediaSites,
     theme: config.theme,
+    trackSocialMedia: config.trackSocialMedia,
     whitelist: '',
   });
 
@@ -31,19 +39,25 @@ export default function Options(): JSX.Element {
 
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
+      apiKey: config.apiKey,
       blacklist: '',
       loggingStyle: config.loggingStyle,
       loggingType: config.loggingType,
+      socialMediaSites: config.socialMediaSites,
       theme: config.theme,
+      trackSocialMedia: true,
       whitelist: '',
     });
     setState({
       ...state,
-      blacklist: items.blacklist,
-      loggingStyle: items.loggingStyle,
-      loggingType: items.loggingType,
-      theme: items.theme,
-      whitelist: items.whitelist,
+      apiKey: items.apiKey as string,
+      blacklist: items.blacklist as string,
+      loggingStyle: items.loggingStyle as string,
+      loggingType: items.loggingType as string,
+      socialMediaSites: items.socialMediaSites as string,
+      theme: items.theme as string,
+      trackSocialMedia: items.trackSocialMedia as boolean,
+      whitelist: items.whitelist as string,
     });
   };
 
@@ -63,32 +77,42 @@ export default function Options(): JSX.Element {
     if (state.loading) return;
     setState({ ...state, loading: true });
 
+    const apiKey = state.apiKey;
     const theme = state.theme;
     const loggingType = state.loggingType;
     const loggingStyle = state.loggingStyle;
+    const trackSocialMedia = state.trackSocialMedia;
+    const socialMediaSites = state.socialMediaSites;
     // Trimming blacklist and whitelist removes blank lines and spaces.
     const blacklist = state.blacklist.trim();
     const whitelist = state.whitelist.trim();
 
     // Sync options with google storage.
     await browser.storage.sync.set({
-      blacklist: blacklist,
-      loggingStyle: loggingStyle,
-      loggingType: loggingType,
-      theme: theme,
-      whitelist: whitelist,
+      apiKey,
+      blacklist,
+      loggingStyle,
+      loggingType,
+      socialMediaSites,
+      theme,
+      trackSocialMedia,
+      whitelist,
     });
 
     // Set state to be newly entered values.
     setState({
       ...state,
-      blacklist: blacklist,
+      apiKey,
+      blacklist,
       displayAlert: true,
-      loggingStyle: loggingStyle,
-      loggingType: loggingType,
-      theme: theme,
-      whitelist: whitelist,
+      loggingStyle,
+      loggingType,
+      socialMediaSites,
+      theme,
+      trackSocialMedia,
+      whitelist,
     });
+    await logUserIn(state.apiKey);
   };
 
   const updateBlacklistState = (sites: string) => {
@@ -142,11 +166,14 @@ export default function Options(): JSX.Element {
     );
   };
 
+  const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
+
   return (
     <div
       className="container"
       style={{
-        height: 515,
+        height: 590,
+        marginTop: 0,
         overflow: 'hidden',
         overflowY: 'scroll',
       }}
@@ -156,6 +183,21 @@ export default function Options(): JSX.Element {
           {alert()}
 
           <form className="form-horizontal">
+            <div className="form-group">
+              <label className="col-lg-2 control-label">API Key</label>
+
+              <div className="col-lg-10">
+                <input
+                  autoFocus={true}
+                  type="text"
+                  className={`form-control ${isApiKeyValid ? '' : 'border-danger'}`}
+                  placeholder="API key"
+                  value={state.apiKey}
+                  onChange={(e) => setState({ ...state, apiKey: e.target.value })}
+                />
+              </div>
+            </div>
+
             <div className="form-group">
               <label className="col-lg-2 control-label">Logging style!</label>
 
@@ -203,6 +245,68 @@ export default function Options(): JSX.Element {
                   <option value="light">Light</option>
                   <option value="dark">Dark</option>
                 </select>
+              </div>
+            </div>
+
+            <div className="form-group row">
+              <div className="col-lg-10 col-lg-offset-2 space-between align-items-center">
+                <div
+                  onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
+                >
+                  <input type="checkbox" checked={state.trackSocialMedia} />
+                  <span>Track social media sites</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  data-toggle="modal"
+                  data-target="#socialSitesModal"
+                >
+                  Sites
+                </button>
+                <div
+                  className="modal fade"
+                  id="socialSitesModal"
+                  role="dialog"
+                  aria-labelledby="socialSitesModalLabel"
+                >
+                  <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <button
+                          type="button"
+                          className="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 className="modal-title" id="socialSitesModalLabel">
+                          Social Media Sites
+                        </h4>
+                      </div>
+                      <div className="modal-body">
+                        <SitesList
+                          handleChange={(sites: string) =>
+                            setState({
+                              ...state,
+                              socialMediaSites: sites,
+                            })
+                          }
+                          label="Social"
+                          sites={state.socialMediaSites}
+                          helpText="Sites that you don't want to show in your reports."
+                          rows={5}
+                        />
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" data-dismiss="modal">
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

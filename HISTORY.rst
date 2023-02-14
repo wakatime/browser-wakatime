@@ -3,6 +3,33 @@ History
 -------
 
 
+3.0.0 (2023-02-09)
+++++++++++++++++++
+
+- chore: send project on heartbeat when navigating on github
+  `#165 <https://github.com/wakatime/chrome-wakatime/pull/165>`_
+- chore: add social media toggle to track or not social sites
+  `#163 <https://github.com/wakatime/chrome-wakatime/pull/163>`_
+- implement service worker events
+  `#162 <https://github.com/wakatime/chrome-wakatime/pull/162>`_
+- chore: Chrome Manifest V2 to V3 migration
+  `#161 <https://github.com/wakatime/chrome-wakatime/pull/161>`_
+- chore: implements send Heartbeat functionality
+  `#160 <https://github.com/wakatime/chrome-wakatime/pull/160>`_
+- chore: move api key input to options view
+  `#159 <https://github.com/wakatime/chrome-wakatime/pull/159>`_
+- chore: update bootstrap to version 5
+  `#158 <https://github.com/wakatime/chrome-wakatime/pull/158>`_
+- chore: implement options component
+  `#157 <https://github.com/wakatime/chrome-wakatime/pull/157>`_
+- chore: enable disable logging
+  `#156 <https://github.com/wakatime/chrome-wakatime/pull/156>`_
+- chore: implement new ts components
+  `#155 <https://github.com/wakatime/chrome-wakatime/pull/155>`_
+- chore: update dependencies
+  `#153 <https://github.com/wakatime/chrome-wakatime/pull/153>`_
+
+
 2.0.1 (2021-01-11)
 ++++++++++++++++++
 

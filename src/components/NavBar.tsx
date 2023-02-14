@@ -1,31 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { configLogout, setApiKey } from '../reducers/configReducer';
-import { userLogout } from '../reducers/currentUser';
-import { ApiKeyReducer, ReduxSelector } from '../types/store';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
-import apiKeyInvalid from '../utils/apiKey';
-import { fetchUserData } from '../utils/user';
 
 export default function NavBar(): JSX.Element {
-  const [state, setState] = useState({
-    apiKey: '',
-    apiKeyError: '',
-    loading: false,
-  });
-
-  const dispatch = useDispatch();
-
-  const { apiKey: apiKeyFromRedux }: ApiKeyReducer = useSelector(
-    (selector: ReduxSelector) => selector.config,
-  );
   const user: User | undefined = useSelector(
     (selector: ReduxSelector) => selector.currentUser.user,
   );
-
-  useEffect(() => {
-    setState({ ...state, apiKey: apiKeyFromRedux });
-  }, [apiKeyFromRedux]);
 
   const signedInAs = () => {
     if (user) {
@@ -130,50 +111,6 @@ export default function NavBar(): JSX.Element {
                   </a>
                 </li>
               </ul>
-            </li>
-            <li>
-              <div className="container-fluid">
-                {state.apiKeyError && (
-                  <div className="alert alert-danger" role="alert">
-                    {state.apiKeyError}
-                  </div>
-                )}
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="API key"
-                    value={state.apiKey}
-                    onChange={(e) => {
-                      const key = e.target.value;
-                      const isApiKeyInvalid = apiKeyInvalid(key);
-                      setState({ ...state, apiKey: key, apiKeyError: isApiKeyInvalid });
-                    }}
-                  />
-                  <span className="input-group-btn">
-                    <button
-                      className={`btn btn-default ${state.loading ? 'disabled' : ''}`}
-                      disabled={state.loading}
-                      type="button"
-                      data-loading-text="Loading..."
-                      onClick={async () => {
-                        if (state.apiKeyError === '' && state.apiKey !== '') {
-                          setState({ ...state, loading: true });
-                          await browser.storage.sync.set({ apiKey: state.apiKey });
-                          dispatch(configLogout());
-                          dispatch(userLogout());
-                          dispatch(setApiKey(state.apiKey));
-
-                          await fetchUserData(state.apiKey, dispatch);
-                          setState({ ...state, loading: false });
-                        }
-                      }}
-                    >
-                      Save
-                    </button>
-                  </span>
-                </div>
-              </div>
             </li>
           </ul>
         </div>

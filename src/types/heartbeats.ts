@@ -26,3 +26,8 @@ export interface Datum {
   user_agent_id: string;
   user_id: string;
 }
+
+export interface SendHeartbeat {
+  project: string | null;
+  url: string;
+}
