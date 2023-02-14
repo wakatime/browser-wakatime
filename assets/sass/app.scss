@@ -1,9 +1,9 @@
-@import "node_modules/bootswatch/dist/materia/_variables";
-@import "node_modules/bootstrap/scss/bootstrap";
-@import "node_modules/bootswatch/dist/materia/_bootswatch";
-@import "node_modules/font-awesome/scss/font-awesome";
-@import "variables";
-@import "partials/_animations";
+@import 'node_modules/bootswatch/dist/materia/_variables';
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootswatch/dist/materia/_bootswatch';
+@import 'node_modules/font-awesome/scss/font-awesome';
+@import 'variables';
+@import 'partials/_animations';
 
 body {
   min-width: 357px;
