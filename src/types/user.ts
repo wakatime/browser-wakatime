@@ -52,3 +52,11 @@ export interface CurrentUser {
   pending?: boolean;
   user?: User;
 }
+
+export interface ApiKeyPayload {
+  data: ApiKey;
+}
+
+export interface ApiKey {
+  api_key: string;
+}

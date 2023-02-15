@@ -34,6 +34,13 @@ export const fetchUserData = async (
       apiKey: config.apiKey,
     });
     apiKey = storage.apiKey as string;
+    if (!apiKey) {
+      apiKey = await WakaTimeCore.fetchApiKey();
+      if (apiKey) {
+        await browser.storage.sync.set({ apiKey });
+      }
+    }
+
     dispatch(setApiKey(apiKey));
   }
 
