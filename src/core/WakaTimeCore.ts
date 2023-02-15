@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import moment from 'moment';
 import browser, { Tabs } from 'webextension-polyfill';
 import { IDBPDatabase, openDB } from 'idb';
-import { AxiosUserResponse, User } from '../types/user';
+import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
 import config from '../config/config';
 import { SummariesPayload, GrandTotal } from '../types/summaries';
 import changeExtensionState from '../utils/changeExtensionState';
@@ -61,6 +61,22 @@ class WakaTimeCore {
       },
     );
     return summariesAxiosPayload.data.data[0].grand_total;
+  }
+
+  /**
+   * Fetches the api token for logged users in wakatime website
+   *
+   * @returns {*}
+   */
+  async fetchApiKey(): Promise<string> {
+    try {
+      const apiKeyResponse: AxiosResponse<ApiKeyPayload> = await axios.post(
+        `${config.currentUserApiUrl}/get_api_key`,
+      );
+      return apiKeyResponse.data.data.api_key;
+    } catch (err: unknown) {
+      return '';
+    }
   }
 
   /**
