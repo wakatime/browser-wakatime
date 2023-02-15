@@ -2,6 +2,7 @@
   "name": "chrome-wakatime",
   "private": true,
   "scripts": {
+    "build": "clap build",
     "dev": "clap dev",
     "postinstall": "clap postinstall",
     "lint": "clap lint",
