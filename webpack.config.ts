@@ -19,7 +19,7 @@ const browserPolyfill = join(
 );
 const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Configuration => {
   const cfg: webpack.Configuration = {
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     entry: {
       background: [join(srcFolder, 'background.ts')],
       devtools: [join(srcFolder, 'devtools.ts')],
