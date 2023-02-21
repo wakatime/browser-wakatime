@@ -88,7 +88,6 @@ load({
   'remotedev-server': exec('remotedev --hostname=localhost --port=8000'),
   test: ['build', 'lint', 'test-jest'],
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
-  'test-jest-update': exec('jest -u'),
   watch: concurrent('watch-jest', 'webpack:watch'),
   'watch-jest': exec('jest --watch'),
   'web-ext:run:chrome': [
