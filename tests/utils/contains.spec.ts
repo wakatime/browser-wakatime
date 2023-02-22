@@ -1,7 +1,7 @@
-var chai = require('chai');
-var expect = chai.expect;
+import chai from 'chai';
+import contains from '../../src/utils/contains';
 
-var contains = require('../../assets/js/helpers/contains');
+const expect = chai.expect;
 
 describe('contains', function () {
   it('should be a function', function () {
@@ -9,16 +9,16 @@ describe('contains', function () {
   });
 
   it('should match url against blacklist and return true', function () {
-    var list = 'localhost\ntest.com';
+    const list = 'localhost\ntest.com';
 
-    var url = 'http://localhost/fooapp';
+    const url = 'http://localhost/fooapp';
     expect(contains(url, list)).to.equal(true);
   });
 
   it('should not match url against blacklist and return false', function () {
-    var list = 'localhost2\ntest.com';
+    const list = 'localhost2\ntest.com';
 
-    var url = 'http://localhost/fooapp';
+    const url = 'http://localhost/fooapp';
     expect(contains(url, list)).to.equal(false);
   });
 });

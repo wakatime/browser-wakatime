@@ -1,9 +1,18 @@
-var chai = require('chai');
-var sinon = require('sinon-chai');
-var chrome = require('sinon-chrome');
-var expect = chai.expect;
+import chai from 'chai';
+import changeExtensionTooltip from '../../src/utils/changeExtensionTooltip';
 
-var changeExtensionTooltip = require('../../assets/js/helpers/changeExtensionTooltip');
+const expect = chai.expect;
+
+jest.mock('webextension-polyfill', () => {
+  return {
+    runtime: {
+      getManifest: () => {
+        return { version: 'test-version' };
+      },
+    },
+  };
+});
+
 describe('changeExtensionTooltip', function () {
   it('should be a function', function () {
     expect(changeExtensionTooltip).to.be.a('function');

@@ -1,7 +1,8 @@
-var chai = require('chai');
-var sinon = require('sinon');
-var chrome = require('sinon-chrome');
-var expect = chai.expect;
+import chai from 'chai';
+import sinon from 'sinon';
+import chrome from 'sinon-chrome';
+
+const expect = chai.expect;
 
 describe('Chrome Dev Tools', function () {
   it('should work', function () {
