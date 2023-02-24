@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import config, { ApiStates } from '../config/config';
 import changeExtensionIcon from './changeExtensionIcon';
 import changeExtensionTooltip from './changeExtensionTooltip';
