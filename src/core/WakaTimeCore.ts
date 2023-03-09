@@ -337,6 +337,7 @@ class WakaTimeCore {
     try {
       const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, {
         body: JSON.stringify(payload),
+        credentials: 'omit',
         method: 'POST',
       });
       await response.json();
