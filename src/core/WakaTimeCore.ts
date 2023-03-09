@@ -1,15 +1,15 @@
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
 import axios, { AxiosResponse } from 'axios';
+import { IDBPDatabase, openDB } from 'idb';
 import moment from 'moment';
 import browser, { Tabs } from 'webextension-polyfill';
-import { IDBPDatabase, openDB } from 'idb';
-import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
 import config from '../config/config';
-import { SummariesPayload, GrandTotal } from '../types/summaries';
+import { SendHeartbeat } from '../types/heartbeats';
+import { GrandTotal, SummariesPayload } from '../types/summaries';
+import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
-import { SendHeartbeat } from '../types/heartbeats';
 import getDomainFromUrl from '../utils/getDomainFromUrl';
 
 class WakaTimeCore {
@@ -223,6 +223,16 @@ class WakaTimeCore {
       if (startsWithUrl) {
         return {
           project: projectName,
+          url: schema + urlFromLine,
+        };
+      }
+
+      const lineRe = new RegExp(cleanLine.replace('.', '.').replace('*', '.*'));
+
+      // If url matches the current line return true
+      if (lineRe.test(url)) {
+        return {
+          project: null,
           url: schema + urlFromLine,
         };
       }

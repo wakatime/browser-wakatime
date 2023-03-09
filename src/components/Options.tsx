@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { logUserIn } from '../utils/user';
@@ -253,7 +253,7 @@ export default function Options(): JSX.Element {
                 <div
                   onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
                 >
-                  <input type="checkbox" checked={state.trackSocialMedia} />
+                  <input type="checkbox" defaultChecked={state.trackSocialMedia} />
                   <span>Track social media sites</span>
                 </div>
                 <button
