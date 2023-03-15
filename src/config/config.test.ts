@@ -32,7 +32,7 @@ describe('wakatime config', () => {
           "notLogging": "gray",
           "notSignedIn": "red",
         },
-        "currentUserApiUrl": "/v1/users/current",
+        "currentUserApiEndPoint": "/v1/users/current",
         "detectionIntervalInSeconds": 60,
         "devSites": "https://codepen.io/
       https://www.codewars.com/
@@ -44,7 +44,7 @@ describe('wakatime config', () => {
       https://stackoverflow.com/
       https://www.udemy.com/
       https://www.w3schools.com/",
-        "heartbeatApiUrl": "/v1/users/current/heartbeats",
+        "heartbeatApiEndPoint": "/v1/users/current/heartbeats",
         "hostname": "",
         "loggingEnabled": true,
         "loggingStyle": "blacklist",
@@ -68,7 +68,7 @@ describe('wakatime config', () => {
           "blacklisted",
           "whitelisted",
         ],
-        "summariesApiUrl": "/v1/users/current/summaries",
+        "summariesApiEndPoint": "/v1/users/current/summaries",
         "theme": "light",
         "tooltips": {
           "allGood": "",

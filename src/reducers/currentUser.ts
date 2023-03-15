@@ -17,10 +17,10 @@ export const fetchCurrentUser = createAsyncThunk<User, string>(
   async (api_key = '') => {
     const items = await browser.storage.sync.get({
       apiUrl: config.apiUrl,
-      currentUserApiUrl: config.currentUserApiUrl,
+      currentUserApiEndPoint: config.currentUserApiEndPoint,
     });
     const userPayload: AxiosResponse<UserPayload> = await axios.get(
-      `${items.apiUrl}${items.currentUserApiUrl}`,
+      `${items.apiUrl}${items.currentUserApiEndPoint}`,
       {
         params: { api_key },
       },

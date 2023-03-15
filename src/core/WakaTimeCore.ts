@@ -51,12 +51,12 @@ class WakaTimeCore {
   async getTotalTimeLoggedToday(api_key = ''): Promise<GrandTotal> {
     const items = await browser.storage.sync.get({
       apiUrl: config.apiUrl,
-      summariesApiUrl: config.summariesApiUrl,
+      summariesApiEndPoint: config.summariesApiEndPoint,
     });
 
     const today = moment().format('YYYY-MM-DD');
     const summariesAxiosPayload: AxiosResponse<SummariesPayload> = await axios.get(
-      `${items.apiUrl}${items.summariesApiUrl}`,
+      `${items.apiUrl}${items.summariesApiEndPoint}`,
       {
         params: {
           api_key,
@@ -77,11 +77,11 @@ class WakaTimeCore {
     try {
       const items = await browser.storage.sync.get({
         apiUrl: config.apiUrl,
-        currentUserApiUrl: config.currentUserApiUrl,
+        currentUserApiEndPoint: config.currentUserApiEndPoint,
       });
 
       const apiKeyResponse: AxiosResponse<ApiKeyPayload> = await axios.post(
-        `${items.apiUrl}${items.currentUserApiUrl}/get_api_key`,
+        `${items.apiUrl}${items.currentUserApiEndPoint}/get_api_key`,
       );
       return apiKeyResponse.data.data.api_key;
     } catch (err: unknown) {
@@ -97,10 +97,10 @@ class WakaTimeCore {
   async checkAuth(api_key = ''): Promise<User> {
     const items = await browser.storage.sync.get({
       apiUrl: config.apiUrl,
-      currentUserApiUrl: config.currentUserApiUrl,
+      currentUserApiEndPoint: config.currentUserApiEndPoint,
     });
     const userPayload: AxiosResponse<AxiosUserResponse> = await axios.get(
-      `${items.apiUrl}${items.currentUserApiUrl}`,
+      `${items.apiUrl}${items.currentUserApiEndPoint}`,
       { params: { api_key } },
     );
     return userPayload.data.data;
@@ -361,7 +361,7 @@ class WakaTimeCore {
     try {
       const items = await browser.storage.sync.get({
         apiUrl: config.apiUrl,
-        heartbeatApiUrl: config.heartbeatApiUrl,
+        heartbeatApiEndPoint: config.heartbeatApiEndPoint,
       });
 
       const request: RequestInit = {
@@ -375,7 +375,7 @@ class WakaTimeCore {
         };
       }
       const response = await fetch(
-        `${items.apiUrl}${items.heartbeatApiUrl}?api_key=${apiKey}`,
+        `${items.apiUrl}${items.heartbeatApiEndPoint}?api_key=${apiKey}`,
         request,
       );
       await response.json();
