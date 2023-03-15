@@ -11,6 +11,7 @@ interface State {
   apiKey: string;
   blacklist: string;
   displayAlert: boolean;
+  hostname: string;
   loading: boolean;
   loggingStyle: string;
   loggingType: string;
@@ -26,6 +27,7 @@ export default function Options(): JSX.Element {
     apiKey: '',
     blacklist: '',
     displayAlert: false,
+    hostname: '',
     loading: false,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
@@ -41,6 +43,7 @@ export default function Options(): JSX.Element {
     const items = await browser.storage.sync.get({
       apiKey: config.apiKey,
       blacklist: '',
+      hostname: config.hostname,
       loggingStyle: config.loggingStyle,
       loggingType: config.loggingType,
       socialMediaSites: config.socialMediaSites,
@@ -52,6 +55,7 @@ export default function Options(): JSX.Element {
       ...state,
       apiKey: items.apiKey as string,
       blacklist: items.blacklist as string,
+      hostname: items.hostname as string,
       loggingStyle: items.loggingStyle as string,
       loggingType: items.loggingType as string,
       socialMediaSites: items.socialMediaSites as string,
@@ -79,6 +83,7 @@ export default function Options(): JSX.Element {
 
     const apiKey = state.apiKey;
     const theme = state.theme;
+    const hostname = state.hostname;
     const loggingType = state.loggingType;
     const loggingStyle = state.loggingStyle;
     const trackSocialMedia = state.trackSocialMedia;
@@ -91,6 +96,7 @@ export default function Options(): JSX.Element {
     await browser.storage.sync.set({
       apiKey,
       blacklist,
+      hostname,
       loggingStyle,
       loggingType,
       socialMediaSites,
@@ -105,6 +111,7 @@ export default function Options(): JSX.Element {
       apiKey,
       blacklist,
       displayAlert: true,
+      hostname,
       loggingStyle,
       loggingType,
       socialMediaSites,
@@ -245,6 +252,24 @@ export default function Options(): JSX.Element {
                   <option value="light">Light</option>
                   <option value="dark">Dark</option>
                 </select>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="theme" className="col-lg-2 control-label">
+                Hostname
+              </label>
+
+              <div className="col-lg-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state.hostname}
+                  onChange={(e) => setState({ ...state, hostname: e.target.value })}
+                />
+                <span className="help-block">
+                  Optional name of local machine. By default &apos;Unknown Hostname&apos;.
+                </span>
               </div>
             </div>
 

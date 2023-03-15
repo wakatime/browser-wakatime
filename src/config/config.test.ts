@@ -44,6 +44,7 @@ describe('wakatime config', () => {
       https://www.udemy.com/
       https://www.w3schools.com/",
         "heartbeatApiUrl": "https://wakatime.com/api/v1/users/current/heartbeats",
+        "hostname": "",
         "loggingEnabled": true,
         "loggingStyle": "blacklist",
         "loggingType": "domain",
