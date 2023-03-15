@@ -111,6 +111,7 @@ class WakaTimeCore {
     }
     const items = await browser.storage.sync.get({
       blacklist: '',
+      hostname: config.hostname,
       loggingEnabled: config.loggingEnabled,
       loggingStyle: config.loggingStyle,
       socialMediaSites: config.socialMediaSites,
@@ -142,6 +143,7 @@ class WakaTimeCore {
           if (!contains(currentActiveTab.url as string, items.blacklist as string)) {
             await this.sendHeartbeat(
               {
+                hostname: items.hostname as string,
                 project,
                 url: currentActiveTab.url as string,
               },
@@ -160,7 +162,11 @@ class WakaTimeCore {
           );
           if (heartbeat.url) {
             await this.sendHeartbeat(
-              { ...heartbeat, project: heartbeat.project ?? project },
+              {
+                ...heartbeat,
+                hostname: items.hostname as string,
+                project: heartbeat.project ?? project,
+              },
               apiKey,
             );
           } else {
@@ -260,12 +266,12 @@ class WakaTimeCore {
     if (loggingType == 'domain') {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
       payload = this.preparePayload(heartbeat, 'domain');
-      await this.sendPostRequestToApi(payload, apiKey);
+      await this.sendPostRequestToApi(payload, apiKey, heartbeat.hostname);
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
       payload = this.preparePayload(heartbeat, 'url');
-      await this.sendPostRequestToApi(payload, apiKey);
+      await this.sendPostRequestToApi(payload, apiKey, heartbeat.hostname);
     }
   }
 
@@ -333,13 +339,23 @@ class WakaTimeCore {
    * @param method
    * @returns {*}
    */
-  async sendPostRequestToApi(payload: Record<string, unknown>, apiKey = ''): Promise<void> {
+  async sendPostRequestToApi(
+    payload: Record<string, unknown>,
+    apiKey = '',
+    hostname = '',
+  ): Promise<void> {
     try {
-      const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, {
+      const request: RequestInit = {
         body: JSON.stringify(payload),
         credentials: 'omit',
         method: 'POST',
-      });
+      };
+      if (hostname) {
+        request.headers = {
+          'X-Machine-Name': hostname,
+        };
+      }
+      const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, request);
       await response.json();
     } catch (err: unknown) {
       if (this.db) {

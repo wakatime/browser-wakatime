@@ -70,6 +70,8 @@ export interface Config {
    * Url to which to send the heartbeat
    */
   heartbeatApiUrl: string;
+
+  hostname: string;
   /**
    * Is logging enabled
    */
@@ -133,6 +135,8 @@ const config: Config = {
 
   heartbeatApiUrl:
     process.env.HEART_BEAT_API_URL ?? 'https://wakatime.com/api/v1/users/current/heartbeats',
+
+  hostname: '',
 
   loggingEnabled: true,
 
