@@ -25,13 +25,14 @@ describe('wakatime config', () => {
           },
         },
         "apiKey": "",
+        "apiUrl": "https://wakatime.com/api",
         "colors": {
           "allGood": "",
           "lightTheme": "white",
           "notLogging": "gray",
           "notSignedIn": "red",
         },
-        "currentUserApiUrl": "https://wakatime.com/api/v1/users/current",
+        "currentUserApiUrl": "/v1/users/current",
         "detectionIntervalInSeconds": 60,
         "devSites": "https://codepen.io/
       https://www.codewars.com/
@@ -43,7 +44,7 @@ describe('wakatime config', () => {
       https://stackoverflow.com/
       https://www.udemy.com/
       https://www.w3schools.com/",
-        "heartbeatApiUrl": "https://wakatime.com/api/v1/users/current/heartbeats",
+        "heartbeatApiUrl": "/v1/users/current/heartbeats",
         "hostname": "",
         "loggingEnabled": true,
         "loggingStyle": "blacklist",
@@ -67,7 +68,7 @@ describe('wakatime config', () => {
           "blacklisted",
           "whitelisted",
         ],
-        "summariesApiUrl": "https://wakatime.com/api/v1/users/current/summaries",
+        "summariesApiUrl": "/v1/users/current/summaries",
         "theme": "light",
         "tooltips": {
           "allGood": "",

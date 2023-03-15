@@ -9,6 +9,7 @@ interface State {
   alertText: string;
   alertType: SuccessOrFailType;
   apiKey: string;
+  apiUrl: string;
   blacklist: string;
   displayAlert: boolean;
   hostname: string;
@@ -25,6 +26,7 @@ export default function Options(): JSX.Element {
     alertText: config.alert.success.text,
     alertType: config.alert.success.type,
     apiKey: '',
+    apiUrl: config.apiUrl,
     blacklist: '',
     displayAlert: false,
     hostname: '',
@@ -42,6 +44,7 @@ export default function Options(): JSX.Element {
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
       apiKey: config.apiKey,
+      apiUrl: config.apiUrl,
       blacklist: '',
       hostname: config.hostname,
       loggingStyle: config.loggingStyle,
@@ -54,6 +57,7 @@ export default function Options(): JSX.Element {
     setState({
       ...state,
       apiKey: items.apiKey as string,
+      apiUrl: items.apiUrl as string,
       blacklist: items.blacklist as string,
       hostname: items.hostname as string,
       loggingStyle: items.loggingStyle as string,
@@ -82,6 +86,7 @@ export default function Options(): JSX.Element {
     setState({ ...state, loading: true });
 
     const apiKey = state.apiKey;
+    const apiUrl = state.apiUrl;
     const theme = state.theme;
     const hostname = state.hostname;
     const loggingType = state.loggingType;
@@ -95,6 +100,7 @@ export default function Options(): JSX.Element {
     // Sync options with google storage.
     await browser.storage.sync.set({
       apiKey,
+      apiUrl,
       blacklist,
       hostname,
       loggingStyle,
@@ -109,6 +115,7 @@ export default function Options(): JSX.Element {
     setState({
       ...state,
       apiKey,
+      apiUrl,
       blacklist,
       displayAlert: true,
       hostname,
@@ -270,6 +277,23 @@ export default function Options(): JSX.Element {
                 <span className="help-block">
                   Optional name of local machine. By default &apos;Unknown Hostname&apos;.
                 </span>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="theme" className="col-lg-2 control-label">
+                API Url
+              </label>
+
+              <div className="col-lg-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state.apiUrl}
+                  onChange={(e) => setState({ ...state, apiUrl: e.target.value })}
+                  placeholder="https://wakatime.com/api"
+                />
+                <span className="help-block">https://wakatime.com/api</span>
               </div>
             </div>
 

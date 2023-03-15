@@ -53,6 +53,7 @@ export interface Config {
    * API key use to query wakatime  api
    */
   apiKey: '';
+  apiUrl: string;
   colors: Colors;
   /**
    * Url from which to detect if the user is logged in
@@ -118,6 +119,8 @@ const config: Config = {
 
   apiKey: '',
 
+  apiUrl: process.env.API_URL ?? 'https://wakatime.com/api',
+
   colors: {
     allGood: '',
     lightTheme: 'white',
@@ -125,16 +128,14 @@ const config: Config = {
     notSignedIn: 'red',
   },
 
-  currentUserApiUrl:
-    process.env.CURRENT_USER_API_URL ?? 'https://wakatime.com/api/v1/users/current',
+  currentUserApiUrl: process.env.CURRENT_USER_API_URL ?? '/v1/users/current',
 
   detectionIntervalInSeconds: 60,
 
   devSites:
     'https://codepen.io/\nhttps://www.codewars.com/\nhttps://dev.to/\nhttps://github.com/\nhttps://www.hackerrank.com/\nhttps://leetcode.com/\nhttps://developer.mozilla.org/en-US/\nhttps://stackoverflow.com/\nhttps://www.udemy.com/\nhttps://www.w3schools.com/',
 
-  heartbeatApiUrl:
-    process.env.HEART_BEAT_API_URL ?? 'https://wakatime.com/api/v1/users/current/heartbeats',
+  heartbeatApiUrl: process.env.HEART_BEAT_API_URL ?? '/v1/users/current/heartbeats',
 
   hostname: '',
 
@@ -152,8 +153,7 @@ const config: Config = {
 
   states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
 
-  summariesApiUrl:
-    process.env.SUMMARIES_API_URL ?? 'https://wakatime.com/api/v1/users/current/summaries',
+  summariesApiUrl: process.env.SUMMARIES_API_URL ?? '/v1/users/current/summaries',
 
   theme: 'light',
 
