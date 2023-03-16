@@ -57,7 +57,7 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       new webpack.DefinePlugin({
         ['process.env.API_URL']: JSON.stringify('https://wakatime.com/api'),
         ['process.env.CURRENT_USER_API_URL']: JSON.stringify('/v1/users/current'),
-        ['process.env.HEART_BEAT_API_URL']: JSON.stringify('/v1/users/current/heartbeats'),
+        ['process.env.HEARTBEAT_API_URL']: JSON.stringify('/v1/users/current/heartbeats'),
         ['process.env.LOGOUT_USER_URL']: JSON.stringify('https://wakatime.com/logout'),
         ['process.env.NODE_ENV']: JSON.stringify(isProd ? 'production' : 'development'),
         ['process.env.SUMMARIES_API_URL']: JSON.stringify('/v1/users/current/summaries'),

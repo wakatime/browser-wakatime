@@ -135,7 +135,7 @@ const config: Config = {
   devSites:
     'https://codepen.io/\nhttps://www.codewars.com/\nhttps://dev.to/\nhttps://github.com/\nhttps://www.hackerrank.com/\nhttps://leetcode.com/\nhttps://developer.mozilla.org/en-US/\nhttps://stackoverflow.com/\nhttps://www.udemy.com/\nhttps://www.w3schools.com/',
 
-  heartbeatApiEndPoint: process.env.HEART_BEAT_API_URL ?? '/v1/users/current/heartbeats',
+  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/v1/users/current/heartbeats',
 
   hostname: '',
 
