@@ -8,6 +8,7 @@ import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
+import { IS_FIREFOX } from '../utils';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
 import getDomainFromUrl from '../utils/getDomainFromUrl';
@@ -312,7 +313,7 @@ class WakaTimeCore {
   preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
     let browserName = 'chrome';
     let userAgent;
-    if (navigator.userAgent.includes('Firefox')) {
+    if (IS_FIREFOX) {
       browserName = 'firefox';
       userAgent = navigator.userAgent.match(/Firefox\/\S+/g)![0];
     } else {

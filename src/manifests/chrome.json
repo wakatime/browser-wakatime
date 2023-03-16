@@ -14,7 +14,7 @@
   "description": "Automatic time tracking for Chrome.",
   "devtools_page": "devtools.html",
   "homepage_url": "https://wakatime.com",
-  "host_permissions": ["https://api.wakatime.com/*", "https://wakatime.com/*"],
+  "host_permissions": ["<all_urls>"],
   "icons": {
     "16": "graphics/wakatime-logo-16.png",
     "48": "graphics/wakatime-logo-48.png",
@@ -25,6 +25,6 @@
   "options_ui": {
     "page": "options.html"
   },
-  "permissions": ["alarms", "tabs", "storage", "idle"],
-  "version": "3.0.7"
+  "permissions": ["alarms", "tabs", "storage", "idle", "scripting"],
+  "version": "3.0.8"
 }

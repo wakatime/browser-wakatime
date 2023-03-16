@@ -16,9 +16,6 @@ It is suggested to install this globally[@xarc/run-cli](https://www.npmjs.com/pa
 This will allow you to run varios tasks
 ![xrun auto complete](./screenshots/xrun-autocomplete.png)
 
-In devmode you can open [local remote devtools](http://localhost:8000)
-![remote redux devtools](./screenshots/remote-redux-devtools.png)
-
 ## Development instructions
 
 ```
