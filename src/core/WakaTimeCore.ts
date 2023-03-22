@@ -8,7 +8,8 @@ import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import { IS_FIREFOX } from '../utils';
+import { generateProjectFromDevSites, IS_FIREFOX } from '../utils';
+import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
 import getDomainFromUrl from '../utils/getDomainFromUrl';
@@ -93,20 +94,12 @@ class WakaTimeCore {
     return userPayload.data.data;
   }
 
-  async getApiKey(): Promise<string> {
-    const storage = await browser.storage.sync.get({
-      apiKey: config.apiKey,
-    });
-    const apiKey = storage.apiKey as string;
-    return apiKey;
-  }
-
   /**
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to WakaTime for logging.
    */
   async recordHeartbeat(): Promise<void> {
-    const apiKey = await this.getApiKey();
+    const apiKey = await getApiKey();
     if (!apiKey) {
       return changeExtensionState('notLogging');
     }
@@ -138,7 +131,7 @@ class WakaTimeCore {
         }
 
         // Checks dev websites
-        const project = this.generateProjectFromDevSites(currentActiveTab.url as string);
+        const project = generateProjectFromDevSites(currentActiveTab.url as string);
 
         if (items.loggingStyle == 'blacklist') {
           if (!contains(currentActiveTab.url as string, items.blacklist as string)) {
@@ -290,17 +283,6 @@ class WakaTimeCore {
     return items.loggingType;
   }
 
-  generateProjectFromDevSites(url: string): string | null {
-    const githubUrls = ['https://github.com/', 'https://github.dev/'];
-    for (const githubUrl of githubUrls) {
-      if (url.startsWith(githubUrl)) {
-        const newUrl = url.replace(githubUrl, '');
-        return newUrl.split('/')[1] || null;
-      }
-    }
-    return null;
-  }
-
   /**
    * Creates payload for the heartbeat and returns it as JSON.
    *
@@ -372,7 +354,7 @@ class WakaTimeCore {
    * @param requests
    */
   async sendCachedHeartbeatsRequest(): Promise<void> {
-    const apiKey = await this.getApiKey();
+    const apiKey = await getApiKey();
     if (!apiKey) {
       return changeExtensionState('notLogging');
     }

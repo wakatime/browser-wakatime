@@ -25,6 +25,7 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       devtools: [join(srcFolder, 'devtools.ts')],
       options: [join(srcFolder, 'options.tsx')],
       popup: [join(srcFolder, 'popup.tsx')],
+      wakatimeScript: [join(srcFolder, 'wakatimeScript.ts')],
     },
     // mode: isProd ? 'production' : 'development',
     module: {

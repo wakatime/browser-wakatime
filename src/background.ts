@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill';
 import WakaTimeCore from './core/WakaTimeCore';
-import { IS_CHROME } from './utils';
 
 // Add a listener to resolve alarms
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -27,11 +26,6 @@ browser.tabs.onActivated.addListener(async () => {
   await WakaTimeCore.recordHeartbeat();
 });
 
-function injectedFunction() {
-  console.log('doc', document);
-  console.log('url', document.URL);
-}
-
 /**
  * Whenever a active window is changed it records a heartbeat with the active tab url.
  */
@@ -48,19 +42,6 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
  */
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (changeInfo.status === 'complete') {
-    console.log('COMPLETED', tabId);
-    try {
-      if (IS_CHROME) {
-        await browser.scripting.executeScript({
-          func: injectedFunction,
-          target: { tabId },
-        });
-      } else {
-        injectedFunction();
-      }
-    } catch (error: unknown) {
-      console.log('Can not mount script yet');
-    }
     // Get current tab URL.
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
     // If tab updated is the same as active tab
