@@ -119,7 +119,7 @@ const config: Config = {
 
   apiKey: '',
 
-  apiUrl: process.env.API_URL ?? 'https://wakatime.com/api',
+  apiUrl: process.env.API_URL ?? 'https://wakatime.com/api/v1',
 
   colors: {
     allGood: '',
@@ -128,14 +128,14 @@ const config: Config = {
     notSignedIn: 'red',
   },
 
-  currentUserApiEndPoint: process.env.CURRENT_USER_API_URL ?? '/v1/users/current',
+  currentUserApiEndPoint: process.env.CURRENT_USER_API_URL ?? '/users/current',
 
   detectionIntervalInSeconds: 60,
 
   devSites:
     'https://codepen.io/\nhttps://www.codewars.com/\nhttps://dev.to/\nhttps://github.com/\nhttps://www.hackerrank.com/\nhttps://leetcode.com/\nhttps://developer.mozilla.org/en-US/\nhttps://stackoverflow.com/\nhttps://www.udemy.com/\nhttps://www.w3schools.com/',
 
-  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/v1/users/current/heartbeats',
+  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats',
 
   hostname: '',
 
@@ -153,7 +153,7 @@ const config: Config = {
 
   states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
 
-  summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/v1/users/current/summaries',
+  summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/users/current/summaries',
 
   theme: 'light',
 
