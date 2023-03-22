@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import WakaTimeCore from './core/WakaTimeCore';
+import { IS_CHROME } from './utils';
 
 // Add a listener to resolve alarms
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -49,10 +50,14 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (changeInfo.status === 'complete') {
     console.log('COMPLETED', tabId);
     try {
-      await browser.scripting.executeScript({
-        func: injectedFunction,
-        target: { tabId },
-      });
+      if (IS_CHROME) {
+        await browser.scripting.executeScript({
+          func: injectedFunction,
+          target: { tabId },
+        });
+      } else {
+        injectedFunction();
+      }
     } catch (error: unknown) {
       console.log('Can not mount script yet');
     }

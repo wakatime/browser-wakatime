@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { ApiKeyReducer, ReduxSelector } from '../types/store';
-import { fetchUserData } from '../utils/user';
-import apiKeyInvalid from '../utils/apiKey';
+import { useDispatch, useSelector } from 'react-redux';
 import config from '../config/config';
+import { ApiKeyReducer, ReduxSelector } from '../types/store';
+import apiKeyInvalid from '../utils/apiKey';
+import { fetchUserData } from '../utils/user';
 import Alert from './Alert';
-import NavBar from './NavBar';
 import MainList from './MainList';
+import NavBar from './NavBar';
 
 export default function WakaTime(): JSX.Element {
   const dispatch = useDispatch();
