@@ -281,3 +281,9 @@ document.body.addEventListener(
   debounce(() => init()),
   true,
 );
+
+document.body.addEventListener(
+  'keypress',
+  debounce(() => init()),
+  true,
+);
