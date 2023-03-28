@@ -17,6 +17,13 @@
       "strict_min_version": "48.0"
     }
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["wakatimeScript.js"],
+      "run_at": "document_end"
+    }
+  ],
   "description": "Automatic time tracking for Chrome.",
   "devtools_page": "devtools.html",
   "homepage_url": "https://wakatime.com",
@@ -39,5 +46,5 @@
     "storage",
     "idle"
   ],
-  "version": "3.0.8"
+  "version": "3.0.9"
 }

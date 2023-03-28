@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import config from '../config/config';
+import { IS_FIREFOX } from '.';
 
 /**
  * It changes the extension title
@@ -13,7 +14,7 @@ export default async function changeExtensionTooltip(text: string): Promise<void
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (browser.browserAction) {
+  if (IS_FIREFOX) {
     await browser.browserAction.setTitle({ title: text }); // Support for FF with manifest V2
   } else {
     await browser.action.setTitle({ title: text }); // Support for Chrome with manifest V3

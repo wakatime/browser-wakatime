@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import config from '../config/config';
+import { IS_FIREFOX } from '.';
 
 type ColorIconTypes = 'gray' | 'red' | 'white' | '';
 
@@ -21,7 +22,7 @@ export default async function changeExtensionIcon(color?: ColorIconTypes): Promi
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (browser.browserAction) {
+  if (IS_FIREFOX) {
     await browser.browserAction.setIcon({ path: path }); // Support for FF with manifest V2
   } else {
     await browser.action.setIcon({ path: path }); // Support for Chrome with manifest V3
