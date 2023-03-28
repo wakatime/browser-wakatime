@@ -7,6 +7,8 @@ import { getApiKey } from './utils/apiKey';
 import contains from './utils/contains';
 import getDomainFromUrl from './utils/getDomainFromUrl';
 
+const twoMinutes = 120000;
+
 /**
  * Creates an array from list using \n as delimiter
  * and checks if any element in list is contained in the url.
@@ -260,4 +262,22 @@ const init = async () => {
   }
 };
 
-document.body.addEventListener('click', init, true);
+function debounce(func: () => void, timeout = twoMinutes) {
+  let timer: NodeJS.Timeout | undefined;
+  return () => {
+    if (timer) {
+      return;
+    }
+    func();
+    timer = setTimeout(() => {
+      clearTimeout(timer);
+      timer = undefined;
+    }, timeout);
+  };
+}
+
+document.body.addEventListener(
+  'click',
+  debounce(() => init()),
+  true,
+);
