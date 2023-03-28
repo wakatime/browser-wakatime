@@ -1,7 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
-import { CurrentUser, User, UserPayload } from '../types/user';
+import browser from 'webextension-polyfill';
 import config from '../config/config';
+import { CurrentUser, User, UserPayload } from '../types/user';
 
 interface setUserAction {
   payload: User | undefined;
@@ -14,9 +15,16 @@ export const name: NameType = 'currentUser';
 export const fetchCurrentUser = createAsyncThunk<User, string>(
   `[${name}]`,
   async (api_key = '') => {
-    const userPayload: AxiosResponse<UserPayload> = await axios.get(config.currentUserApiUrl, {
-      params: { api_key },
+    const items = await browser.storage.sync.get({
+      apiUrl: config.apiUrl,
+      currentUserApiEndPoint: config.currentUserApiEndPoint,
     });
+    const userPayload: AxiosResponse<UserPayload> = await axios.get(
+      `${items.apiUrl}${items.currentUserApiEndPoint}`,
+      {
+        params: { api_key },
+      },
+    );
     return userPayload.data.data;
   },
 );

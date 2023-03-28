@@ -35,7 +35,7 @@ export default function WakaTime(): JSX.Element {
       {isApiKeyValid && extensionState === 'notSignedIn' && (
         <Alert
           type={config.alert.failure.type}
-          text={'Invalid api key'}
+          text={'Invalid API key or API url'}
           onClick={() => browser.runtime.openOptionsPage()}
           style={{ cursor: 'pointer' }}
         />
