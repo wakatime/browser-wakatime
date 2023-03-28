@@ -49,9 +49,14 @@ class WakaTimeCore {
   }
 
   async getTotalTimeLoggedToday(api_key = ''): Promise<GrandTotal> {
+    const items = await browser.storage.sync.get({
+      apiUrl: config.apiUrl,
+      summariesApiEndPoint: config.summariesApiEndPoint,
+    });
+
     const today = moment().format('YYYY-MM-DD');
     const summariesAxiosPayload: AxiosResponse<SummariesPayload> = await axios.get(
-      config.summariesApiUrl,
+      `${items.apiUrl}${items.summariesApiEndPoint}`,
       {
         params: {
           api_key,
@@ -70,8 +75,13 @@ class WakaTimeCore {
    */
   async fetchApiKey(): Promise<string> {
     try {
+      const items = await browser.storage.sync.get({
+        apiUrl: config.apiUrl,
+        currentUserApiEndPoint: config.currentUserApiEndPoint,
+      });
+
       const apiKeyResponse: AxiosResponse<ApiKeyPayload> = await axios.post(
-        `${config.currentUserApiUrl}/get_api_key`,
+        `${items.apiUrl}${items.currentUserApiEndPoint}/get_api_key`,
       );
       return apiKeyResponse.data.data.api_key;
     } catch (err: unknown) {
@@ -85,8 +95,12 @@ class WakaTimeCore {
    * @returns {*}
    */
   async checkAuth(api_key = ''): Promise<User> {
+    const items = await browser.storage.sync.get({
+      apiUrl: config.apiUrl,
+      currentUserApiEndPoint: config.currentUserApiEndPoint,
+    });
     const userPayload: AxiosResponse<AxiosUserResponse> = await axios.get(
-      config.currentUserApiUrl,
+      `${items.apiUrl}${items.currentUserApiEndPoint}`,
       { params: { api_key } },
     );
     return userPayload.data.data;
@@ -345,6 +359,11 @@ class WakaTimeCore {
     hostname = '',
   ): Promise<void> {
     try {
+      const items = await browser.storage.sync.get({
+        apiUrl: config.apiUrl,
+        heartbeatApiEndPoint: config.heartbeatApiEndPoint,
+      });
+
       const request: RequestInit = {
         body: JSON.stringify(payload),
         credentials: 'omit',
@@ -355,7 +374,10 @@ class WakaTimeCore {
           'X-Machine-Name': hostname,
         };
       }
-      const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, request);
+      const response = await fetch(
+        `${items.apiUrl}${items.heartbeatApiEndPoint}?api_key=${apiKey}`,
+        request,
+      );
       await response.json();
     } catch (err: unknown) {
       if (this.db) {
