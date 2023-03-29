@@ -243,21 +243,40 @@ const recordHeartbeat = async (apiKey: string, payload: Record<string, unknown>)
   }
 };
 
+const parseCanva = () => {
+  const canvaProject = document.getElementsByClassName('rF765A');
+  if (canvaProject.length === 0) return;
+
+  const projectName = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
+    .content;
+  return projectName;
+};
+
+const parseFigma = () => {
+  const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
+    .innerText;
+  return projectName;
+};
+
+const getParser: { [key: string]: (() => string | undefined) | undefined } = {
+  'www.canva.com': parseCanva,
+  'www.figma.com': parseFigma,
+};
+
 const init = async () => {
   const apiKey = await getApiKey();
   if (!apiKey) return;
 
   const { hostname } = document.location;
-  const canvaProject = document.getElementsByClassName('rF765A');
 
-  if (hostname === 'www.canva.com' && canvaProject.length > 0) {
-    const ogTitle = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
-      .content;
+  const projectName = getParser[hostname]?.();
+
+  if (projectName) {
     await recordHeartbeat(apiKey, {
       category: 'Designing',
       editor: 'Canva',
       language: 'Canva Design',
-      project: ogTitle,
+      project: projectName,
     });
   }
 };
