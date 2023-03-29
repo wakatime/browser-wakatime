@@ -249,16 +249,28 @@ const parseCanva = () => {
 
   const projectName = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
     .content;
-  return projectName;
+  return {
+    editor: 'Canva',
+    language: 'Canva Design',
+    project: projectName,
+  };
 };
 
 const parseFigma = () => {
   const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
     .innerText;
-  return projectName;
+  return {
+    editor: 'Figma',
+    language: 'Figma Design',
+    project: projectName,
+  };
 };
 
-const getParser: { [key: string]: (() => string | undefined) | undefined } = {
+const getParser: {
+  [key: string]:
+    | (() => { editor: string; language: string; project: string } | undefined)
+    | undefined;
+} = {
   'www.canva.com': parseCanva,
   'www.figma.com': parseFigma,
 };
@@ -269,14 +281,12 @@ const init = async () => {
 
   const { hostname } = document.location;
 
-  const projectName = getParser[hostname]?.();
+  const projectDetails = getParser[hostname]?.();
 
-  if (projectName) {
+  if (projectDetails) {
     await recordHeartbeat(apiKey, {
       category: 'Designing',
-      editor: 'Canva',
-      language: 'Canva Design',
-      project: projectName,
+      ...projectDetails,
     });
   }
 };
