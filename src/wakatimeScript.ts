@@ -92,6 +92,11 @@ const sendPostRequestToApi = async (
   hostname = '',
 ): Promise<void> => {
   try {
+    const items = await browser.storage.sync.get({
+      apiUrl: config.apiUrl,
+      heartbeatApiEndPoint: config.heartbeatApiEndPoint,
+    });
+
     const request: RequestInit = {
       body: JSON.stringify(payload),
       credentials: 'omit',
@@ -102,7 +107,10 @@ const sendPostRequestToApi = async (
         'X-Machine-Name': hostname,
       };
     }
-    const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, request);
+    const response = await fetch(
+      `${items.apiUrl}${items.heartbeatApiEndPoint}?api_key=${apiKey}`,
+      request,
+    );
     await response.json();
   } catch (err: unknown) {
     console.log('Error', err);
