@@ -7,7 +7,7 @@ import { getApiKey } from './utils/apiKey';
 import contains from './utils/contains';
 import getDomainFromUrl from './utils/getDomainFromUrl';
 
-const twoMinutes = 120000;
+const twoMinutes = 1200;
 
 /**
  * Creates an array from list using \n as delimiter
@@ -92,6 +92,11 @@ const sendPostRequestToApi = async (
   hostname = '',
 ): Promise<void> => {
   try {
+    const items = await browser.storage.sync.get({
+      apiUrl: config.apiUrl,
+      heartbeatApiEndPoint: config.heartbeatApiEndPoint,
+    });
+
     const request: RequestInit = {
       body: JSON.stringify(payload),
       credentials: 'omit',
@@ -102,7 +107,10 @@ const sendPostRequestToApi = async (
         'X-Machine-Name': hostname,
       };
     }
-    const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, request);
+    const response = await fetch(
+      `${items.apiUrl}${items.heartbeatApiEndPoint}?api_key=${apiKey}`,
+      request,
+    );
     await response.json();
   } catch (err: unknown) {
     console.log('Error', err);
@@ -249,7 +257,17 @@ const init = async () => {
 
   const { hostname } = document.location;
   const canvaProject = document.getElementsByClassName('rF765A');
+  const figmaProject = document.getElementsByClassName('gpu-view-content');
 
+  if (hostname === 'www.figma.com' && figmaProject.length > 0) {
+    const title = document.title.split('–')[0];
+    await recordHeartbeat(apiKey, {
+      category: 'Designing',
+      editor: 'Figma',
+      language: 'Figma Design',
+      project: title,
+    });
+  }
   if (hostname === 'www.canva.com' && canvaProject.length > 0) {
     const ogTitle = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
       .content;
