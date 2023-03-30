@@ -7,7 +7,7 @@ import { getApiKey } from './utils/apiKey';
 import contains from './utils/contains';
 import getDomainFromUrl from './utils/getDomainFromUrl';
 
-const twoMinutes = 1200;
+const twoMinutes = 120000;
 
 /**
  * Creates an array from list using \n as delimiter
