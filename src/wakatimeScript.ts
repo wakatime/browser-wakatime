@@ -243,7 +243,13 @@ const recordHeartbeat = async (apiKey: string, payload: Record<string, unknown>)
   }
 };
 
-const parseCanva = () => {
+interface DesignProject {
+  editor: string;
+  language: string;
+  project: string;
+}
+
+const parseCanva = (): DesignProject | undefined => {
   const canvaProject = document.getElementsByClassName('rF765A');
   if (canvaProject.length === 0) return;
 
@@ -256,7 +262,10 @@ const parseCanva = () => {
   };
 };
 
-const parseFigma = () => {
+const parseFigma = (): DesignProject | undefined => {
+  const figmaProject = document.getElementsByClassName('gpu-view-content');
+  if (figmaProject.length === 0) return;
+
   const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
     .innerText;
   return {
