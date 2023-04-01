@@ -92,6 +92,11 @@ const sendPostRequestToApi = async (
   hostname = '',
 ): Promise<void> => {
   try {
+    const items = await browser.storage.sync.get({
+      apiUrl: config.apiUrl,
+      heartbeatApiEndPoint: config.heartbeatApiEndPoint,
+    });
+
     const request: RequestInit = {
       body: JSON.stringify(payload),
       credentials: 'omit',
@@ -102,7 +107,10 @@ const sendPostRequestToApi = async (
         'X-Machine-Name': hostname,
       };
     }
-    const response = await fetch(`${config.heartbeatApiUrl}?api_key=${apiKey}`, request);
+    const response = await fetch(
+      `${items.apiUrl}${items.heartbeatApiEndPoint}?api_key=${apiKey}`,
+      request,
+    );
     await response.json();
   } catch (err: unknown) {
     console.log('Error', err);
@@ -243,21 +251,59 @@ const recordHeartbeat = async (apiKey: string, payload: Record<string, unknown>)
   }
 };
 
+interface DesignProject {
+  editor: string;
+  language: string;
+  project: string;
+}
+
+const parseCanva = (): DesignProject | undefined => {
+  const canvaProject = document.getElementsByClassName('rF765A');
+  if (canvaProject.length === 0) return;
+
+  const projectName = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
+    .content;
+  return {
+    editor: 'Canva',
+    language: 'Canva Design',
+    project: projectName,
+  };
+};
+
+const parseFigma = (): DesignProject | undefined => {
+  const figmaProject = document.getElementsByClassName('gpu-view-content');
+  if (figmaProject.length === 0) return;
+
+  const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
+    .innerText;
+  return {
+    editor: 'Figma',
+    language: 'Figma Design',
+    project: projectName,
+  };
+};
+
+const getParser: {
+  [key: string]:
+    | (() => { editor: string; language: string; project: string } | undefined)
+    | undefined;
+} = {
+  'www.canva.com': parseCanva,
+  'www.figma.com': parseFigma,
+};
+
 const init = async () => {
   const apiKey = await getApiKey();
   if (!apiKey) return;
 
   const { hostname } = document.location;
-  const canvaProject = document.getElementsByClassName('rF765A');
 
-  if (hostname === 'www.canva.com' && canvaProject.length > 0) {
-    const ogTitle = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
-      .content;
+  const projectDetails = getParser[hostname]?.();
+
+  if (projectDetails) {
     await recordHeartbeat(apiKey, {
       category: 'Designing',
-      editor: 'Canva',
-      language: 'Canva Design',
-      project: ogTitle,
+      ...projectDetails,
     });
   }
 };
