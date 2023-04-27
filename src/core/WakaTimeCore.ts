@@ -284,7 +284,7 @@ class WakaTimeCore {
     // And send that in heartbeat
     if (loggingType == 'domain') {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
-      payload = this.preparePayload(heartbeat, 'domain');
+      payload = await this.preparePayload(heartbeat, 'domain');
       await this.sendPostRequestToApi(
         { ...payload, ...navigationPayload },
         apiKey,
@@ -293,7 +293,7 @@ class WakaTimeCore {
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
-      payload = this.preparePayload(heartbeat, 'url');
+      payload = await this.preparePayload(heartbeat, 'url');
       await this.sendPostRequestToApi(
         { ...payload, ...navigationPayload },
         apiKey,
@@ -325,7 +325,8 @@ class WakaTimeCore {
    * @returns {*}
    * @private
    */
-  preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
+  async preparePayload(heartbeat: SendHeartbeat, type: string): Promise<Record<string, unknown>> {
+    const os = await this.getOperatingSystem();
     let browserName = 'chrome';
     let userAgent;
     if (IS_FIREFOX) {
@@ -338,7 +339,7 @@ class WakaTimeCore {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: `${userAgent} ${browserName}-wakatime/${config.version}`,
+      user_agent: `${userAgent} ${os} ${browserName}-wakatime/${config.version}`,
     };
 
     if (heartbeat.project) {
@@ -346,6 +347,14 @@ class WakaTimeCore {
     }
 
     return payload;
+  }
+
+  getOperatingSystem(): Promise<string> {
+    return new Promise((resolve) => {
+      chrome.runtime.getPlatformInfo(function(info) {
+        resolve(`${info.os}_${info.arch}`);
+      });
+    });
   }
 
   /**
