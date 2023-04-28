@@ -87,6 +87,7 @@ export interface Config {
    * Extension name
    */
   name: string;
+  nonTrackableSites: string[];
   socialMediaSites: string[];
   states: ApiStates[];
   /**
@@ -158,6 +159,8 @@ const config: Config = {
   logoutUserUrl: process.env.LOGOUT_USER_URL ?? 'https://wakatime.com/logout',
 
   name: 'WakaTime',
+
+  nonTrackableSites: ['chrome://', 'about:'],
 
   socialMediaSites: [
     'facebook.com',

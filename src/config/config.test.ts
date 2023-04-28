@@ -53,6 +53,10 @@ describe('wakatime config', () => {
         "loggingType": "domain",
         "logoutUserUrl": "https://wakatime.com/logout",
         "name": "WakaTime",
+        "nonTrackableSites": [
+          "chrome://",
+          "about:",
+        ],
         "socialMediaSites": [
           "facebook.com",
           "instagram.com",

@@ -149,6 +149,13 @@ class WakaTimeCore {
         url = document.URL;
       }
 
+      for (const site of config.nonTrackableSites) {
+        if (url.startsWith(site)) {
+          // Don't send a heartbeat on sites like 'chrome://newtab/' or 'about:newtab'
+          return;
+        }
+      }
+
       const hostname = getDomainFromUrlWithoutProtocol(url).replace('www.', '');
       if (!items.trackSocialMedia) {
         if ((items.socialMediaSites as string[]).includes(hostname)) {
