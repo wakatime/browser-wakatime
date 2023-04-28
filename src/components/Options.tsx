@@ -16,7 +16,7 @@ interface State {
   loading: boolean;
   loggingStyle: string;
   loggingType: string;
-  socialMediaSites: string;
+  socialMediaSites: string[];
   theme: string;
   trackSocialMedia: boolean;
   whitelist: string;
@@ -62,7 +62,7 @@ export default function Options(): JSX.Element {
       hostname: items.hostname as string,
       loggingStyle: items.loggingStyle as string,
       loggingType: items.loggingType as string,
-      socialMediaSites: items.socialMediaSites as string,
+      socialMediaSites: items.socialMediaSites as string[],
       theme: items.theme as string,
       trackSocialMedia: items.trackSocialMedia as boolean,
       whitelist: items.whitelist as string,
@@ -336,14 +336,14 @@ export default function Options(): JSX.Element {
                       </div>
                       <div className="modal-body">
                         <SitesList
-                          handleChange={(sites: string) =>
+                          handleChange={(sites: string) => {
                             setState({
                               ...state,
-                              socialMediaSites: sites,
-                            })
-                          }
+                              socialMediaSites: sites.split('\n'),
+                            });
+                          }}
                           label="Social"
-                          sites={state.socialMediaSites}
+                          sites={state.socialMediaSites.join('\n')}
                           helpText="Sites that you don't want to show in your reports."
                           rows={5}
                         />
