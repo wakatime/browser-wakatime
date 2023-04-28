@@ -302,7 +302,7 @@ export default function Options(): JSX.Element {
                 <div
                   onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
                 >
-                  <input type="checkbox" defaultChecked={state.trackSocialMedia} />
+                  <input type="checkbox" checked={state.trackSocialMedia} />
                   <span>Track social media sites</span>
                 </div>
                 <button
