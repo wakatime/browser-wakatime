@@ -143,6 +143,10 @@ export default function Options(): JSX.Element {
     });
   };
 
+  const toggleSocialMedia = () => {
+    setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
+  };
+
   const loggingStyle = function () {
     if (state.loggingStyle == 'blacklist') {
       return (
@@ -299,11 +303,13 @@ export default function Options(): JSX.Element {
 
             <div className="form-group row">
               <div className="col-lg-10 col-lg-offset-2 space-between align-items-center">
-                <div
-                  onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
-                >
-                  <input type="checkbox" checked={state.trackSocialMedia} />
-                  <span>Track social media sites</span>
+                <div>
+                  <input
+                    type="checkbox"
+                    checked={state.trackSocialMedia}
+                    onChange={toggleSocialMedia}
+                  />
+                  <span onClick={toggleSocialMedia}>Track social media sites</span>
                 </div>
                 <button
                   type="button"
