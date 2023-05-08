@@ -12,7 +12,7 @@ import { IS_FIREFOX, generateProjectFromDevSites } from '../utils';
 import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
-import getDomainFromUrl, { getDomainFromUrlWithoutProtocol } from '../utils/getDomainFromUrl';
+import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
@@ -156,7 +156,7 @@ class WakaTimeCore {
         }
       }
 
-      const hostname = getDomainFromUrlWithoutProtocol(url).replace('www.', '');
+      const hostname = getDomain(url);
       if (!items.trackSocialMedia) {
         if ((items.socialMediaSites as string[]).includes(hostname)) {
           return changeExtensionState('blacklisted');

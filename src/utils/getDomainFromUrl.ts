@@ -10,8 +10,12 @@ export default function getDomainFromUrl(url: string): string {
 /**
  * Returns domain from given URL.
  */
-export function getDomainFromUrlWithoutProtocol(url: string): string {
-  const parts = url.split('/');
+export function getDomain(url: string): string {
+  const splittedUrl = url.replace(/(https?:\/\/)?(www.)?/i, '').split('.');
+  const domain = splittedUrl.slice(splittedUrl.length - 2).join('.');
+  if (domain.includes('/')) {
+    return domain.split('/')[0];
+  }
 
-  return parts[2];
+  return domain;
 }
