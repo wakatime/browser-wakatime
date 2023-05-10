@@ -66,7 +66,7 @@ export interface Config {
    */
   detectionIntervalInSeconds: number;
 
-  devSites: string;
+  devSites: string[];
   /**
    * Url to which to send the heartbeat
    */
@@ -87,7 +87,8 @@ export interface Config {
    * Extension name
    */
   name: string;
-  socialMediaSites: string;
+  nonTrackableSites: string[];
+  socialMediaSites: string[];
   states: ApiStates[];
   /**
    * Get stats from the wakatime api
@@ -132,8 +133,18 @@ const config: Config = {
 
   detectionIntervalInSeconds: 60,
 
-  devSites:
-    'https://codepen.io/\nhttps://www.codewars.com/\nhttps://dev.to/\nhttps://github.com/\nhttps://www.hackerrank.com/\nhttps://leetcode.com/\nhttps://developer.mozilla.org/en-US/\nhttps://stackoverflow.com/\nhttps://www.udemy.com/\nhttps://www.w3schools.com/',
+  devSites: [
+    'codepen.io',
+    'codewars.com',
+    'dev.to',
+    'github.com',
+    'hackerrank.com',
+    'leetcode.com',
+    'developer.mozilla.org',
+    'stackoverflow.com',
+    'udemy.com',
+    'w3schools.com',
+  ],
 
   heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats',
 
@@ -149,7 +160,20 @@ const config: Config = {
 
   name: 'WakaTime',
 
-  socialMediaSites: `https://www.facebook.com/\nhttps://www.instagram.com/\nhttps://www.linkedin.com/\nhttps://www.pinterest.com/\nhttps://www.reddit.com/\nhttps://www.snapchat.com/\nhttps://www.tiktok.com/\nhttps://twitter.com/\nhttps://www.whatsapp.com/\nhttps://www.youtube.com/`,
+  nonTrackableSites: ['chrome://', 'about:'],
+
+  socialMediaSites: [
+    'facebook.com',
+    'instagram.com',
+    'linkedin.com',
+    'pinterest.com',
+    'reddit.com',
+    'snapchat.com',
+    'tiktok.com',
+    'twitter.com',
+    'whatsapp.com',
+    'youtube.com',
+  ],
 
   states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
 

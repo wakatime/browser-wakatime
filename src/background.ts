@@ -43,9 +43,12 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (changeInfo.status === 'complete') {
     // Get current tab URL.
-    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    const tabs: browser.Tabs.Tab[] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
     // If tab updated is the same as active tab
-    if (tabId == tab.id) {
+    if (tabId == tabs[0]?.id) {
       await WakaTimeCore.recordHeartbeat();
     }
   }
