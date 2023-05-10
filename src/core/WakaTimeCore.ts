@@ -342,9 +342,7 @@ class WakaTimeCore {
       user_agent: `${userAgent} ${os} ${browserName}-wakatime/${config.version}`,
     };
 
-    if (heartbeat.project) {
-      payload.project = heartbeat.project;
-    }
+    payload.project = heartbeat.project ?? '<<LAST_PROJECT>>';
 
     return payload;
   }
