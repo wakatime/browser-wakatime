@@ -61,3 +61,11 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
 self.addEventListener('activate', async () => {
   await WakaTimeCore.createDB();
 });
+
+/**
+ * "Persistent" service worker via bug exploit
+ * https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
+ */
+const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20000);
+chrome.runtime.onStartup.addListener(keepAlive);
+keepAlive();
