@@ -54,6 +54,15 @@ export default function Options(): JSX.Element {
       trackSocialMedia: true,
       whitelist: '',
     });
+
+    // Handle prod accounts with old social media stored as string
+    if (typeof items.socialMediaSites === 'string') {
+      await browser.storage.sync.set({
+        socialMediaSites: items.socialMediaSites.split('\n'),
+      });
+      items.socialMediaSites = items.socialMediaSites.split('\n');
+    }
+
     setState({
       ...state,
       apiKey: items.apiKey as string,
