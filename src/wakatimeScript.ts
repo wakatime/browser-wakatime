@@ -46,9 +46,10 @@ const parseJupyter = (isDemo: boolean): DesignProject | undefined => {
       document.getElementsByClassName('f1fwtl1j')[0].children[isDemo ? 0 : 1].children[0].innerHTML;
 
     return {
+      category: 'Designing',
       editor: 'Jupyter',
       language: 'Jupyter',
-      project: projectName,
+      project: '<<LAST_PROJECT>>',
     };
   } catch (err: unknown) {
     console.log('Error getting Jupyter project name');
