@@ -30,6 +30,7 @@ const filesNeededForNextBuild = [
   'public/js/browser-polyfill.min.js',
   'public/css/app.css',
   'graphics/wakatime-logo-16.png',
+  'wakatimeScript.js',
 ];
 const chromeNextBuildFileWaitTask = waitForFilesTask(
   nextBuildFolder,
@@ -69,22 +70,17 @@ load({
     serial('postinstall'),
     'webpack',
     concurrent(
-      exec('web-ext build'),
-      exec(`web-ext build -a dist/firefox/web-ext-artifacts --source-dir ${ffNextBuildFolder}`),
+      exec(
+        `web-ext build --artifacts-dir dist/chrome/web-ext-artifacts --source-dir ${chromeNextBuildFolder}`,
+      ),
+      exec(
+        `web-ext build --artifacts-dir dist/firefox/web-ext-artifacts --source-dir ${ffNextBuildFolder}`,
+      ),
     ),
   ],
   clean: [exec('rimraf public coverage vendor web-ext-artifacts'), 'clean:webpack'],
   'clean:webpack': exec('rimraf dist'),
-  dev: [
-    'clean',
-    'postinstall',
-    concurrent('watch', 'web-ext:run:firefox-next', 'web-ext:run:chrome-next'),
-  ],
-  'dev:legacy': [
-    'clean',
-    'postinstall',
-    concurrent(exec('gulp watch'), 'web-ext:run:firefox-legacy', 'web-ext:run:chrome-legacy'),
-  ],
+  dev: ['clean', 'postinstall', concurrent('watch', 'web-ext:run:firefox', 'web-ext:run:chrome')],
   eslint: exec('eslint src . --fix'),
   lint: ['prettier', 'eslint'],
   postinstall: ['clean', makePublicFolder, copyFromNodeModules, 'sass'],
@@ -93,34 +89,16 @@ load({
   sass: exec('node-sass assets/sass/app.scss public/css/app.css'),
   test: ['build', 'lint', 'test-jest'],
   'test-jest': [exec('jest --clearCache'), exec('jest --verbose --coverage')],
-  'test-jest-update': exec('jest -u'),
-  'wait:legacy-files': waitForFilesTask(
-    'manifest.json',
-    'public/js/browser-polyfill.min.js',
-    'public/js/events.js',
-    'options.html',
-  ),
   watch: concurrent('watch-jest', 'webpack:watch'),
   'watch-jest': exec('jest --watch'),
-  'web-ext:run:chrome': concurrent('web-ext:run:chrome-next', 'web-ext:run:chrome-legacy'),
-  'web-ext:run:chrome-legacy': [
-    'wait:legacy-files',
-    exec('web-ext run -t chromium --source-dir .'),
-  ],
-  'web-ext:run:chrome-next': [
+  'web-ext:run:chrome': [
     chromeNextBuildFileWaitTask,
     exec('web-ext run -t chromium --source-dir dist/chrome'),
   ],
-  'web-ext:run:firefox': concurrent('web-ext:run:firefox-next', 'web-ext:run:firefox-legacy'),
-  'web-ext:run:firefox-legacy': [
-    'wait:legacy-files',
-    exec('web-ext run -t firefox-desktop --source-dir .'),
-  ],
-  'web-ext:run:firefox-next': [
+  'web-ext:run:firefox': [
     ffNextBuildFileWaitTask,
     exec('web-ext run -t firefox-desktop --source-dir dist/firefox'),
   ],
   webpack: ['clean:webpack', exec('webpack --mode production')],
-  'webpack:dev': ['clean:webpack', exec('webpack --mode development')],
   'webpack:watch': ['clean:webpack', exec('webpack --mode development --watch')],
 });

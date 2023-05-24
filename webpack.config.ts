@@ -19,12 +19,13 @@ const browserPolyfill = join(
 );
 const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Configuration => {
   const cfg: webpack.Configuration = {
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     entry: {
       background: [join(srcFolder, 'background.ts')],
       devtools: [join(srcFolder, 'devtools.ts')],
       options: [join(srcFolder, 'options.tsx')],
       popup: [join(srcFolder, 'popup.tsx')],
+      wakatimeScript: [join(srcFolder, 'wakatimeScript.ts')],
     },
     // mode: isProd ? 'production' : 'development',
     module: {
@@ -55,17 +56,12 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
         ],
       }),
       new webpack.DefinePlugin({
-        ['process.env.CURRENT_USER_API_URL']: JSON.stringify(
-          'https://wakatime.com/api/v1/users/current',
-        ),
-        ['process.env.HEART_BEAT_API_URL']: JSON.stringify(
-          'https://wakatime.com/api/v1/users/current/heartbeats',
-        ),
+        ['process.env.API_URL']: JSON.stringify('https://wakatime.com/api/v1'),
+        ['process.env.CURRENT_USER_API_URL']: JSON.stringify('/users/current'),
+        ['process.env.HEARTBEAT_API_URL']: JSON.stringify('/users/current/heartbeats'),
         ['process.env.LOGOUT_USER_URL']: JSON.stringify('https://wakatime.com/logout'),
         ['process.env.NODE_ENV']: JSON.stringify(isProd ? 'production' : 'development'),
-        ['process.env.SUMMARIES_API_URL']: JSON.stringify(
-          'https://wakatime.com/api/v1/users/current/summaries',
-        ),
+        ['process.env.SUMMARIES_API_URL']: JSON.stringify('/users/current/summaries'),
       }),
     ],
     resolve: {

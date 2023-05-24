@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import config from '../config/config';
 import { ApiKeyReducer, ReduxSelector } from '../types/store';
+import apiKeyInvalid from '../utils/apiKey';
 import { fetchUserData } from '../utils/user';
-import NavBar from './NavBar';
+import Alert from './Alert';
 import MainList from './MainList';
+import NavBar from './NavBar';
 
 export default function WakaTime(): JSX.Element {
   const dispatch = useDispatch();
+  const [extensionState, setExtensionState] = useState('');
 
   const {
     apiKey: apiKeyFromRedux,
@@ -15,12 +19,35 @@ export default function WakaTime(): JSX.Element {
   }: ApiKeyReducer = useSelector((selector: ReduxSelector) => selector.config);
 
   useEffect(() => {
-    void fetchUserData(apiKeyFromRedux, dispatch);
+    const fetchData = async () => {
+      await fetchUserData(apiKeyFromRedux, dispatch);
+      const items = await browser.storage.sync.get({ extensionState: '' });
+      setExtensionState(items.extensionState as string);
+    };
+    void fetchData();
   }, []);
+
+  const isApiKeyValid = apiKeyInvalid(apiKeyFromRedux) === '';
 
   return (
     <div>
       <NavBar />
+      {isApiKeyValid && extensionState === 'notSignedIn' && (
+        <Alert
+          type={config.alert.failure.type}
+          text={'Invalid API key or API url'}
+          onClick={() => browser.runtime.openOptionsPage()}
+          style={{ cursor: 'pointer' }}
+        />
+      )}
+      {!isApiKeyValid && (
+        <Alert
+          type={config.alert.failure.type}
+          text={'Please update your api key'}
+          onClick={() => browser.runtime.openOptionsPage()}
+          style={{ cursor: 'pointer' }}
+        />
+      )}
       <div className="container">
         <div className="row">
           <div className="col-md-12">

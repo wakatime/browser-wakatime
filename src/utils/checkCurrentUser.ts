@@ -8,8 +8,8 @@ export default (store: Store<RootState>) =>
   (time: number): unsub => {
     const fetchUser = () => {
       const apiKey: string = (store.getState() as ReduxSelector).config.apiKey;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+
+      // @ts-expect-error be able to dispatch async thunk
       store.dispatch(fetchCurrentUser(apiKey));
     };
     fetchUser();

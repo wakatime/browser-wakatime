@@ -1,7 +1,7 @@
-var chai = require('chai');
-var expect = chai.expect;
+import chai from 'chai';
+import getDomainFromUrl from '../../src/utils/getDomainFromUrl';
 
-var getDomainFromUrl = require('../../assets/js/helpers/getDomainFromUrl');
+const expect = chai.expect;
 
 describe('getDomainFromUrl', function () {
   it('should be a function', function () {

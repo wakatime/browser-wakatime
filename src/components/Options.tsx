@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { logUserIn } from '../utils/user';
@@ -9,12 +9,14 @@ interface State {
   alertText: string;
   alertType: SuccessOrFailType;
   apiKey: string;
+  apiUrl: string;
   blacklist: string;
   displayAlert: boolean;
+  hostname: string;
   loading: boolean;
   loggingStyle: string;
   loggingType: string;
-  socialMediaSites: string;
+  socialMediaSites: string[];
   theme: string;
   trackSocialMedia: boolean;
   whitelist: string;
@@ -24,8 +26,10 @@ export default function Options(): JSX.Element {
     alertText: config.alert.success.text,
     alertType: config.alert.success.type,
     apiKey: '',
+    apiUrl: config.apiUrl,
     blacklist: '',
     displayAlert: false,
+    hostname: '',
     loading: false,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
@@ -40,7 +44,9 @@ export default function Options(): JSX.Element {
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
       apiKey: config.apiKey,
+      apiUrl: config.apiUrl,
       blacklist: '',
+      hostname: config.hostname,
       loggingStyle: config.loggingStyle,
       loggingType: config.loggingType,
       socialMediaSites: config.socialMediaSites,
@@ -48,13 +54,24 @@ export default function Options(): JSX.Element {
       trackSocialMedia: true,
       whitelist: '',
     });
+
+    // Handle prod accounts with old social media stored as string
+    if (typeof items.socialMediaSites === 'string') {
+      await browser.storage.sync.set({
+        socialMediaSites: items.socialMediaSites.split('\n'),
+      });
+      items.socialMediaSites = items.socialMediaSites.split('\n');
+    }
+
     setState({
       ...state,
       apiKey: items.apiKey as string,
+      apiUrl: items.apiUrl as string,
       blacklist: items.blacklist as string,
+      hostname: items.hostname as string,
       loggingStyle: items.loggingStyle as string,
       loggingType: items.loggingType as string,
-      socialMediaSites: items.socialMediaSites as string,
+      socialMediaSites: items.socialMediaSites as string[],
       theme: items.theme as string,
       trackSocialMedia: items.trackSocialMedia as boolean,
       whitelist: items.whitelist as string,
@@ -78,7 +95,9 @@ export default function Options(): JSX.Element {
     setState({ ...state, loading: true });
 
     const apiKey = state.apiKey;
+    const apiUrl = state.apiUrl;
     const theme = state.theme;
+    const hostname = state.hostname;
     const loggingType = state.loggingType;
     const loggingStyle = state.loggingStyle;
     const trackSocialMedia = state.trackSocialMedia;
@@ -90,7 +109,9 @@ export default function Options(): JSX.Element {
     // Sync options with google storage.
     await browser.storage.sync.set({
       apiKey,
+      apiUrl,
       blacklist,
+      hostname,
       loggingStyle,
       loggingType,
       socialMediaSites,
@@ -103,8 +124,10 @@ export default function Options(): JSX.Element {
     setState({
       ...state,
       apiKey,
+      apiUrl,
       blacklist,
       displayAlert: true,
+      hostname,
       loggingStyle,
       loggingType,
       socialMediaSites,
@@ -127,6 +150,10 @@ export default function Options(): JSX.Element {
       ...state,
       whitelist: sites,
     });
+  };
+
+  const toggleSocialMedia = () => {
+    setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
   };
 
   const loggingStyle = function () {
@@ -248,13 +275,50 @@ export default function Options(): JSX.Element {
               </div>
             </div>
 
+            <div className="form-group">
+              <label htmlFor="theme" className="col-lg-2 control-label">
+                Hostname
+              </label>
+
+              <div className="col-lg-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state.hostname}
+                  onChange={(e) => setState({ ...state, hostname: e.target.value })}
+                />
+                <span className="help-block">
+                  Optional name of local machine. By default &apos;Unknown Hostname&apos;.
+                </span>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="theme" className="col-lg-2 control-label">
+                API Url
+              </label>
+
+              <div className="col-lg-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state.apiUrl}
+                  onChange={(e) => setState({ ...state, apiUrl: e.target.value })}
+                  placeholder="https://wakatime.com/api/v1"
+                />
+                <span className="help-block">https://wakatime.com/api/v1</span>
+              </div>
+            </div>
+
             <div className="form-group row">
               <div className="col-lg-10 col-lg-offset-2 space-between align-items-center">
-                <div
-                  onClick={() => setState({ ...state, trackSocialMedia: !state.trackSocialMedia })}
-                >
-                  <input type="checkbox" checked={state.trackSocialMedia} />
-                  <span>Track social media sites</span>
+                <div>
+                  <input
+                    type="checkbox"
+                    checked={state.trackSocialMedia}
+                    onChange={toggleSocialMedia}
+                  />
+                  <span onClick={toggleSocialMedia}>Track social media sites</span>
                 </div>
                 <button
                   type="button"
@@ -287,14 +351,14 @@ export default function Options(): JSX.Element {
                       </div>
                       <div className="modal-body">
                         <SitesList
-                          handleChange={(sites: string) =>
+                          handleChange={(sites: string) => {
                             setState({
                               ...state,
-                              socialMediaSites: sites,
-                            })
-                          }
+                              socialMediaSites: sites.split('\n'),
+                            });
+                          }}
                           label="Social"
-                          sites={state.socialMediaSites}
+                          sites={state.socialMediaSites.join('\n')}
                           helpText="Sites that you don't want to show in your reports."
                           rows={5}
                         />

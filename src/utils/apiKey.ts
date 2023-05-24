@@ -1,3 +1,6 @@
+import browser from 'webextension-polyfill';
+import config from '../config/config';
+
 export default function apiKeyInvalid(key?: string): string {
   const err = 'Invalid api key... check https://wakatime.com/settings for your key';
   if (!key) return err;
@@ -7,4 +10,12 @@ export default function apiKeyInvalid(key?: string): string {
   );
   if (!re.test(key)) return err;
   return '';
+}
+
+export async function getApiKey(): Promise<string> {
+  const storage = await browser.storage.sync.get({
+    apiKey: config.apiKey,
+  });
+  const apiKey = storage.apiKey as string;
+  return apiKey;
 }

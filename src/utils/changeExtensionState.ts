@@ -1,5 +1,5 @@
+import browser from 'webextension-polyfill';
 import config, { ApiStates } from '../config/config';
-
 import changeExtensionIcon from './changeExtensionIcon';
 import changeExtensionTooltip from './changeExtensionTooltip';
 
@@ -31,4 +31,5 @@ export default async function changeExtensionState(state: ApiStates): Promise<vo
     default:
       break;
   }
+  await browser.storage.sync.set({ extensionState: state });
 }
