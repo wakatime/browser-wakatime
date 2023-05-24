@@ -8,11 +8,11 @@ import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import { generateProjectFromDevSites, IS_FIREFOX } from '../utils';
+import { IS_FIREFOX, generateProjectFromDevSites } from '../utils';
 import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
-import getDomainFromUrl from '../utils/getDomainFromUrl';
+import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
@@ -112,7 +112,7 @@ class WakaTimeCore {
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to WakaTime for logging.
    */
-  async recordHeartbeat(): Promise<void> {
+  async recordHeartbeat(payload = {}): Promise<void> {
     const apiKey = await getApiKey();
     if (!apiKey) {
       return changeExtensionState('notLogging');
@@ -129,62 +129,77 @@ class WakaTimeCore {
     if (items.loggingEnabled === true) {
       await changeExtensionState('allGood');
 
-      const newState = await browser.idle.queryState(config.detectionIntervalInSeconds);
-
-      if (newState === 'active') {
-        // Get current tab URL.
-        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tabs.length == 0) return;
-
-        const currentActiveTab = tabs[0];
-
-        if (!items.trackSocialMedia) {
-          if (contains(currentActiveTab.url as string, items.socialMediaSites as string)) {
-            return changeExtensionState('blacklisted');
-          }
-        }
-
-        // Checks dev websites
-        const project = generateProjectFromDevSites(currentActiveTab.url as string);
-
-        if (items.loggingStyle == 'blacklist') {
-          if (!contains(currentActiveTab.url as string, items.blacklist as string)) {
-            await this.sendHeartbeat(
-              {
-                hostname: items.hostname as string,
-                project,
-                url: currentActiveTab.url as string,
-              },
-              apiKey,
-            );
-          } else {
-            await changeExtensionState('blacklisted');
-            console.log(`${currentActiveTab.url} is on a blacklist.`);
-          }
-        }
-
-        if (items.loggingStyle == 'whitelist') {
-          const heartbeat = this.getHeartbeat(
-            currentActiveTab.url as string,
-            items.whitelist as string,
-          );
-          if (heartbeat.url) {
-            await this.sendHeartbeat(
-              {
-                ...heartbeat,
-                hostname: items.hostname as string,
-                project: heartbeat.project ?? project,
-              },
-              apiKey,
-            );
-          } else {
-            await changeExtensionState('whitelisted');
-            console.log(`${currentActiveTab.url} is not on a whitelist.`);
-          }
+      let newState = '';
+      // Detects we are running this code in the extension scope
+      if (browser.idle as browser.Idle.Static | undefined) {
+        newState = await browser.idle.queryState(config.detectionIntervalInSeconds);
+        if (newState !== 'active') {
+          return changeExtensionState('notLogging');
         }
       }
-    } else {
-      await changeExtensionState('notLogging');
+
+      // Get current tab URL.
+      let url = '';
+      if (browser.tabs as browser.Tabs.Static | undefined) {
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tabs.length == 0) return;
+        const currentActiveTab = tabs[0];
+        url = currentActiveTab.url as string;
+      } else {
+        url = document.URL;
+      }
+
+      for (const site of config.nonTrackableSites) {
+        if (url.startsWith(site)) {
+          // Don't send a heartbeat on sites like 'chrome://newtab/' or 'about:newtab'
+          return;
+        }
+      }
+
+      const hostname = getDomain(url);
+      if (!items.trackSocialMedia) {
+        if ((items.socialMediaSites as string[]).includes(hostname)) {
+          return changeExtensionState('blacklisted');
+        }
+      }
+
+      // Checks dev websites
+      const project = generateProjectFromDevSites(url);
+
+      if (items.loggingStyle == 'blacklist') {
+        if (!contains(url, items.blacklist as string)) {
+          await this.sendHeartbeat(
+            {
+              hostname: items.hostname as string,
+              project,
+              url,
+            },
+            apiKey,
+            payload,
+          );
+        } else {
+          await changeExtensionState('blacklisted');
+          console.log(`${url} is on a blacklist.`);
+        }
+      }
+
+      if (items.loggingStyle == 'whitelist') {
+        const heartbeat = this.getHeartbeat(url, items.whitelist as string);
+        if (heartbeat.url) {
+          await this.sendHeartbeat(
+            {
+              ...heartbeat,
+              hostname: items.hostname as string,
+              project: heartbeat.project ?? project,
+            },
+            apiKey,
+            payload,
+          );
+        } else {
+          await changeExtensionState('whitelisted');
+          console.log(`${url} is not on a whitelist.`);
+        }
+      }
     }
   }
 
@@ -265,7 +280,11 @@ class WakaTimeCore {
    * @param heartbeat
    * @param debug
    */
-  async sendHeartbeat(heartbeat: SendHeartbeat, apiKey: string): Promise<void> {
+  async sendHeartbeat(
+    heartbeat: SendHeartbeat,
+    apiKey: string,
+    navigationPayload: Record<string, unknown>,
+  ): Promise<void> {
     let payload;
 
     const loggingType = await this.getLoggingType();
@@ -273,13 +292,21 @@ class WakaTimeCore {
     // And send that in heartbeat
     if (loggingType == 'domain') {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
-      payload = this.preparePayload(heartbeat, 'domain');
-      await this.sendPostRequestToApi(payload, apiKey, heartbeat.hostname);
+      payload = await this.preparePayload(heartbeat, 'domain');
+      await this.sendPostRequestToApi(
+        { ...payload, ...navigationPayload },
+        apiKey,
+        heartbeat.hostname,
+      );
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
-      payload = this.preparePayload(heartbeat, 'url');
-      await this.sendPostRequestToApi(payload, apiKey, heartbeat.hostname);
+      payload = await this.preparePayload(heartbeat, 'url');
+      await this.sendPostRequestToApi(
+        { ...payload, ...navigationPayload },
+        apiKey,
+        heartbeat.hostname,
+      );
     }
   }
 
@@ -306,7 +333,8 @@ class WakaTimeCore {
    * @returns {*}
    * @private
    */
-  preparePayload(heartbeat: SendHeartbeat, type: string): Record<string, unknown> {
+  async preparePayload(heartbeat: SendHeartbeat, type: string): Promise<Record<string, unknown>> {
+    const os = await this.getOperatingSystem();
     let browserName = 'chrome';
     let userAgent;
     if (IS_FIREFOX) {
@@ -319,14 +347,20 @@ class WakaTimeCore {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: `${userAgent} ${browserName}-wakatime/${config.version}`,
+      user_agent: `${userAgent} ${os} ${browserName}-wakatime/${config.version}`,
     };
 
-    if (heartbeat.project) {
-      payload.project = heartbeat.project;
-    }
+    payload.project = heartbeat.project ?? '<<LAST_PROJECT>>';
 
     return payload;
+  }
+
+  getOperatingSystem(): Promise<string> {
+    return new Promise((resolve) => {
+      chrome.runtime.getPlatformInfo(function (info) {
+        resolve(`${info.os}_${info.arch}`);
+      });
+    });
   }
 
   /**

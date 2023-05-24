@@ -34,16 +34,18 @@ describe('wakatime config', () => {
         },
         "currentUserApiEndPoint": "/users/current",
         "detectionIntervalInSeconds": 60,
-        "devSites": "https://codepen.io/
-      https://www.codewars.com/
-      https://dev.to/
-      https://github.com/
-      https://www.hackerrank.com/
-      https://leetcode.com/
-      https://developer.mozilla.org/en-US/
-      https://stackoverflow.com/
-      https://www.udemy.com/
-      https://www.w3schools.com/",
+        "devSites": [
+          "codepen.io",
+          "codewars.com",
+          "dev.to",
+          "github.com",
+          "hackerrank.com",
+          "leetcode.com",
+          "developer.mozilla.org",
+          "stackoverflow.com",
+          "udemy.com",
+          "w3schools.com",
+        ],
         "heartbeatApiEndPoint": "/users/current/heartbeats",
         "hostname": "",
         "loggingEnabled": true,
@@ -51,16 +53,22 @@ describe('wakatime config', () => {
         "loggingType": "domain",
         "logoutUserUrl": "https://wakatime.com/logout",
         "name": "WakaTime",
-        "socialMediaSites": "https://www.facebook.com/
-      https://www.instagram.com/
-      https://www.linkedin.com/
-      https://www.pinterest.com/
-      https://www.reddit.com/
-      https://www.snapchat.com/
-      https://www.tiktok.com/
-      https://twitter.com/
-      https://www.whatsapp.com/
-      https://www.youtube.com/",
+        "nonTrackableSites": [
+          "chrome://",
+          "about:",
+        ],
+        "socialMediaSites": [
+          "facebook.com",
+          "instagram.com",
+          "linkedin.com",
+          "pinterest.com",
+          "reddit.com",
+          "snapchat.com",
+          "tiktok.com",
+          "twitter.com",
+          "whatsapp.com",
+          "youtube.com",
+        ],
         "states": [
           "allGood",
           "notLogging",
