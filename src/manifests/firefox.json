@@ -24,7 +24,7 @@
       "run_at": "document_end"
     }
   ],
-  "description": "Automatic time tracking for Chrome.",
+  "description": "Automatic time tracking for Firefox.",
   "devtools_page": "devtools.html",
   "homepage_url": "https://wakatime.com",
   "icons": {
