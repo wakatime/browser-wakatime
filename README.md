@@ -39,7 +39,7 @@ npm start
 To build the extension once:
 
 ```
-npm run gulp
+npm run build
 ```
 
 To monitor changes:

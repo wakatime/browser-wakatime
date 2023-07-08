@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
+import { IS_FIREFOX } from '../utils';
 import apiKeyInvalid from '../utils/apiKey';
 import { logUserIn } from '../utils/user';
 import Alert from './Alert';
@@ -105,6 +106,22 @@ export default function Options(): JSX.Element {
     // Trimming blacklist and whitelist removes blank lines and spaces.
     const blacklist = state.blacklist.trim();
     const whitelist = state.whitelist.trim();
+
+    // Check permissions for API endpoint
+    const manifest = browser.runtime.getManifest();
+    const permissions = IS_FIREFOX
+      ? manifest.permissions ?? []
+      : (manifest as any).host_permissions ?? [];
+    const permissionsGranted = !!permissions
+      .map((p: string) => p.replace('*', ''))
+      .find((p: string) => apiUrl.startsWith(p));
+
+    if (!permissionsGranted) {
+      const lookup = IS_FIREFOX ? { permissions: [`${apiUrl}*`] } : { origins: [`${apiUrl}*`] };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const ok = await browser.permissions.request(lookup as any);
+      if (!ok) throw new Error(`failed to request host permissions for ${apiUrl}`);
+    }
 
     // Sync options with google storage.
     await browser.storage.sync.set({
