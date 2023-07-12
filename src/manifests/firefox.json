@@ -38,13 +38,6 @@
     "chrome_style": false,
     "page": "options.html"
   },
-  "permissions": [
-    "https://api.wakatime.com/*",
-    "https://wakatime.com/*",
-    "alarms",
-    "tabs",
-    "storage",
-    "idle"
-  ],
-  "version": "3.0.16"
+  "permissions": ["<all_urls>", "alarms", "tabs", "storage", "idle"],
+  "version": "3.0.17"
 }
