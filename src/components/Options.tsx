@@ -95,7 +95,6 @@ export default function Options(): JSX.Element {
     setState({ ...state, loading: true });
 
     const apiKey = state.apiKey;
-    const apiUrl = state.apiUrl;
     const theme = state.theme;
     const hostname = state.hostname;
     const loggingType = state.loggingType;
@@ -105,6 +104,11 @@ export default function Options(): JSX.Element {
     // Trimming blacklist and whitelist removes blank lines and spaces.
     const blacklist = state.blacklist.trim();
     const whitelist = state.whitelist.trim();
+    let apiUrl = state.apiUrl;
+
+    if (apiUrl.endsWith('/')) {
+      apiUrl = apiUrl.slice(0, -1);
+    }
 
     // Sync options with google storage.
     await browser.storage.sync.set({

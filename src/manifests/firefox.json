@@ -24,7 +24,7 @@
       "run_at": "document_end"
     }
   ],
-  "description": "Automatic time tracking for Chrome.",
+  "description": "Automatic time tracking for Firefox.",
   "devtools_page": "devtools.html",
   "homepage_url": "https://wakatime.com",
   "icons": {
@@ -38,13 +38,6 @@
     "chrome_style": false,
     "page": "options.html"
   },
-  "permissions": [
-    "https://api.wakatime.com/*",
-    "https://wakatime.com/*",
-    "alarms",
-    "tabs",
-    "storage",
-    "idle"
-  ],
-  "version": "3.0.15"
+  "permissions": ["<all_urls>", "alarms", "tabs", "storage", "idle"],
+  "version": "3.0.17"
 }
