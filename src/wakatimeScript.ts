@@ -10,13 +10,18 @@ interface DesignProject {
 }
 
 const parseCanva = (): DesignProject | undefined => {
-  const canvaProject = document.getElementsByClassName('rF765A');
-  if (canvaProject.length === 0) return;
-
   const projectName = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
     .content;
+  if (!projectName) return;
+
+  // make sure the page title matches the design input element's value, meaning this is a design file
+  const canvaProjectInput = Array.from(
+    document.querySelector('nav')?.querySelectorAll('input') ?? [],
+  ).find((inp) => inp.value === projectName);
+  if (!canvaProjectInput) return;
+
   return {
-    category: 'Designing',
+    category: 'designing',
     editor: 'Canva',
     language: 'Canva Design',
     project: projectName,
@@ -30,7 +35,7 @@ const parseFigma = (): DesignProject | undefined => {
   const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
     .innerText;
   return {
-    category: 'Designing',
+    category: 'designing',
     editor: 'Figma',
     language: 'Figma Design',
     project: projectName,
