@@ -1,5 +1,3 @@
-import WakaTimeCore from './core/WakaTimeCore';
-
 const twoMinutes = 120000;
 
 interface DesignProject {
@@ -55,9 +53,8 @@ const init = async () => {
   const { hostname } = document.location;
 
   const projectDetails = getParser[hostname]?.();
-
   if (projectDetails) {
-    await WakaTimeCore.recordHeartbeat(projectDetails);
+    chrome.runtime.sendMessage({ projectDetails, recordHeartbeat: true });
   }
 };
 
