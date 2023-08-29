@@ -32,3 +32,15 @@ export interface SendHeartbeat {
   project: string | null;
   url: string;
 }
+
+export interface ProjectDetails {
+  category: string;
+  editor: string;
+  language: string;
+  project: string;
+}
+
+export interface PostHeartbeatMessage {
+  projectDetails?: ProjectDetails;
+  recordHeartbeat: boolean;
+}
