@@ -9,7 +9,9 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 1. Install the extension:
 
 [![Chrome](https://wakatime.com/static/img/chrome-web-store.png)](https://chrome.google.com/webstore/detail/wakatime/jnbbnacmeggbgdjgaoojpmhdlkkpblgi)
+
 [![Firefox](https://wakatime.com/static/img/firefox-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/wakatimes/)
+
 [![Edge](https://wakatime.com/static/img/microsoft-extension.png)](https://microsoftedge.microsoft.com/addons/detail/wakatime/cdnpfnaadjmaplhghnlonephmabegadl)
 
 2. Login to [WakaTime](https://wakatime.com/).
