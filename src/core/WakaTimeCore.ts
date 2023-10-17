@@ -354,7 +354,7 @@ class WakaTimeCore {
     };
 
     payload.project = heartbeat.project ?? '<<LAST_PROJECT>>';
-    payload.branch= heartbeat.branch ?? '<<LAST_BRANCH>>';
+    payload.branch = heartbeat.branch ?? '<<LAST_BRANCH>>';
 
     return payload;
   }

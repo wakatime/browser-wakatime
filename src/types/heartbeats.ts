@@ -28,9 +28,9 @@ export interface Datum {
 }
 
 export interface SendHeartbeat {
+  branch: string | null;
   hostname: string;
   project: string | null;
-  branch: string | null;
   url: string;
 }
 
