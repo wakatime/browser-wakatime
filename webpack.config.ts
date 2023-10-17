@@ -75,5 +75,9 @@ export default (
   arv: Record<string, string>,
 ): webpack.Configuration[] => {
   const isProd = arv.mode !== 'development';
-  return [getConfigByBrowser(isProd, 'chrome'), getConfigByBrowser(isProd, 'firefox'), getConfigByBrowser(isProd, 'edge')];
+  return [
+    getConfigByBrowser(isProd, 'chrome'),
+    getConfigByBrowser(isProd, 'firefox'),
+    getConfigByBrowser(isProd, 'edge'),
+  ];
 };
