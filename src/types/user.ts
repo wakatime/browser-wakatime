@@ -28,7 +28,8 @@ export interface User {
   last_heartbeat_at: string;
   last_plugin: string;
   last_plugin_name: string;
-  last_project: string;
+  last_project?: string;
+  last_branch?: string;
   location: string;
   logged_time_public: boolean;
   modified_at: string;

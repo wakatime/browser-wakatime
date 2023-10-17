@@ -30,6 +30,7 @@ export interface Datum {
 export interface SendHeartbeat {
   hostname: string;
   project: string | null;
+  branch: string | null;
   url: string;
 }
 
