@@ -8,7 +8,7 @@ import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from '../utils';
+import { IS_EDGE, IS_FIREFOX, generateProjectFromDevSites } from '../utils';
 import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
@@ -252,7 +252,7 @@ class WakaTimeCore {
       if (startsWithUrl) {
         return {
           project: projectName,
-          url: schema + urlFromLine,
+          url,
         };
       }
 
