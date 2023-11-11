@@ -72,7 +72,7 @@
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@xarc/run": "^1.0.4",
-    "axios": "^1.2.2",
+    "axios": "^1.6.0",
     "babel-jest": "^29.3.1",
     "babel-loader": "^9.1.2",
     "browserify": "^17.0.0",
