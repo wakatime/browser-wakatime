@@ -120,7 +120,7 @@ const config: Config = {
 
   apiKey: '',
 
-  apiUrl: process.env.API_URL ?? 'https://wakatime.com/api/v1',
+  apiUrl: process.env.API_URL ?? 'https://api.wakatime.com/api/v1',
 
   colors: {
     allGood: '',
