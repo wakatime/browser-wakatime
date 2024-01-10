@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import WakaTimeCore from './core/WakaTimeCore';
+import { PostHeartbeatMessage } from './types/heartbeats';
 
 // Add a listener to resolve alarms
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -22,7 +23,7 @@ browser.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
  * Whenever a active tab is changed it records a heartbeat with that tab url.
  */
 browser.tabs.onActivated.addListener(async () => {
-  console.log('recording a heartbeat - active tab changed ');
+  console.log('recording a heartbeat - active tab changed');
   await WakaTimeCore.recordHeartbeat();
 });
 
@@ -60,6 +61,12 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
  */
 self.addEventListener('activate', async () => {
   await WakaTimeCore.createDB();
+});
+
+browser.runtime.onMessage.addListener(async (request: PostHeartbeatMessage) => {
+  if (request.recordHeartbeat === true) {
+    await WakaTimeCore.recordHeartbeat(request.projectDetails);
+  }
 });
 
 /**

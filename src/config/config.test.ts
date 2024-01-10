@@ -25,7 +25,7 @@ describe('wakatime config', () => {
           },
         },
         "apiKey": "",
-        "apiUrl": "https://wakatime.com/api/v1",
+        "apiUrl": "https://api.wakatime.com/api/v1",
         "colors": {
           "allGood": "",
           "lightTheme": "white",

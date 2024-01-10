@@ -28,7 +28,20 @@ export interface Datum {
 }
 
 export interface SendHeartbeat {
+  branch: string | null;
   hostname: string;
   project: string | null;
   url: string;
+}
+
+export interface ProjectDetails {
+  category: string;
+  editor: string;
+  language: string;
+  project: string;
+}
+
+export interface PostHeartbeatMessage {
+  projectDetails?: ProjectDetails;
+  recordHeartbeat: boolean;
 }
