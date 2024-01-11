@@ -10,9 +10,12 @@ body {
 }
 
 a.navbar-brand {
+  display: flex;
+  align-items: flex-end;
+  height: 60px;
+
   img {
     margin-top: -12px;
-    float: left;
     margin-right: 7px;
   }
 }

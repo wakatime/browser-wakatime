@@ -30,7 +30,7 @@ export default function WakaTime(): JSX.Element {
   const isApiKeyValid = apiKeyInvalid(apiKeyFromRedux) === '';
 
   return (
-    <div>
+    <div className="py-4 px-2 pt-0">
       <NavBar />
       {isApiKeyValid && extensionState === 'notSignedIn' && (
         <Alert
@@ -48,7 +48,7 @@ export default function WakaTime(): JSX.Element {
           style={{ cursor: 'pointer' }}
         />
       )}
-      <div className="container">
+      <div className="container mt-0">
         <div className="row">
           <div className="col-md-12">
             <MainList loggingEnabled={loggingEnabled} totalTimeLoggedToday={totalTimeLoggedToday} />

@@ -18,106 +18,109 @@ describe('NavBar', () => {
     expect(container).toMatchInlineSnapshot(`
       <div>
         <nav
-          class="navbar navbar-default"
+          class="navbar shadow-none"
           role="navigation"
         >
           <div
-            class="container-fluid"
+            class="navbar-header d-flex w-100 justify-content-between"
           >
-            <div
-              class="navbar-header"
+            <a
+              class="navbar-brand"
+              href="https://wakatime.com"
+              rel="noreferrer"
+              target="_blank"
             >
-              <a
-                class="navbar-brand"
-                href="https://wakatime.com"
-                rel="noreferrer"
-                target="_blank"
-              >
+              <img
+                src="graphics/wakatime-logo-48.png"
+              />
+              <div>
                 WakaTime
-                <img
-                  src="graphics/wakatime-logo-48.png"
-                />
-              </a>
-              <button
-                aria-controls="bs-example-navbar-collapse-1"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-                class="navbar-toggler"
-                data-bs-target="#bs-example-navbar-collapse-1"
-                data-bs-toggle="collapse"
-                type="button"
+              </div>
+            </a>
+            <button
+              aria-controls="userInfoCollapse"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              class="navbar-toggler"
+              data-bs-target="#userInfoCollapse"
+              data-bs-toggle="collapse"
+              type="button"
+            >
+              <span
+                class="sr-only"
               >
-                <span
-                  class="sr-only"
-                >
-                  Toggle navigation
-                </span>
-                <i
-                  class="fa fa-fw fa-cogs"
-                />
-              </button>
-            </div>
-            <br />
-            <div
-              class="collapse navbar-collapse"
-              id="bs-example-navbar-collapse-1"
+                Toggle navigation
+              </span>
+              <i
+                class="fa fa-fw fa-cogs"
+              />
+            </button>
+          </div>
+          <div
+            class="collapse navbar-collapse mt-4"
+            id="userInfoCollapse"
+          >
+            <div />
+            <ul
+              class="nav navbar-nav border-bottom pb-2"
             >
               <div />
-              <ul
-                class="nav navbar-nav"
+              <div />
+              <li
+                class="dropdown"
               >
-                <div />
-                <div />
-                <li
-                  class="dropdown"
+                <a
+                  aria-expanded="false"
+                  class="dropdown-toggle text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
+                  data-bs-toggle="dropdown"
+                  href="#"
+                  role="button"
                 >
-                  <a
-                    aria-expanded="false"
-                    class="dropdown-toggle"
-                    data-toggle="dropdown"
-                    href="#"
-                    role="button"
+                  <i
+                    class="fa fa-fw fa-info me-2"
+                  />
+                  About
+                  <span
+                    class="caret"
+                  />
+                </a>
+                <ul
+                  class="dropdown-menu shadow-none ms-4"
+                  role="menu"
+                >
+                  <li
+                    class="mb-2"
                   >
-                    <i
-                      class="fa fa-fw fa-info"
-                    />
-                    About
-                    <span
-                      class="caret"
-                    />
-                  </a>
-                  <ul
-                    class="dropdown-menu"
-                    role="menu"
+                    <a
+                      class="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
+                      href="https://github.com/wakatime/chrome-wakatime/issues"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <i
+                        class="fa fa-fw fa-bug me-2"
+                      />
+                      Report an Issue
+                    </a>
+                  </li>
+                  <li
+                    class="mb-2"
                   >
-                    <li>
-                      <a
-                        href="https://github.com/wakatime/chrome-wakatime/issues"
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        <i
-                          class="fa fa-fw fa-bug"
-                        />
-                        Report an Issue
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://github.com/wakatime/chrome-wakatime"
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        <i
-                          class="fa fa-fw fa-github"
-                        />
-                        View on GitHub
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
+                    <a
+                      class="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
+                      href="https://github.com/wakatime/chrome-wakatime"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <i
+                        class="fa fa-fw fa-github me-2"
+                      />
+                      View on GitHub
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </div>
         </nav>
       </div>

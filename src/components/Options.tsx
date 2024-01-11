@@ -1,8 +1,9 @@
+import { Toast } from 'bootstrap';
+import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { logUserIn } from '../utils/user';
-import Alert from './Alert';
 import SitesList from './SitesList';
 
 interface State {
@@ -11,7 +12,6 @@ interface State {
   apiKey: string;
   apiUrl: string;
   blacklist: string;
-  displayAlert: boolean;
   hostname: string;
   loading: boolean;
   loggingStyle: string;
@@ -28,7 +28,6 @@ export default function Options(): JSX.Element {
     apiKey: '',
     apiUrl: config.apiUrl,
     blacklist: '',
-    displayAlert: false,
     hostname: '',
     loading: false,
     loggingStyle: config.loggingStyle,
@@ -38,6 +37,8 @@ export default function Options(): JSX.Element {
     trackSocialMedia: config.trackSocialMedia,
     whitelist: '',
   });
+
+  const liveToastRef = useRef(null);
 
   const loggingStyleRef = useRef(null);
 
@@ -82,14 +83,6 @@ export default function Options(): JSX.Element {
     void restoreSettings();
   }, []);
 
-  useEffect(() => {
-    if (state.displayAlert) {
-      setTimeout(function () {
-        setState({ ...state, displayAlert: false, loading: false });
-      }, 2500);
-    }
-  }, [state.displayAlert]);
-
   const handleSubmit = async () => {
     if (state.loading) return;
     setState({ ...state, loading: true });
@@ -130,7 +123,6 @@ export default function Options(): JSX.Element {
       apiKey,
       apiUrl,
       blacklist,
-      displayAlert: true,
       hostname,
       loggingStyle,
       loggingType,
@@ -139,6 +131,8 @@ export default function Options(): JSX.Element {
       trackSocialMedia,
       whitelist,
     });
+    // eslint-disable-next-line
+    Toast.getOrCreateInstance(liveToastRef?.current ?? '')?.show();
     await logUserIn(state.apiKey);
   };
 
@@ -183,20 +177,6 @@ export default function Options(): JSX.Element {
     );
   };
 
-  const alert = () => {
-    return (
-      <div
-        style={{
-          height: state.displayAlert ? 55 : 0,
-          opacity: state.displayAlert ? 1 : 0,
-          transition: 'opacity 500ms, height 1000ms',
-        }}
-      >
-        <Alert key={state.alertText} type={state.alertType} text={state.alertText} />
-      </div>
-    );
-  };
-
   const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
 
   return (
@@ -211,114 +191,108 @@ export default function Options(): JSX.Element {
     >
       <div className="row">
         <div className="col-md-12">
-          {alert()}
-
           <form className="form-horizontal">
-            <div className="form-group">
-              <label className="col-lg-2 control-label">API Key</label>
-
-              <div className="col-lg-10">
-                <input
-                  autoFocus={true}
-                  type="text"
-                  className={`form-control ${isApiKeyValid ? '' : 'border-danger'}`}
-                  placeholder="API key"
-                  value={state.apiKey}
-                  onChange={(e) => setState({ ...state, apiKey: e.target.value })}
-                />
-              </div>
+            <div className="form-group mb-4">
+              <label htmlFor="apiKey" className="form-label mb-0">
+                API Key
+              </label>
+              <input
+                id="apiKey"
+                autoFocus={true}
+                type="text"
+                className={`form-control ${isApiKeyValid ? '' : 'is-invalid'}`}
+                placeholder="API key"
+                value={state.apiKey}
+                onChange={(e) => setState({ ...state, apiKey: e.target.value })}
+              />
             </div>
 
-            <div className="form-group">
-              <label className="col-lg-2 control-label">Logging style!</label>
-
-              <div className="col-lg-10">
-                <select
-                  ref={loggingStyleRef}
-                  className="form-control"
-                  value={state.loggingStyle}
-                  onChange={(e) => setState({ ...state, loggingStyle: e.target.value })}
-                >
-                  <option value="blacklist">All except blacklisted sites</option>
-                  <option value="whitelist">Only whitelisted sites</option>
-                </select>
-              </div>
+            <div className="form-group mb-4">
+              <label htmlFor="loggingStyle" className="form-label">
+                Logging style
+              </label>
+              <select
+                id="loggingStyle"
+                ref={loggingStyleRef}
+                className="form-control"
+                value={state.loggingStyle}
+                onChange={(e) => setState({ ...state, loggingStyle: e.target.value })}
+              >
+                <option value="blacklist">All except blacklisted sites</option>
+                <option value="whitelist">Only whitelisted sites</option>
+              </select>
             </div>
 
             {loggingStyle()}
 
-            <div className="form-group">
-              <label className="col-lg-2 control-label">Logging type</label>
-
-              <div className="col-lg-10">
-                <select
-                  className="form-control"
-                  value={state.loggingType}
-                  onChange={(e) => setState({ ...state, loggingType: e.target.value })}
-                >
-                  <option value="domain">Only the domain</option>
-                  <option value="url">Entire URL</option>
-                </select>
-              </div>
+            <div className="form-group mb-4">
+              <label htmlFor="loggingType" className="form-label">
+                Logging type
+              </label>
+              <select
+                id="loggingType"
+                className="form-control"
+                value={state.loggingType}
+                onChange={(e) => setState({ ...state, loggingType: e.target.value })}
+              >
+                <option value="domain">Only the domain</option>
+                <option value="url">Entire URL</option>
+              </select>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="theme" className="col-lg-2 control-label">
+            <div className="form-group mb-4">
+              <label htmlFor="selectTheme" className="form-label mb-0">
                 Theme
               </label>
-
-              <div className="col-lg-10">
-                <select
-                  className="form-control"
-                  value={state.theme}
-                  onChange={(e) => setState({ ...state, theme: e.target.value })}
-                >
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                </select>
-              </div>
+              <select
+                id="selectTheme"
+                className="form-control"
+                value={state.theme}
+                onChange={(e) => setState({ ...state, theme: e.target.value })}
+              >
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="theme" className="col-lg-2 control-label">
+            <div className="form-group mb-4">
+              <label htmlFor="selectHost" className="form-label mb-0">
                 Hostname
               </label>
-
-              <div className="col-lg-10">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={state.hostname}
-                  onChange={(e) => setState({ ...state, hostname: e.target.value })}
-                />
-                <span className="help-block">
-                  Optional name of local machine. By default &apos;Unknown Hostname&apos;.
-                </span>
-              </div>
+              <input
+                id="selectHost"
+                type="text"
+                className="form-control"
+                value={state.hostname}
+                onChange={(e) => setState({ ...state, hostname: e.target.value })}
+              />
+              <span className="text-secondary">
+                Optional name of local machine. By default &apos;Unknown Hostname&apos;.
+              </span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="theme" className="col-lg-2 control-label">
+            <div className="form-group mb-4">
+              <label htmlFor="apiUrl" className="form-label mb-0">
                 API Url
               </label>
 
-              <div className="col-lg-10">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={state.apiUrl}
-                  onChange={(e) => setState({ ...state, apiUrl: e.target.value })}
-                  placeholder="https://api.wakatime.com/api/v1"
-                />
-                <span className="help-block">https://api.wakatime.com/api/v1</span>
-              </div>
+              <input
+                id="apiUrl"
+                type="text"
+                className="form-control"
+                value={state.apiUrl}
+                onChange={(e) => setState({ ...state, apiUrl: e.target.value })}
+                placeholder="https://api.wakatime.com/api/v1"
+              />
+              <span className="help-block">https://api.wakatime.com/api/v1</span>
             </div>
 
-            <div className="form-group row">
+            <div className="form-group row mb-4">
               <div className="col-lg-10 col-lg-offset-2 space-between align-items-center">
                 <div>
                   <input
                     type="checkbox"
+                    className="me-2"
                     checked={state.trackSocialMedia}
                     onChange={toggleSocialMedia}
                   />
@@ -327,8 +301,8 @@ export default function Options(): JSX.Element {
                 <button
                   type="button"
                   className="btn btn-primary btn-sm"
-                  data-toggle="modal"
-                  data-target="#socialSitesModal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#socialSitesModal"
                 >
                   Sites
                 </button>
@@ -341,17 +315,15 @@ export default function Options(): JSX.Element {
                   <div className="modal-dialog" role="document">
                     <div className="modal-content">
                       <div className="modal-header">
-                        <button
-                          type="button"
-                          className="close"
-                          data-dismiss="modal"
-                          aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 className="modal-title" id="socialSitesModalLabel">
+                        <h4 className="modal-title fs-5" id="socialSitesModalLabel">
                           Social Media Sites
                         </h4>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
                       </div>
                       <div className="modal-body">
                         <SitesList
@@ -368,7 +340,7 @@ export default function Options(): JSX.Element {
                         />
                       </div>
                       <div className="modal-footer">
-                        <button type="button" className="btn btn-primary" data-dismiss="modal">
+                        <button type="button" className="btn btn-primary" data-bs-dismiss="modal">
                           Close
                         </button>
                       </div>
@@ -378,8 +350,8 @@ export default function Options(): JSX.Element {
               </div>
             </div>
 
-            <div className="form-group">
-              <div className="col-lg-10 col-lg-offset-2">
+            <div className="form-group mb-4">
+              <div className="d-grid gap-2 col-6 ">
                 <button
                   type="button"
                   className={`btn btn-primary ${state.loading ? 'disabled' : ''}`}
@@ -389,6 +361,30 @@ export default function Options(): JSX.Element {
                 >
                   Save
                 </button>
+              </div>
+            </div>
+            <div className="toast-container position-fixed bottom-0 end-0 p-3">
+              <div
+                className={classNames(
+                  'toast align-items-center justify-content-between alert',
+                  `alert-${state.alertType}`,
+                )}
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                id="liveToast"
+                ref={liveToastRef}
+                data-bs-delay="3000"
+              >
+                <div className="fs-5">{state.alertText}</div>
+                <div data-bs-theme="dark">
+                  <button
+                    type="button"
+                    className="btn-close m-0"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+                  ></button>
+                </div>
               </div>
             </div>
           </form>
