@@ -1,0 +1,51 @@
+@import 'node_modules/bootswatch/dist/materia/_variables';
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootswatch/dist/materia/_bootswatch';
+@import 'node_modules/font-awesome/scss/font-awesome';
+@import 'variables';
+@import 'partials/_animations';
+
+body {
+  min-width: 357px;
+}
+
+a.navbar-brand {
+  display: flex;
+  align-items: flex-end;
+  height: 60px;
+
+  img {
+    margin-top: -12px;
+    margin-right: 7px;
+  }
+}
+
+div.container {
+  margin-top: 20px;
+}
+
+canvas#icon {
+  display: none;
+}
+
+div#status {
+  display: none;
+}
+
+// [type='text'].border-danger,
+// .border-danger {
+//   box-shadow: inset 0 -2px 0 red;
+//   &:focus {
+//     .box-shadow(inset 0 -2px 0 #F3F4F5);
+//   }
+// }
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.align-items-center {
+  display: flex;
+  align-items: center;
+}

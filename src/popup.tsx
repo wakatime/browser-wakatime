@@ -5,9 +5,7 @@ import WakaTime from './components/WakaTime';
 import createStore from './stores/createStore';
 import checkCurrentUser from './utils/checkCurrentUser';
 
-/* This is a fix for Bootstrap requiring jQuery */
-global.jQuery = require('jquery');
-require('bootstrap');
+import 'bootstrap/dist/js/bootstrap';
 
 const container = document.getElementById('wakatime');
 const root = createRoot(container!);

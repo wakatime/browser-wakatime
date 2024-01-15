@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import changeExtensionState from '../utils/changeExtensionState';
+import { useDispatch, useSelector } from 'react-redux';
 import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
 import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
+import changeExtensionState from '../utils/changeExtensionState';
 
 export interface MainListProps {
   loggingEnabled: boolean;
@@ -51,7 +51,7 @@ export default function MainList({
             <blockquote>
               <p>{totalTimeLoggedToday}</p>
               <small>
-                <cite>TOTAL TIME LOGGED TODAY</cite>
+                <cite className="text-body-secondary">TOTAL TIME LOGGED TODAY</cite>
               </small>
             </blockquote>
           </div>
@@ -61,7 +61,11 @@ export default function MainList({
         <div className="row">
           <div className="col-xs-12">
             <p>
-              <a href="#" onClick={disableLogging} className="btn btn-danger btn-block">
+              <a
+                href="#"
+                onClick={disableLogging}
+                className="btn btn-danger btn-block w-100 btn-sm"
+              >
                 Disable logging
               </a>
             </p>
@@ -72,7 +76,11 @@ export default function MainList({
         <div className="row">
           <div className="col-xs-12">
             <p>
-              <a href="#" onClick={enableLogging} className="btn btn-success btn-block">
+              <a
+                href="#"
+                onClick={enableLogging}
+                className="btn btn-success btn-block w-100 btn-sm"
+              >
                 Enable logging
               </a>
             </p>
@@ -80,14 +88,14 @@ export default function MainList({
         </div>
       )}
       <div className="list-group">
-        <a href="#" className="list-group-item" onClick={openOptionsPage}>
-          <i className="fa fa-fw fa-cogs"></i>
+        <a href="#" className="list-group-item text-body-secondary" onClick={openOptionsPage}>
+          <i className="fa fa-fw fa-cogs me-2"></i>
           Options
         </a>
         {user && (
           <div>
-            <a href="#" className="list-group-item" onClick={logoutUser}>
-              <i className="fa fa-fw fa-sign-out"></i>
+            <a href="#" className="list-group-item text-body-secondary" onClick={logoutUser}>
+              <i className="fa fa-fw fa-sign-out me-2"></i>
               Logout
             </a>
           </div>
@@ -97,9 +105,9 @@ export default function MainList({
             target="_blank"
             rel="noreferrer"
             href="https://wakatime.com/login"
-            className="list-group-item"
+            className="list-group-item text-body-secondary"
           >
-            <i className="fa fa-fw fa-sign-in"></i>
+            <i className="fa fa-fw fa-sign-in me-2"></i>
             Login
           </a>
         )}

@@ -30,22 +30,22 @@ describe('MainList', () => {
             class="list-group"
           >
             <a
-              class="list-group-item"
+              class="list-group-item text-body-secondary"
               href="#"
             >
               <i
-                class="fa fa-fw fa-cogs"
+                class="fa fa-fw fa-cogs me-2"
               />
               Options
             </a>
             <a
-              class="list-group-item"
+              class="list-group-item text-body-secondary"
               href="https://wakatime.com/login"
               rel="noreferrer"
               target="_blank"
             >
               <i
-                class="fa fa-fw fa-sign-in"
+                class="fa fa-fw fa-sign-in me-2"
               />
               Login
             </a>

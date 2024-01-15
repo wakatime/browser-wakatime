@@ -22,20 +22,21 @@ export default function SitesList({
   };
 
   return (
-    <div className="form-group">
-      <label htmlFor="sites" className="col-lg-2 control-label">
+    <div className="form-group mb-4">
+      <label htmlFor={`${label}-siteList`} className="col-lg-2 control-label">
         {label}
       </label>
 
       <div className="col-lg-10">
         <textarea
+          id={`${label}-siteList`}
           className="form-control"
           rows={rows ?? 3}
           onChange={textareaChange}
           placeholder={placeholder ?? 'http://google.com'}
           value={sites}
         ></textarea>
-        <span className="help-block">
+        <span className="text-secondary">
           {helpText}
           <br />
           One line per site.
