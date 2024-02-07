@@ -361,9 +361,14 @@ class WakaTimeCore {
 
   getOperatingSystem(): Promise<string> {
     return new Promise((resolve) => {
-      chrome.runtime.getPlatformInfo(function (info) {
-        resolve(`${info.os}_${info.arch}`);
-      });
+      try {
+        chrome.runtime.getPlatformInfo(function (info) {
+          resolve(`${info.os}_${info.arch}`);
+        });
+      } catch (error: unknown) {
+        console.log('error', error);
+        resolve('');
+      }
     });
   }
 

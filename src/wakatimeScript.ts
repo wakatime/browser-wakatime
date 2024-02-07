@@ -40,11 +40,33 @@ const parseFigma = (): DesignProject | undefined => {
   };
 };
 
+const parseJupyter = (isDemo: boolean): DesignProject | undefined => {
+  const { title } = document;
+  if (!title.endsWith('JupyterLab') && title != 'JupyterLite') return undefined;
+
+  try {
+    const projectName =
+      document.getElementsByClassName('f1fwtl1j')[0].children[isDemo ? 0 : 1].children[0].innerHTML;
+
+    return {
+      category: 'Designing',
+      editor: 'Jupyter',
+      language: 'Jupyter',
+      project: '<<LAST_PROJECT>>',
+    };
+  } catch (err: unknown) {
+    console.log('Error getting Jupyter project name');
+    return undefined;
+  }
+};
+
 const getParser: {
   [key: string]:
     | (() => { editor: string; language: string; project: string } | undefined)
     | undefined;
 } = {
+  'jupyter.org': () => parseJupyter(true),
+  localhost: () => parseJupyter(false),
   'www.canva.com': parseCanva,
   'www.figma.com': parseFigma,
 };
