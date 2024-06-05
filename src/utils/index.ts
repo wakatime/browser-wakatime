@@ -3,11 +3,11 @@ export const IS_FIREFOX = navigator.userAgent.includes('Firefox');
 export const IS_CHROME = IS_EDGE === false && IS_FIREFOX === false;
 
 export const generateProjectFromDevSites = (url: string): string | null => {
-  const githubUrls = ['https://github.com/', 'https://github.dev/'];
-  for (const githubUrl of githubUrls) {
-    if (url.startsWith(githubUrl)) {
-      const newUrl = url.replace(githubUrl, '');
-      return newUrl.split('/')[1] || null;
+  const githubHosts = ['github.com', 'github.dev'];
+  const newUrl = new URL(url);
+  for (const githubHost of githubHosts) {
+    if (newUrl.hostname == githubHost) {
+      return newUrl.pathname.split('/')[2] || null;
     }
   }
   return null;
