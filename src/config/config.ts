@@ -170,6 +170,7 @@ const config: Config = {
     'reddit.com',
     'snapchat.com',
     'tiktok.com',
+    'x.com',
     'twitter.com',
     'whatsapp.com',
     'youtube.com',
