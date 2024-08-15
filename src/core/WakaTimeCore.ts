@@ -8,7 +8,7 @@ import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from '../utils';
+import { IS_EDGE, IS_FIREFOX, generateProjectFromDevSites } from '../utils';
 import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
@@ -170,6 +170,7 @@ class WakaTimeCore {
         if (!contains(url, items.blacklist as string)) {
           await this.sendHeartbeat(
             {
+              branch: null,
               hostname: items.hostname as string,
               project,
               url,
@@ -189,6 +190,7 @@ class WakaTimeCore {
           await this.sendHeartbeat(
             {
               ...heartbeat,
+              branch: null,
               hostname: items.hostname as string,
               project: heartbeat.project ?? project,
             },
@@ -285,6 +287,7 @@ class WakaTimeCore {
     apiKey: string,
     navigationPayload: Record<string, unknown>,
   ): Promise<void> {
+    console.log('Sending Heartbeat', heartbeat);
     let payload;
 
     const loggingType = await this.getLoggingType();
@@ -339,12 +342,12 @@ class WakaTimeCore {
     let userAgent;
     if (IS_FIREFOX) {
       browserName = 'firefox';
-      userAgent = navigator.userAgent.match(/Firefox\/\S+/g)![0];
+      userAgent = navigator.userAgent.match(/Firefox\/\S+/g)?.[0];
     } else if (IS_EDGE) {
       browserName = 'edge';
       userAgent = navigator.userAgent;
     } else {
-      userAgent = navigator.userAgent.match(/Chrome\/\S+/g)![0];
+      userAgent = navigator.userAgent.match(/Chrome\/\S+/g)?.[0];
     }
     const payload: Record<string, unknown> = {
       entity: heartbeat.url,
