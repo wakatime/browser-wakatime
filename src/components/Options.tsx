@@ -1,5 +1,3 @@
-import { Toast } from 'bootstrap';
-import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
@@ -37,8 +35,6 @@ export default function Options(): JSX.Element {
     trackSocialMedia: config.trackSocialMedia,
     whitelist: '',
   });
-
-  const liveToastRef = useRef(null);
 
   const loggingStyleRef = useRef(null);
 
@@ -131,9 +127,8 @@ export default function Options(): JSX.Element {
       trackSocialMedia,
       whitelist,
     });
-    // eslint-disable-next-line
-    Toast.getOrCreateInstance(liveToastRef?.current ?? '')?.show();
     await logUserIn(state.apiKey);
+    window.close();
   };
 
   const updateBlacklistState = (sites: string) => {
@@ -361,30 +356,6 @@ export default function Options(): JSX.Element {
                 >
                   Save
                 </button>
-              </div>
-            </div>
-            <div className="toast-container position-fixed bottom-0 end-0 p-3">
-              <div
-                className={classNames(
-                  'toast align-items-center justify-content-between alert',
-                  `alert-${state.alertType}`,
-                )}
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
-                id="liveToast"
-                ref={liveToastRef}
-                data-bs-delay="3000"
-              >
-                <div className="fs-5">{state.alertText}</div>
-                <div data-bs-theme="dark">
-                  <button
-                    type="button"
-                    className="btn-close m-0"
-                    data-bs-dismiss="toast"
-                    aria-label="Close"
-                  ></button>
-                </div>
               </div>
             </div>
           </form>
