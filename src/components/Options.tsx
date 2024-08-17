@@ -175,15 +175,7 @@ export default function Options(): JSX.Element {
   const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
 
   return (
-    <div
-      className="container"
-      style={{
-        height: 590,
-        marginTop: 0,
-        overflow: 'hidden',
-        overflowY: 'scroll',
-      }}
-    >
+    <div className="container">
       <div className="row">
         <div className="col-md-12">
           <form className="form-horizontal">
