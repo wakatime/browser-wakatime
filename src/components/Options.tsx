@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
+import { IS_CHROME } from '../utils';
 import apiKeyInvalid from '../utils/apiKey';
 import { logUserIn } from '../utils/user';
 import SitesList from './SitesList';
@@ -128,7 +129,9 @@ export default function Options(): JSX.Element {
       whitelist,
     });
     await logUserIn(state.apiKey);
-    window.close();
+    if (IS_CHROME) {
+      window.close();
+    }
   };
 
   const updateBlacklistState = (sites: string) => {
