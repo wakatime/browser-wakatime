@@ -237,15 +237,6 @@ class WakaTimeCore {
           .replace(cleanLine.substring(projectIndicatorIndex), '')
           .replace(/\/$/, '');
       }
-      const schemaHttpExists = url.match(/^http:\/\//i);
-      const schemaHttpsExists = url.match(/^https:\/\//i);
-      let schema = '';
-      if (schemaHttpExists) {
-        schema = 'http://';
-      }
-      if (schemaHttpsExists) {
-        schema = 'https://';
-      }
       const cleanUrl = url
         .trim()
         .replace(/(\/|@@)$/, '')
@@ -254,7 +245,7 @@ class WakaTimeCore {
       if (startsWithUrl) {
         return {
           project: projectName,
-          url: schema + urlFromLine,
+          url,
         };
       }
 
@@ -264,7 +255,7 @@ class WakaTimeCore {
       if (lineRe.test(url)) {
         return {
           project: null,
-          url: schema + urlFromLine,
+          url,
         };
       }
     }
