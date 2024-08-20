@@ -29,3 +29,14 @@ export const generateProjectFromDevSites = (url: string): string | null => {
 
   return match?.[0] ?? null;
 };
+
+const CODE_REVIEW_URL_REG_LIST = [/github.com\/[^/]+\/[^/]+\/pull\/\d+\/files/];
+
+export const isCodeReviewing = (url: string): boolean => {
+  for (const reg of CODE_REVIEW_URL_REG_LIST) {
+    if (url.match(reg)) {
+      return true;
+    }
+  }
+  return false;
+};
