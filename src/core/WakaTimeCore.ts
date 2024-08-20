@@ -8,7 +8,7 @@ import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import { IS_EDGE, IS_FIREFOX, generateProjectFromDevSites } from '../utils';
+import { IS_EDGE, IS_FIREFOX, generateProjectFromDevSites, isCodeReviewing } from '../utils';
 import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
@@ -112,7 +112,7 @@ class WakaTimeCore {
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to WakaTime for logging.
    */
-  async recordHeartbeat(payload = {}): Promise<void> {
+  async recordHeartbeat(payload: Record<string, unknown> = {}): Promise<void> {
     const apiKey = await getApiKey();
     if (!apiKey) {
       return changeExtensionState('notLogging');
@@ -165,6 +165,12 @@ class WakaTimeCore {
 
       // Checks dev websites
       const project = generateProjectFromDevSites(url);
+
+      // Check if code reviewing
+      const codeReviewing = isCodeReviewing(url);
+      if (codeReviewing) {
+        payload.category = 'code reviewing';
+      }
 
       if (items.loggingStyle == 'blacklist') {
         if (!contains(url, items.blacklist as string)) {
