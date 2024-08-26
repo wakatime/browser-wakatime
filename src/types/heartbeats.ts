@@ -35,6 +35,7 @@ export interface SendHeartbeat {
 }
 
 export interface ProjectDetails {
+  [key: string]: string;
   category: string;
   editor: string;
   language: string;

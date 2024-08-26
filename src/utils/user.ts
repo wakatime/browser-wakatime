@@ -1,8 +1,9 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
-import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reducers/configReducer';
 import config from '../config/config';
 import WakaTimeCore from '../core/WakaTimeCore';
+import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reducers/configReducer';
 import { setUser } from '../reducers/currentUser';
+import { getHtmlContentByTabId } from '.';
 import changeExtensionState from './changeExtensionState';
 
 export const logUserIn = async (apiKey: string): Promise<void> => {
@@ -65,7 +66,17 @@ export const fetchUserData = async (
     dispatch(setLoggingEnabled(items.loggingEnabled as boolean));
     dispatch(setTotalTimeLoggedToday(totalTimeLoggedTodayResponse.text));
 
-    await WakaTimeCore.recordHeartbeat();
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    let html = '';
+    const tabId = tabs[0]?.id;
+    if (tabId) {
+      html = await getHtmlContentByTabId(tabId);
+    }
+
+    await WakaTimeCore.recordHeartbeat(html);
   } catch (err: unknown) {
     await changeExtensionState('notSignedIn');
   }

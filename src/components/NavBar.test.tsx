@@ -14,6 +14,7 @@ jest.mock('webextension-polyfill', () => {
 
 describe('NavBar', () => {
   it('should render properly', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { container } = renderWithProviders(<NavBar />);
     expect(container).toMatchInlineSnapshot(`
       <div>

@@ -112,7 +112,7 @@ class WakaTimeCore {
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to WakaTime for logging.
    */
-  async recordHeartbeat(payload: Record<string, unknown> = {}): Promise<void> {
+  async recordHeartbeat(html: string, payload: Record<string, unknown> = {}): Promise<void> {
     const apiKey = await getApiKey();
     if (!apiKey) {
       return changeExtensionState('notLogging');
@@ -164,7 +164,7 @@ class WakaTimeCore {
       }
 
       // Checks dev websites
-      const project = generateProjectFromDevSites(url);
+      const project = generateProjectFromDevSites(url, html);
 
       // Check if code reviewing
       const codeReviewing = isCodeReviewing(url);
