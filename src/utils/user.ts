@@ -73,7 +73,10 @@ export const fetchUserData = async (
     let html = '';
     const tabId = tabs[0]?.id;
     if (tabId) {
-      html = await getHtmlContentByTabId(tabId);
+      try {
+        html = await getHtmlContentByTabId(tabId);
+        // eslint-disable-next-line no-empty
+      } catch (error: unknown) {}
     }
 
     await WakaTimeCore.recordHeartbeat(html);

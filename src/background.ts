@@ -25,7 +25,11 @@ browser.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
  */
 browser.tabs.onActivated.addListener(async (activeInfo) => {
   console.log('recording a heartbeat - active tab changed');
-  const html = await getHtmlContentByTabId(activeInfo.tabId);
+  let html = '';
+  try {
+    html = await getHtmlContentByTabId(activeInfo.tabId);
+    // eslint-disable-next-line no-empty
+  } catch (error: unknown) {}
   await WakaTimeCore.recordHeartbeat(html);
 });
 
@@ -43,7 +47,10 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
     let html = '';
     const tabId = tabs[0]?.id;
     if (tabId) {
-      html = await getHtmlContentByTabId(tabId);
+      try {
+        html = await getHtmlContentByTabId(tabId);
+        // eslint-disable-next-line no-empty
+      } catch (error: unknown) {}
     }
     await WakaTimeCore.recordHeartbeat(html);
   }
@@ -62,7 +69,11 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     });
     // If tab updated is the same as active tab
     if (tabId == tabs[0]?.id) {
-      const html = await getHtmlContentByTabId(tabId);
+      let html = '';
+      try {
+        html = await getHtmlContentByTabId(tabId);
+        // eslint-disable-next-line no-empty
+      } catch (error: unknown) {}
       await WakaTimeCore.recordHeartbeat(html);
     }
   }
@@ -79,7 +90,11 @@ self.addEventListener('activate', async () => {
 browser.runtime.onMessage.addListener(async (request: PostHeartbeatMessage, sender) => {
   if (request.recordHeartbeat === true) {
     if (sender.tab?.id) {
-      const html = await getHtmlContentByTabId(sender.tab.id);
+      let html = '';
+      try {
+        html = await getHtmlContentByTabId(sender.tab.id);
+        // eslint-disable-next-line no-empty
+      } catch (error: unknown) {}
       await WakaTimeCore.recordHeartbeat(html, request.projectDetails);
     }
   }
