@@ -8,12 +8,14 @@ import checkCurrentUser from './utils/checkCurrentUser';
 import 'bootstrap/dist/js/bootstrap';
 
 const container = document.getElementById('wakatime');
-const root = createRoot(container!);
-const store = createStore('WakaTime-Options');
-checkCurrentUser(store)(30 * 1000);
+if (container) {
+  const root = createRoot(container);
+  const store = createStore();
+  checkCurrentUser(store)(30 * 1000);
 
-root.render(
-  <Provider store={store}>
-    <WakaTime />
-  </Provider>,
-);
+  root.render(
+    <Provider store={store}>
+      <WakaTime />
+    </Provider>,
+  );
+}

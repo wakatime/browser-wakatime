@@ -83,3 +83,9 @@ document.body.addEventListener(
   debounce(() => init()),
   true,
 );
+
+chrome.runtime.onMessage.addListener((request: { message: string }, sender, sendResponse) => {
+  if (request.message === 'get_html') {
+    sendResponse({ html: document.documentElement.outerHTML });
+  }
+});

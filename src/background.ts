@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import WakaTimeCore from './core/WakaTimeCore';
 import { PostHeartbeatMessage } from './types/heartbeats';
+import { getHtmlContentByTabId } from './utils';
 
 // Add a listener to resolve alarms
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -22,9 +23,10 @@ browser.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
 /**
  * Whenever a active tab is changed it records a heartbeat with that tab url.
  */
-browser.tabs.onActivated.addListener(async () => {
+browser.tabs.onActivated.addListener(async (activeInfo) => {
   console.log('recording a heartbeat - active tab changed');
-  await WakaTimeCore.recordHeartbeat();
+  const html = await getHtmlContentByTabId(activeInfo.tabId);
+  await WakaTimeCore.recordHeartbeat(html);
 });
 
 /**
@@ -33,7 +35,17 @@ browser.tabs.onActivated.addListener(async () => {
 browser.windows.onFocusChanged.addListener(async (windowId) => {
   if (windowId != browser.windows.WINDOW_ID_NONE) {
     console.log('recording a heartbeat - active window changed');
-    await WakaTimeCore.recordHeartbeat();
+    const tabs: browser.Tabs.Tab[] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    let html = '';
+    const tabId = tabs[0]?.id;
+    if (tabId) {
+      html = await getHtmlContentByTabId(tabId);
+    }
+    await WakaTimeCore.recordHeartbeat(html);
   }
 });
 
@@ -50,7 +62,8 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     });
     // If tab updated is the same as active tab
     if (tabId == tabs[0]?.id) {
-      await WakaTimeCore.recordHeartbeat();
+      const html = await getHtmlContentByTabId(tabId);
+      await WakaTimeCore.recordHeartbeat(html);
     }
   }
 });
@@ -63,9 +76,12 @@ self.addEventListener('activate', async () => {
   await WakaTimeCore.createDB();
 });
 
-browser.runtime.onMessage.addListener(async (request: PostHeartbeatMessage) => {
+browser.runtime.onMessage.addListener(async (request: PostHeartbeatMessage, sender) => {
   if (request.recordHeartbeat === true) {
-    await WakaTimeCore.recordHeartbeat(request.projectDetails);
+    if (sender.tab?.id) {
+      const html = await getHtmlContentByTabId(sender.tab.id);
+      await WakaTimeCore.recordHeartbeat(html, request.projectDetails);
+    }
   }
 });
 

@@ -20,6 +20,7 @@ describe('MainList', () => {
     totalTimeLoggedToday = '1/1/1999';
   });
   it('should render properly', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { container } = renderWithProviders(
       <MainList loggingEnabled={loggingEnabled} totalTimeLoggedToday={totalTimeLoggedToday} />,
     );

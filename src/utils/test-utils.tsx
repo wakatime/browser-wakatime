@@ -1,14 +1,14 @@
-import React, { PropsWithChildren } from 'react';
-import { render } from '@testing-library/react';
-import type { RenderOptions } from '@testing-library/react';
-import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
 import type { PreloadedState } from '@reduxjs/toolkit';
+import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
+import type { RenderOptions } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import React, { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { RootState } from '../stores/createStore';
 
 // As a basic setup, import your same slice reducers
-import userReducer, { initialState as InitalCurrentUser } from '../reducers/currentUser';
 import configReducer, { initialConfigState } from '../reducers/configReducer';
+import userReducer, { initialState as InitalCurrentUser } from '../reducers/currentUser';
 
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
@@ -33,6 +33,7 @@ export function renderWithProviders(
     store = configureStore({ preloadedState, reducer: rootReducer }),
     ...renderOptions
   }: ExtendedRenderOptions = {},
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   function Wrapper({ children }: PropsWithChildren<Record<string, unknown>>): JSX.Element {
     return <Provider store={store}>{children}</Provider>;
