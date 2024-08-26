@@ -40,11 +40,25 @@ const parseFigma = (): DesignProject | undefined => {
   };
 };
 
+const parseMeet = (): DesignProject | undefined => {
+  const meetId = document.querySelector('[data-meeting-title]')?.getAttribute('data-meeting-title');
+  if (!meetId) {
+    return;
+  }
+  return {
+    category: 'meeting',
+    editor: 'Meet',
+    language: 'Google Meet',
+    project: meetId,
+  };
+};
+
 const getParser: {
   [key: string]:
     | (() => { editor: string; language: string; project: string } | undefined)
     | undefined;
 } = {
+  'meet.google.com': parseMeet,
   'www.canva.com': parseCanva,
   'www.figma.com': parseFigma,
 };
@@ -89,3 +103,16 @@ chrome.runtime.onMessage.addListener((request: { message: string }, sender, send
     sendResponse({ html: document.documentElement.outerHTML });
   }
 });
+
+// Google Meet
+// https://meet.google.com/jzf-bwrz-djk
+if (window.location.href.startsWith('https://meet.google.com/')) {
+  // In google meet website
+  // Check every two seconds if the user is in a meeting.
+  setInterval(() => {
+    const inMeeting = !!document.querySelector('[data-meeting-title]');
+    if (inMeeting) {
+      debounce(() => init());
+    }
+  }, 2000);
+}
