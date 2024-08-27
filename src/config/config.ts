@@ -3,7 +3,7 @@ import browser from 'webextension-polyfill';
 /**
  * Logging
  */
-export type ApiStates = 'allGood' | 'notLogging' | 'notSignedIn' | 'ignored';
+export type ExtensionStatus = 'allGood' | 'notLogging' | 'notSignedIn' | 'ignored';
 /**
  * Supported logging style
  */
@@ -90,7 +90,7 @@ export interface Config {
   name: string;
   nonTrackableSites: string[];
   socialMediaSites: string[];
-  states: ApiStates[];
+  states: ExtensionStatus[];
   /**
    * Get stats from the wakatime api
    */

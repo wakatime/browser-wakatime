@@ -1,23 +1,25 @@
 import { IDBPDatabase, openDB } from 'idb';
-import moment from 'moment';
 import browser, { Tabs } from 'webextension-polyfill';
-import { IS_EDGE, IS_FIREFOX, getOperatingSystem, isCodeReviewing } from '../utils';
-import { getHeartbeatFromPage } from '../utils/heartbeat';
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
+import moment from 'moment';
+import { getOperatingSystem, isCodeReviewing } from '../utils';
+import { changeExtensionStatus } from '../utils/changeExtensionStatus';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
+import { getSettings, Settings } from '../utils/settings';
 
-import config from '../config/config';
+import config, { ExtensionStatus } from '../config/config';
 import { Heartbeat } from '../types/heartbeats';
 import { getApiKey } from '../utils/apiKey';
-import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
+import { getHeartbeatFromPage } from '../utils/heartbeat';
 import { getLoggingType } from '../utils/logging';
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
   lastHeartbeat: Heartbeat | undefined;
   lastHeartbeatSentAt = 0;
+  lastExtensionState: ExtensionStatus = 'allGood';
   db: IDBPDatabase | undefined;
   constructor() {
     this.tabsWithDevtoolsOpen = [];
@@ -55,47 +57,56 @@ class WakaTimeCore {
     return false;
   }
 
-  async processHeartbeat(heartbeat: Heartbeat) {
-    const apiKey = await getApiKey();
-    if (!apiKey) return changeExtensionState('notLogging');
+  canSendHeartbeat(url: string, settings: Settings): boolean {
+    if (!settings.trackSocialMedia) {
+      const domain = getDomain(url);
+      if (
+        settings.socialMediaSites.find((pattern) => {
+          const re = new RegExp(pattern.replace(/\*/g, '.*'));
+          return re.test(domain);
+        }) !== undefined
+      ) {
+        return false;
+      }
+    }
+
+    if (settings.loggingStyle === 'deny') {
+      return (
+        settings.denyList.find((pattern) => {
+          const re = new RegExp(pattern.replace(/\*/g, '.*'));
+          return re.test(url);
+        }) == undefined
+      );
+    }
+    return (
+      settings.allowList.find((pattern) => {
+        const re = new RegExp(pattern.replace(/\*/g, '.*'));
+        return re.test(url);
+      }) !== undefined
+    );
+  }
+
+  async handleActivity(url: string, heartbeat: Heartbeat) {
+    const settings = await getSettings();
+    if (!settings.loggingEnabled) {
+      await changeExtensionStatus('notLogging');
+      return;
+    }
 
     if (!this.shouldSendHeartbeat(heartbeat)) return;
 
-    if (items.loggingStyle == 'deny') {
-      if (!contains(url, items.denyList as string)) {
-        await this.sendHeartbeat(
-          {
-            branch: null,
-            hostname: items.hostname as string,
-            project,
-            url,
-          },
-          apiKey,
-          payload,
-        );
-      } else {
-        await changeExtensionState('ignored');
-        console.log(`${url} is on denyList.`);
+    if (!this.canSendHeartbeat(url, settings)) {
+      await changeExtensionStatus('ignored');
+      return;
+    }
+
+    if (this.db) {
+      // append heartbeat to queue
+      await this.db.add('cacheHeartbeats', heartbeat);
+
+      if (settings.extensionStatus !== 'notSignedIn') {
+        await changeExtensionStatus('allGood');
       }
-    } else if (items.loggingStyle == 'allow') {
-      const heartbeat = this.getHeartbeat(url, items.allowList as string);
-      if (heartbeat.url) {
-        await this.sendHeartbeat(
-          {
-            ...heartbeat,
-            branch: null,
-            hostname: items.hostname as string,
-            project: heartbeat.project ?? project,
-          },
-          apiKey,
-          payload,
-        );
-      } else {
-        await changeExtensionState('ignored');
-        console.log(`${url} is not on allowList.`);
-      }
-    } else {
-      throw Error(`Unknown logging styel: ${items.loggingStyle}`);
     }
   }
 
@@ -106,7 +117,7 @@ class WakaTimeCore {
   async recordHeartbeat(html: string, payload: Record<string, unknown> = {}): Promise<void> {
     const apiKey = await getApiKey();
     if (!apiKey) {
-      return changeExtensionState('notLogging');
+      return changeExtensionStatus('notLogging');
     }
     const items = await browser.storage.sync.get({
       allowList: '',
@@ -118,14 +129,14 @@ class WakaTimeCore {
       trackSocialMedia: config.trackSocialMedia,
     });
     if (items.loggingEnabled === true) {
-      await changeExtensionState('allGood');
+      await changeExtensionStatus('allGood');
 
       let newState = '';
       // Detects we are running this code in the extension scope
       if (browser.idle as browser.Idle.Static | undefined) {
         newState = await browser.idle.queryState(config.detectionIntervalInSeconds);
         if (newState !== 'active') {
-          return changeExtensionState('notLogging');
+          return changeExtensionStatus('notLogging');
         }
       }
 
@@ -150,7 +161,7 @@ class WakaTimeCore {
       const hostname = getDomain(url);
       if (!items.trackSocialMedia) {
         if ((items.socialMediaSites as string[]).includes(hostname)) {
-          return changeExtensionState('ignored');
+          return changeExtensionStatus('ignored');
         }
       }
 
@@ -176,7 +187,7 @@ class WakaTimeCore {
             payload,
           );
         } else {
-          await changeExtensionState('ignored');
+          await changeExtensionStatus('ignored');
           console.log(`${url} is on denyList.`);
         }
       } else if (items.loggingStyle == 'allow') {
@@ -193,7 +204,7 @@ class WakaTimeCore {
             payload,
           );
         } else {
-          await changeExtensionState('ignored');
+          await changeExtensionStatus('ignored');
           console.log(`${url} is not on allowList.`);
         }
       } else {
@@ -374,7 +385,7 @@ class WakaTimeCore {
         await this.db.add('cacheHeartbeats', payload);
       }
 
-      await changeExtensionState('notSignedIn');
+      await changeExtensionStatus('notSignedIn');
     }
   }
 
@@ -385,7 +396,7 @@ class WakaTimeCore {
   async sendCachedHeartbeatsRequest(): Promise<void> {
     const apiKey = await getApiKey();
     if (!apiKey) {
-      return changeExtensionState('notLogging');
+      return changeExtensionStatus('notLogging');
     }
 
     if (this.db) {

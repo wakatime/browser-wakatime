@@ -1,5 +1,5 @@
 import chai from 'chai';
-import changeExtensionState from '../../src/utils/changeExtensionState';
+import changeExtensionState from '../../src/utils/changeExtensionStatus';
 
 const expect = chai.expect;
 

@@ -7,7 +7,7 @@ import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reduce
 import { setUser } from '../reducers/currentUser';
 import { GrandTotal, Summaries } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import changeExtensionState from './changeExtensionState';
+import changeExtensionState from './changeExtensionStatus';
 
 /**
  * Checks if the user is logged in.

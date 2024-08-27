@@ -10,7 +10,7 @@ import NavBar from './NavBar';
 
 export default function WakaTime(): JSX.Element {
   const dispatch = useDispatch();
-  const [extensionState, setExtensionState] = useState('');
+  const [extensionStatus, setExtensionStatus] = useState('');
 
   const {
     apiKey: apiKeyFromRedux,
@@ -21,8 +21,8 @@ export default function WakaTime(): JSX.Element {
   useEffect(() => {
     const fetchData = async () => {
       await fetchUserData(apiKeyFromRedux, dispatch);
-      const items = await browser.storage.sync.get({ extensionState: '' });
-      setExtensionState(items.extensionState as string);
+      const items = await browser.storage.sync.get({ extensionStatus: '' });
+      setExtensionStatus(items.extensionStatus as string);
     };
     void fetchData();
   }, []);
@@ -32,7 +32,7 @@ export default function WakaTime(): JSX.Element {
   return (
     <div className="py-4 px-2 pt-0">
       <NavBar />
-      {isApiKeyValid && extensionState === 'notSignedIn' && (
+      {isApiKeyValid && extensionStatus === 'notSignedIn' && (
         <Alert
           type={config.alert.failure.type}
           text={'Invalid API key or API url'}

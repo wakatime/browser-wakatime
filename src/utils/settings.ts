@@ -1,12 +1,14 @@
 import browser from 'webextension-polyfill';
-import config, { LoggingStyle, LoggingType, Theme } from '../config/config';
+import config, { ExtensionStatus, LoggingStyle, LoggingType, Theme } from '../config/config';
 
 export interface Settings {
   allowList: string[];
   apiKey: string;
   apiUrl: string;
   denyList: string[];
+  extensionStatus: ExtensionStatus;
   hostname: string;
+  loggingEnabled: boolean;
   loggingStyle: LoggingStyle;
   loggingType: LoggingType;
   socialMediaSites: string[];
@@ -57,7 +59,9 @@ export const getSettings = async (): Promise<Settings> => {
     apiKey: settings.apiKey,
     apiUrl: settings.apiUrl,
     denyList: settings.denyList,
+    extensionStatus: settings.extensionStatus,
     hostname: settings.hostname,
+    loggingEnabled: settings.loggingEnabled,
     loggingStyle: settings.loggingStyle,
     loggingType: settings.loggingType,
     socialMediaSites: settings.socialMediaSites,
