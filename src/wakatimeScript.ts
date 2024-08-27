@@ -105,8 +105,7 @@ chrome.runtime.onMessage.addListener((request: { message: string }, sender, send
 });
 
 // Google Meet
-// https://meet.google.com/jzf-bwrz-djk
-if (window.location.href.startsWith('https://meet.google.com/')) {
+if (window.location.href.startsWith('https://meet.google.com')) {
   // In google meet website
 
   let inMeeting = false;
