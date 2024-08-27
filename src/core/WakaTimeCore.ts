@@ -93,21 +93,19 @@ class WakaTimeCore {
       return;
     }
 
-    if (!this.shouldSendHeartbeat(heartbeat)) return;
-
     if (!this.canSendHeartbeat(url, settings)) {
       await changeExtensionStatus('ignored');
       return;
     }
 
-    if (this.db) {
-      // append heartbeat to queue
-      await this.db.add('cacheHeartbeats', heartbeat);
-
-      if (settings.extensionStatus !== 'notSignedIn') {
-        await changeExtensionStatus('allGood');
-      }
+    if (settings.extensionStatus !== 'notSignedIn') {
+      await changeExtensionStatus('allGood');
     }
+
+    if (!this.shouldSendHeartbeat(heartbeat)) return;
+
+    // append heartbeat to queue
+    await this.db?.add('cacheHeartbeats', heartbeat);
   }
 
   /**
