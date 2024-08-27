@@ -71,9 +71,9 @@ describe('wakatime config', () => {
         ],
         "states": [
           "allGood",
-          "ignored",
-          "notSignedIn",
           "trackingDisabled",
+          "notSignedIn",
+          "ignored",
         ],
         "summariesApiEndPoint": "/users/current/summaries",
         "theme": "light",
