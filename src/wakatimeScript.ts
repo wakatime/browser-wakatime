@@ -108,11 +108,30 @@ chrome.runtime.onMessage.addListener((request: { message: string }, sender, send
 // https://meet.google.com/jzf-bwrz-djk
 if (window.location.href.startsWith('https://meet.google.com/')) {
   // In google meet website
-  // Check every two seconds if the user is in a meeting.
-  setInterval(() => {
-    const inMeeting = !!document.querySelector('[data-meeting-title]');
-    if (inMeeting) {
-      debounce(() => init());
-    }
-  }, 2000);
+
+  let inMeeting = false;
+
+  const checkIfInAMeeting = (ms: number) => {
+    setTimeout(() => {
+      const isMeetingPage = !!document.querySelector('[data-meeting-title]');
+
+      if (isMeetingPage) {
+        void init();
+        inMeeting = true;
+
+        // If already in a meeting then check again after 2min
+        checkIfInAMeeting(1000 * 60 * 2);
+      } else {
+        if (inMeeting) {
+          void init();
+          inMeeting = false;
+        }
+
+        // If not in a meeting then check again after 5s
+        checkIfInAMeeting(1000 * 5);
+      }
+    }, ms);
+  };
+
+  checkIfInAMeeting(0);
 }
