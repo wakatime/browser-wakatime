@@ -14,7 +14,7 @@ export enum KnownSite {
   zoom = 'zoom',
 }
 
-export interface SiteInfo {
+export interface OptionalHeartbeat {
   branch?: string | null;
   category?: Category | null;
   entity?: string;
@@ -23,7 +23,7 @@ export interface SiteInfo {
   project?: string | null;
 }
 
-export type HeartbeatParser = (url: string) => SiteInfo | undefined;
+export type HeartbeatParser = (url: string) => OptionalHeartbeat | undefined;
 
 export interface SiteParser {
   parser: HeartbeatParser;

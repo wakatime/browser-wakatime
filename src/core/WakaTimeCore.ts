@@ -3,7 +3,7 @@ import browser, { Tabs } from 'webextension-polyfill';
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
 import moment from 'moment';
-import { SiteInfo } from 'src/types/sites';
+import { OptionalHeartbeat } from 'src/types/sites';
 import { getOperatingSystem } from '../utils';
 import { changeExtensionStatus } from '../utils/changeExtensionStatus';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
@@ -139,7 +139,7 @@ class WakaTimeCore {
 
     const heartbeat = (
       (await browser.tabs.sendMessage(tab.id, { task: 'getHeartbeatFromPage', url })) as {
-        heartbeat?: SiteInfo;
+        heartbeat?: OptionalHeartbeat;
       }
     ).heartbeat;
 
