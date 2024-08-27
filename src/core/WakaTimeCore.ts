@@ -1,21 +1,23 @@
-/* eslint-disable no-fallthrough */
-/* eslint-disable default-case */
-import axios, { AxiosResponse } from 'axios';
 import { IDBPDatabase, openDB } from 'idb';
 import moment from 'moment';
 import browser, { Tabs } from 'webextension-polyfill';
+import { IS_EDGE, IS_FIREFOX, getOperatingSystem, isCodeReviewing } from '../utils';
+import { getHeartbeatFromPage } from '../utils/heartbeat';
+/* eslint-disable no-fallthrough */
+/* eslint-disable default-case */
+import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
+
 import config from '../config/config';
-import { SendHeartbeat } from '../types/heartbeats';
-import { GrandTotal, SummariesPayload } from '../types/summaries';
-import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import { IS_EDGE, IS_FIREFOX, generateProjectFromDevSites, isCodeReviewing } from '../utils';
+import { Heartbeat } from '../types/heartbeats';
 import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
-import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
+import { getLoggingType } from '../utils/logging';
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
+  lastHeartbeat: Heartbeat | undefined;
+  lastHeartbeatSentAt = 0;
   db: IDBPDatabase | undefined;
   constructor() {
     this.tabsWithDevtoolsOpen = [];
@@ -46,66 +48,55 @@ class WakaTimeCore {
     this.db = dbConnection;
   }
 
-  setTabsWithDevtoolsOpen(tabs: Tabs.Tab[]): void {
-    this.tabsWithDevtoolsOpen = tabs;
+  shouldSendHeartbeat(heartbeat: Heartbeat): boolean {
+    if (!this.lastHeartbeat) return true;
+    if (this.lastHeartbeat.entity !== heartbeat.entity) return true;
+    if (this.lastHeartbeatSentAt + 120000 < Date.now()) return true;
+    return false;
   }
 
-  async getTotalTimeLoggedToday(api_key = ''): Promise<GrandTotal> {
-    const items = await browser.storage.sync.get({
-      apiUrl: config.apiUrl,
-      summariesApiEndPoint: config.summariesApiEndPoint,
-    });
+  async processHeartbeat(heartbeat: Heartbeat) {
+    const apiKey = await getApiKey();
+    if (!apiKey) return changeExtensionState('notLogging');
 
-    const today = moment().format('YYYY-MM-DD');
-    const summariesAxiosPayload: AxiosResponse<SummariesPayload> = await axios.get(
-      `${items.apiUrl}${items.summariesApiEndPoint}`,
-      {
-        params: {
-          api_key,
-          end: today,
-          start: today,
-        },
-      },
-    );
-    return summariesAxiosPayload.data.data[0].grand_total;
-  }
+    if (!this.shouldSendHeartbeat(heartbeat)) return;
 
-  /**
-   * Fetches the api token for logged users in wakatime website
-   *
-   * @returns {*}
-   */
-  async fetchApiKey(): Promise<string> {
-    try {
-      const items = await browser.storage.sync.get({
-        apiUrl: config.apiUrl,
-        currentUserApiEndPoint: config.currentUserApiEndPoint,
-      });
-
-      const apiKeyResponse: AxiosResponse<ApiKeyPayload> = await axios.post(
-        `${items.apiUrl}${items.currentUserApiEndPoint}/get_api_key`,
-      );
-      return apiKeyResponse.data.data.api_key;
-    } catch (err: unknown) {
-      return '';
+    if (items.loggingStyle == 'deny') {
+      if (!contains(url, items.denyList as string)) {
+        await this.sendHeartbeat(
+          {
+            branch: null,
+            hostname: items.hostname as string,
+            project,
+            url,
+          },
+          apiKey,
+          payload,
+        );
+      } else {
+        await changeExtensionState('ignored');
+        console.log(`${url} is on denyList.`);
+      }
+    } else if (items.loggingStyle == 'allow') {
+      const heartbeat = this.getHeartbeat(url, items.allowList as string);
+      if (heartbeat.url) {
+        await this.sendHeartbeat(
+          {
+            ...heartbeat,
+            branch: null,
+            hostname: items.hostname as string,
+            project: heartbeat.project ?? project,
+          },
+          apiKey,
+          payload,
+        );
+      } else {
+        await changeExtensionState('ignored');
+        console.log(`${url} is not on allowList.`);
+      }
+    } else {
+      throw Error(`Unknown logging styel: ${items.loggingStyle}`);
     }
-  }
-
-  /**
-   * Checks if the user is logged in.
-   *
-   * @returns {*}
-   */
-  async checkAuth(api_key = ''): Promise<User> {
-    const items = await browser.storage.sync.get({
-      apiUrl: config.apiUrl,
-      currentUserApiEndPoint: config.currentUserApiEndPoint,
-    });
-    const userPayload: AxiosResponse<AxiosUserResponse> = await axios.get(
-      `${items.apiUrl}${items.currentUserApiEndPoint}`,
-      { params: { api_key } },
-    );
-    return userPayload.data.data;
   }
 
   /**
@@ -118,13 +109,13 @@ class WakaTimeCore {
       return changeExtensionState('notLogging');
     }
     const items = await browser.storage.sync.get({
-      blacklist: '',
+      allowList: '',
+      denyList: '',
       hostname: config.hostname,
       loggingEnabled: config.loggingEnabled,
       loggingStyle: config.loggingStyle,
       socialMediaSites: config.socialMediaSites,
       trackSocialMedia: config.trackSocialMedia,
-      whitelist: '',
     });
     if (items.loggingEnabled === true) {
       await changeExtensionState('allGood');
@@ -159,12 +150,12 @@ class WakaTimeCore {
       const hostname = getDomain(url);
       if (!items.trackSocialMedia) {
         if ((items.socialMediaSites as string[]).includes(hostname)) {
-          return changeExtensionState('blacklisted');
+          return changeExtensionState('ignored');
         }
       }
 
       // Checks dev websites
-      const project = generateProjectFromDevSites(url, html);
+      const project = getHeartbeatFromPage(url, html);
 
       // Check if code reviewing
       const codeReviewing = isCodeReviewing(url);
@@ -172,8 +163,8 @@ class WakaTimeCore {
         payload.category = 'code reviewing';
       }
 
-      if (items.loggingStyle == 'blacklist') {
-        if (!contains(url, items.blacklist as string)) {
+      if (items.loggingStyle == 'deny') {
+        if (!contains(url, items.denyList as string)) {
           await this.sendHeartbeat(
             {
               branch: null,
@@ -185,13 +176,11 @@ class WakaTimeCore {
             payload,
           );
         } else {
-          await changeExtensionState('blacklisted');
-          console.log(`${url} is on a blacklist.`);
+          await changeExtensionState('ignored');
+          console.log(`${url} is on denyList.`);
         }
-      }
-
-      if (items.loggingStyle == 'whitelist') {
-        const heartbeat = this.getHeartbeat(url, items.whitelist as string);
+      } else if (items.loggingStyle == 'allow') {
+        const heartbeat = this.getHeartbeat(url, items.allowList as string);
         if (heartbeat.url) {
           await this.sendHeartbeat(
             {
@@ -204,9 +193,11 @@ class WakaTimeCore {
             payload,
           );
         } else {
-          await changeExtensionState('whitelisted');
-          console.log(`${url} is not on a whitelist.`);
+          await changeExtensionState('ignored');
+          console.log(`${url} is not on allowList.`);
         }
+      } else {
+        throw Error(`Unknown logging styel: ${items.loggingStyle}`);
       }
     }
   }
@@ -280,14 +271,14 @@ class WakaTimeCore {
    * @param debug
    */
   async sendHeartbeat(
-    heartbeat: SendHeartbeat,
+    heartbeat: Heartbeat,
     apiKey: string,
     navigationPayload: Record<string, unknown>,
   ): Promise<void> {
     console.log('Sending Heartbeat', heartbeat);
     let payload;
 
-    const loggingType = await this.getLoggingType();
+    const loggingType = await getLoggingType();
     // Get only the domain from the entity.
     // And send that in heartbeat
     if (loggingType == 'domain') {
@@ -311,20 +302,6 @@ class WakaTimeCore {
   }
 
   /**
-   * Returns a promise with logging type variable.
-   *
-   * @returns {*}
-   * @private
-   */
-  async getLoggingType(): Promise<string> {
-    const items = await browser.storage.sync.get({
-      loggingType: config.loggingType,
-    });
-
-    return items.loggingType;
-  }
-
-  /**
    * Creates payload for the heartbeat and returns it as JSON.
    *
    * @param heartbeat
@@ -333,8 +310,8 @@ class WakaTimeCore {
    * @returns {*}
    * @private
    */
-  async preparePayload(heartbeat: SendHeartbeat, type: string): Promise<Record<string, unknown>> {
-    const os = await this.getOperatingSystem();
+  async preparePayload(heartbeat: Heartbeat, type: string): Promise<Record<string, unknown>> {
+    const os = await getOperatingSystem();
     let browserName = 'chrome';
     let userAgent;
     if (IS_FIREFOX) {
@@ -357,14 +334,6 @@ class WakaTimeCore {
     payload.branch = heartbeat.branch ?? '<<LAST_BRANCH>>';
 
     return payload;
-  }
-
-  getOperatingSystem(): Promise<string> {
-    return new Promise((resolve) => {
-      chrome.runtime.getPlatformInfo(function (info) {
-        resolve(`${info.os}_${info.arch}`);
-      });
-    });
   }
 
   /**

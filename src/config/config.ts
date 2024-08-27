@@ -3,16 +3,18 @@ import browser from 'webextension-polyfill';
 /**
  * Logging
  */
-export type ApiStates = 'allGood' | 'notLogging' | 'notSignedIn' | 'blacklisted' | 'whitelisted';
+export type ApiStates = 'allGood' | 'notLogging' | 'notSignedIn' | 'ignored';
 /**
  * Supported logging style
  */
-export type LoggingStyle = 'whitelist' | 'blacklist';
+export type LoggingStyle = 'allow' | 'deny';
+
 /**
  * Logging type
  */
 export type LoggingType = 'domain' | 'url';
 export type SuccessOrFailType = 'success' | 'danger';
+export type Theme = 'light' | 'dark';
 /**
  * Predefined alert type and text for success and failure.
  */
@@ -41,10 +43,9 @@ interface Colors {
  */
 interface Tooltips {
   allGood: string;
-  blacklisted: string;
+  ignored: string;
   notLogging: string;
   notSignedIn: string;
-  whitelisted: string;
 }
 
 export interface Config {
@@ -97,7 +98,7 @@ export interface Config {
   /**
    * Options for theme
    */
-  theme: 'light';
+  theme: Theme;
   tooltips: Tooltips;
   trackSocialMedia: boolean;
   /**
@@ -152,7 +153,7 @@ const config: Config = {
 
   loggingEnabled: true,
 
-  loggingStyle: 'blacklist',
+  loggingStyle: 'deny',
 
   loggingType: 'domain',
 
@@ -175,7 +176,7 @@ const config: Config = {
     'youtube.com',
   ],
 
-  states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+  states: ['allGood', 'notLogging', 'notSignedIn', 'ignored'],
 
   summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/users/current/summaries',
 
@@ -183,10 +184,9 @@ const config: Config = {
 
   tooltips: {
     allGood: '',
-    blacklisted: 'This URL is blacklisted',
+    ignored: 'This URL is ignored',
     notLogging: 'Not logging',
     notSignedIn: 'Not signed In',
-    whitelisted: 'This URL is not on your whitelist',
   },
   trackSocialMedia: true,
 

@@ -20,13 +20,9 @@ export default async function changeExtensionState(state: ApiStates): Promise<vo
       await changeExtensionIcon(config.colors.notSignedIn);
       await changeExtensionTooltip(config.tooltips.notSignedIn);
       break;
-    case 'blacklisted':
+    case 'ignored':
       await changeExtensionIcon(config.colors.notLogging);
-      await changeExtensionTooltip(config.tooltips.blacklisted);
-      break;
-    case 'whitelisted':
-      await changeExtensionIcon(config.colors.notLogging);
-      await changeExtensionTooltip(config.tooltips.whitelisted);
+      await changeExtensionTooltip(config.tooltips.ignored);
       break;
     default:
       break;

@@ -1,3 +1,5 @@
+import { getHeartbeatFromPage } from './utils/heartbeat';
+
 const oneMinute = 60000;
 const fiveMinutes = 300000;
 
@@ -89,12 +91,8 @@ function debounce(func: () => void, timeout = oneMinute, maxWaitTime = fiveMinut
 }
 
 const sendHeartbeat = debounce(async () => {
-  const { hostname } = document.location;
-
-  const projectDetails = getParser[hostname]?.();
-  if (projectDetails) {
-    chrome.runtime.sendMessage({ projectDetails, recordHeartbeat: true });
-  }
+  const heartbeat = getHeartbeatFromPage();
+  chrome.runtime.sendMessage({ heartbeat: heartbeat, task: 'sendHeartbeat' });
 });
 
 chrome.runtime.onMessage.addListener((request: { message: string }, sender, sendResponse) => {
