@@ -4,6 +4,7 @@ export interface Heartbeat {
   entity: string;
   id: string;
   language?: string | null;
+  plugin?: string | null;
   project?: string | null;
   time: string;
   type: EntityType;
