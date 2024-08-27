@@ -8,6 +8,57 @@ import {
 } from '../types/sites';
 import { STACKEXCHANGE_SITES } from './stackexchange-sites';
 
+const githubLanguage = (): string | undefined => {
+  const embedData = document.querySelector(
+    'script[data-target="react-app.embeddedData"]',
+  )?.textContent;
+  if (embedData) {
+    try {
+      const data = JSON.parse(embedData) as { payload?: { blob?: { language?: string } } };
+      if (data.payload?.blob?.language) return data.payload.blob.language;
+    } catch (e: unknown) {
+      console.error('Failed to parse GitHub language', e);
+    }
+  }
+
+  const files = Array.from(
+    document.querySelectorAll('div[data-details-container-group="file"]').values(),
+  );
+
+  const languages = files
+    .sort((a, b) => {
+      const aSize =
+        a
+          .querySelector('.file-info')
+          ?.querySelector('.sr-only')
+          ?.textContent?.trim()
+          .split(':')[1]
+          .trim()
+          .split(' ')[0]
+          .replace(',', '')
+          .replace('.', '')
+          .replace('k', '000')
+          .replace('M', '000000') ?? 0;
+      const bSize =
+        b
+          .querySelector('.file-info')
+          ?.querySelector('.sr-only')
+          ?.textContent?.trim()
+          .split(':')[1]
+          .trim()
+          .split(' ')[0]
+          .replace(',', '')
+          .replace('.', '')
+          .replace('k', '000')
+          .replace('M', '000000') ?? 0;
+      return Number(bSize) - Number(aSize);
+    })
+    .map((div) => div.getAttribute('data-tagsearch-lang'))
+    .filter(Boolean) as string[];
+
+  return languages[0];
+};
+
 const GitHub: HeartbeatParser = (url: string) => {
   const { hostname } = new URL(url);
   const match = url.match(/(?<=github\.(?:com|dev)\/[^/]+\/)([^/?#]+)/);
@@ -35,6 +86,7 @@ const GitHub: HeartbeatParser = (url: string) => {
 
   return {
     category,
+    language: githubLanguage(),
     project: match[0],
   };
 };
@@ -130,7 +182,7 @@ const StackOverflow: HeartbeatParser = (_url: string) => {
     .filter(Boolean) as string[];
   if (tags.length === 0) return;
 
-  const languages = Array.from(document.querySelectorAll('code[data-highlighted="yes"]'))
+  const languages = Array.from(document.querySelectorAll('code[data-highlighted="yes"]').values())
     .map((code) => {
       const cls = Array.from(code.classList.values()).find((c) => c.startsWith('language-'));
       return cls?.substring('language-'.length);
@@ -153,7 +205,7 @@ const Canva: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => 
 
   // make sure the page title matches the design input element's value, meaning this is a design file
   const canvaProjectInput = Array.from(
-    document.querySelector('nav')?.querySelectorAll('input') ?? [],
+    document.querySelector('nav')?.querySelectorAll('input')?.values() ?? [],
   ).find((inp) => inp.value === projectName);
   if (!canvaProjectInput) return;
 
