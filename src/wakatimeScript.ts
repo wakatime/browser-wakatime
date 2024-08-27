@@ -1,4 +1,5 @@
-const twoMinutes = 120000;
+const oneMinute = 60000;
+const fiveMinutes = 300000;
 
 interface DesignProject {
   category: string;
@@ -63,40 +64,38 @@ const getParser: {
   'www.figma.com': parseFigma,
 };
 
-const init = async () => {
+/**
+ * Debounces the execution of a function.
+ *
+ * @param {() => void} func - The function to debounce.
+ * @param {number} [timeout] - The timeout for the debounce in milliseconds.
+ * @param {number} [maxWaitTime] - The max time to debounce before forcing execution in milliseconds.
+ * @returns {() => void} The debounced function.
+ */
+function debounce(func: () => void, timeout = oneMinute, maxWaitTime = fiveMinutes) {
+  let timer: NodeJS.Timeout | undefined;
+  let lastExecutionTime: number | undefined;
+  return (...args: unknown[]) => {
+    clearTimeout(timer);
+    if (lastExecutionTime && lastExecutionTime + maxWaitTime < Date.now()) {
+      lastExecutionTime = Date.now();
+      func(...(args as []));
+    }
+    timer = setTimeout(() => {
+      lastExecutionTime = Date.now();
+      func(...(args as []));
+    }, timeout);
+  };
+}
+
+const sendHeartbeat = debounce(async () => {
   const { hostname } = document.location;
 
   const projectDetails = getParser[hostname]?.();
   if (projectDetails) {
     chrome.runtime.sendMessage({ projectDetails, recordHeartbeat: true });
   }
-};
-
-function debounce(func: () => void, timeout = twoMinutes) {
-  let timer: NodeJS.Timeout | undefined;
-  return () => {
-    if (timer) {
-      return;
-    }
-    func();
-    timer = setTimeout(() => {
-      clearTimeout(timer);
-      timer = undefined;
-    }, timeout);
-  };
-}
-
-document.body.addEventListener(
-  'click',
-  debounce(() => init()),
-  true,
-);
-
-document.body.addEventListener(
-  'keypress',
-  debounce(() => init()),
-  true,
-);
+});
 
 chrome.runtime.onMessage.addListener((request: { message: string }, sender, sendResponse) => {
   if (request.message === 'get_html') {
@@ -104,33 +103,20 @@ chrome.runtime.onMessage.addListener((request: { message: string }, sender, send
   }
 });
 
+document.body.addEventListener('click', sendHeartbeat, true);
+
+document.body.addEventListener('keypress', sendHeartbeat, true);
+
+const checkIfInAMeeting = () => {
+  const isActiveMeeting = !!document.querySelector('[data-meeting-title]');
+  if (isActiveMeeting) {
+    sendHeartbeat();
+  }
+
+  setTimeout(checkIfInAMeeting, oneMinute);
+};
+
 // Google Meet
 if (window.location.href.startsWith('https://meet.google.com')) {
-  // In google meet website
-
-  let inMeeting = false;
-
-  const checkIfInAMeeting = (ms: number) => {
-    setTimeout(() => {
-      const isMeetingPage = !!document.querySelector('[data-meeting-title]');
-
-      if (isMeetingPage) {
-        void init();
-        inMeeting = true;
-
-        // If already in a meeting then check again after 2min
-        checkIfInAMeeting(1000 * 60 * 2);
-      } else {
-        if (inMeeting) {
-          void init();
-          inMeeting = false;
-        }
-
-        // If not in a meeting then check again after 5s
-        checkIfInAMeeting(1000 * 5);
-      }
-    }, ms);
-  };
-
-  checkIfInAMeeting(0);
+  checkIfInAMeeting();
 }
