@@ -13,6 +13,7 @@ export enum Category {
   browsing = 'browsing',
   code_reviewing = 'code reviewing',
   coding = 'coding',
+  communicating = 'communicating',
   debugging = 'debugging',
   designing = 'designing',
   meeting = 'meeting',

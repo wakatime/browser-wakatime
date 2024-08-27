@@ -10,7 +10,7 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
     // Checks if the user is online and if there are cached heartbeats requests,
     // if so then procedd to send these payload to wakatime api
     if (navigator.onLine) {
-      await WakaTimeCore.sendCachedHeartbeatsRequest();
+      await WakaTimeCore.sendHeartbeats();
     }
   }
 });
@@ -30,7 +30,6 @@ browser.tabs.onActivated.addListener(async (activeInfo) => {
  */
 browser.windows.onFocusChanged.addListener(async (windowId) => {
   if (windowId != browser.windows.WINDOW_ID_NONE) {
-    console.log('recording a heartbeat - active window changed');
     const tabs: browser.Tabs.Tab[] = await browser.tabs.query({
       active: true,
       currentWindow: true,

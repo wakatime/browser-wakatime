@@ -1,60 +1,7 @@
-import { getSite } from './utils/heartbeat';
+import { getSite } from './utils/sites';
 
 const oneMinute = 60000;
 const fiveMinutes = 300000;
-
-interface DesignProject {
-  category: string;
-  editor: string;
-  language: string;
-  project: string;
-}
-
-const parseCanva = (): DesignProject | undefined => {
-  const projectName = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
-    .content;
-  if (!projectName) return;
-
-  // make sure the page title matches the design input element's value, meaning this is a design file
-  const canvaProjectInput = Array.from(
-    document.querySelector('nav')?.querySelectorAll('input') ?? [],
-  ).find((inp) => inp.value === projectName);
-  if (!canvaProjectInput) return;
-
-  return {
-    category: 'designing',
-    editor: 'Canva',
-    language: 'Canva Design',
-    project: projectName,
-  };
-};
-
-const parseFigma = (): DesignProject | undefined => {
-  const figmaProject = document.getElementsByClassName('gpu-view-content');
-  if (figmaProject.length === 0) return;
-
-  const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
-    .innerText;
-  return {
-    category: 'designing',
-    editor: 'Figma',
-    language: 'Figma Design',
-    project: projectName,
-  };
-};
-
-const parseMeet = (): DesignProject | undefined => {
-  const meetId = document.querySelector('[data-meeting-title]')?.getAttribute('data-meeting-title');
-  if (!meetId) {
-    return;
-  }
-  return {
-    category: 'meeting',
-    editor: 'Meet',
-    language: 'Google Meet',
-    project: meetId,
-  };
-};
 
 /**
  * Debounces the execution of a function.
@@ -112,6 +59,6 @@ const checkIfInAMeeting = () => {
 };
 
 // Google Meet
-if (window.location.href.startsWith('https://meet.google.com')) {
+if (window.location.href.startsWith('https://meet.google.com/')) {
   checkIfInAMeeting();
 }

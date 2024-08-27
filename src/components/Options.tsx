@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
-import { IS_CHROME } from '../utils';
 import apiKeyInvalid from '../utils/apiKey';
+import { IS_CHROME } from '../utils/operatingSystem';
 import { getSettings, saveSettings, Settings } from '../utils/settings';
 import { logUserIn } from '../utils/user';
 import SitesList from './SitesList';

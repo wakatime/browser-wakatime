@@ -21,6 +21,7 @@ export interface OptionalHeartbeat {
   entity?: string;
   entityType?: EntityType;
   language?: string | null;
+  plugin?: string;
   project?: string | null;
 }
 

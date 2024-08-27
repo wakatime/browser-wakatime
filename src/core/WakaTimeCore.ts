@@ -5,9 +5,9 @@ import browser, { Tabs } from 'webextension-polyfill';
 import moment from 'moment';
 import { v4 as uuid4 } from 'uuid';
 import { OptionalHeartbeat } from '../types/sites';
-import { getOperatingSystem, IS_EDGE, IS_FIREFOX } from '../utils';
 import { changeExtensionStatus } from '../utils/changeExtensionStatus';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
+import { getOperatingSystem, IS_EDGE, IS_FIREFOX } from '../utils/operatingSystem';
 import { getSettings, Settings } from '../utils/settings';
 
 import config, { ExtensionStatus } from '../config/config';
@@ -149,6 +149,7 @@ class WakaTimeCore {
       entity: heartbeat?.entity ?? entity,
       id: uuid4(),
       language: heartbeat?.language,
+      plugin: heartbeat?.plugin,
       project: heartbeat?.project ?? '<<LAST_PROJECT>>',
       time: this.getCurrentTime(),
       type: heartbeat?.entityType ?? (settings.loggingType as EntityType),
