@@ -35,8 +35,8 @@ interface SuccessOrFailAlert {
 interface Colors {
   allGood: '';
   lightTheme: 'white';
-  trackingDisabled: 'gray';
   notSignedIn: 'red';
+  trackingDisabled: 'gray';
 }
 /**
  * Tooltip messages
@@ -44,8 +44,8 @@ interface Colors {
 interface Tooltips {
   allGood: string;
   ignored: string;
-  trackingDisabled: string;
   notSignedIn: string;
+  trackingDisabled: string;
 }
 
 export interface Config {
@@ -126,8 +126,8 @@ const config: Config = {
   colors: {
     allGood: '',
     lightTheme: 'white',
-    trackingDisabled: 'gray',
     notSignedIn: 'red',
+    trackingDisabled: 'gray',
   },
 
   currentUserApiEndPoint: process.env.CURRENT_USER_API_URL ?? '/users/current',
@@ -147,7 +147,7 @@ const config: Config = {
     'w3schools.com',
   ],
 
-  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats',
+  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats.bulk',
 
   hostname: '',
 
@@ -185,8 +185,8 @@ const config: Config = {
   tooltips: {
     allGood: '',
     ignored: 'This URL is ignored',
-    trackingDisabled: 'Not logging',
     notSignedIn: 'Not signed In',
+    trackingDisabled: 'Not logging',
   },
   trackSocialMedia: true,
 
