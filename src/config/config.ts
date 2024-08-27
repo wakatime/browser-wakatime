@@ -3,16 +3,18 @@ import browser from 'webextension-polyfill';
 /**
  * Logging
  */
-export type ApiStates = 'allGood' | 'notLogging' | 'notSignedIn' | 'blacklisted' | 'whitelisted';
+export type ExtensionStatus = 'allGood' | 'trackingDisabled' | 'notSignedIn' | 'ignored';
 /**
  * Supported logging style
  */
-export type LoggingStyle = 'whitelist' | 'blacklist';
+export type LoggingStyle = 'allow' | 'deny';
+
 /**
  * Logging type
  */
 export type LoggingType = 'domain' | 'url';
 export type SuccessOrFailType = 'success' | 'danger';
+export type Theme = 'light' | 'dark';
 /**
  * Predefined alert type and text for success and failure.
  */
@@ -33,18 +35,17 @@ interface SuccessOrFailAlert {
 interface Colors {
   allGood: '';
   lightTheme: 'white';
-  notLogging: 'gray';
   notSignedIn: 'red';
+  trackingDisabled: 'gray';
 }
 /**
  * Tooltip messages
  */
 interface Tooltips {
   allGood: string;
-  blacklisted: string;
-  notLogging: string;
+  ignored: string;
   notSignedIn: string;
-  whitelisted: string;
+  trackingDisabled: string;
 }
 
 export interface Config {
@@ -89,7 +90,7 @@ export interface Config {
   name: string;
   nonTrackableSites: string[];
   socialMediaSites: string[];
-  states: ApiStates[];
+  states: ExtensionStatus[];
   /**
    * Get stats from the wakatime api
    */
@@ -97,7 +98,7 @@ export interface Config {
   /**
    * Options for theme
    */
-  theme: 'light';
+  theme: Theme;
   tooltips: Tooltips;
   trackSocialMedia: boolean;
   /**
@@ -125,8 +126,8 @@ const config: Config = {
   colors: {
     allGood: '',
     lightTheme: 'white',
-    notLogging: 'gray',
     notSignedIn: 'red',
+    trackingDisabled: 'gray',
   },
 
   currentUserApiEndPoint: process.env.CURRENT_USER_API_URL ?? '/users/current',
@@ -146,13 +147,13 @@ const config: Config = {
     'w3schools.com',
   ],
 
-  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats',
+  heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats.bulk',
 
   hostname: '',
 
   loggingEnabled: true,
 
-  loggingStyle: 'blacklist',
+  loggingStyle: 'deny',
 
   loggingType: 'domain',
 
@@ -175,7 +176,7 @@ const config: Config = {
     'youtube.com',
   ],
 
-  states: ['allGood', 'notLogging', 'notSignedIn', 'blacklisted', 'whitelisted'],
+  states: ['allGood', 'trackingDisabled', 'notSignedIn', 'ignored'],
 
   summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/users/current/summaries',
 
@@ -183,10 +184,9 @@ const config: Config = {
 
   tooltips: {
     allGood: '',
-    blacklisted: 'This URL is blacklisted',
-    notLogging: 'Not logging',
+    ignored: 'This URL is ignored',
     notSignedIn: 'Not signed In',
-    whitelisted: 'This URL is not on your whitelist',
+    trackingDisabled: 'Not logging',
   },
   trackSocialMedia: true,
 

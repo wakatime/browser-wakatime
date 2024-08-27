@@ -1,91 +1,64 @@
-const twoMinutes = 120000;
+import { getSite } from './utils/sites';
 
-interface DesignProject {
-  category: string;
-  editor: string;
-  language: string;
-  project: string;
-}
+const oneMinute = 60000;
+const fiveMinutes = 300000;
 
-const parseCanva = (): DesignProject | undefined => {
-  const projectName = (document.head.querySelector('meta[property="og:title"]') as HTMLMetaElement)
-    .content;
-  if (!projectName) return;
-
-  // make sure the page title matches the design input element's value, meaning this is a design file
-  const canvaProjectInput = Array.from(
-    document.querySelector('nav')?.querySelectorAll('input') ?? [],
-  ).find((inp) => inp.value === projectName);
-  if (!canvaProjectInput) return;
-
-  return {
-    category: 'designing',
-    editor: 'Canva',
-    language: 'Canva Design',
-    project: projectName,
-  };
-};
-
-const parseFigma = (): DesignProject | undefined => {
-  const figmaProject = document.getElementsByClassName('gpu-view-content');
-  if (figmaProject.length === 0) return;
-
-  const projectName = (document.querySelector('span[data-testid="filename"]') as HTMLElement)
-    .innerText;
-  return {
-    category: 'designing',
-    editor: 'Figma',
-    language: 'Figma Design',
-    project: projectName,
-  };
-};
-
-const getParser: {
-  [key: string]:
-    | (() => { editor: string; language: string; project: string } | undefined)
-    | undefined;
-} = {
-  'www.canva.com': parseCanva,
-  'www.figma.com': parseFigma,
-};
-
-const init = async () => {
-  const { hostname } = document.location;
-
-  const projectDetails = getParser[hostname]?.();
-  if (projectDetails) {
-    chrome.runtime.sendMessage({ projectDetails, recordHeartbeat: true });
-  }
-};
-
-function debounce(func: () => void, timeout = twoMinutes) {
+/**
+ * Debounces the execution of a function.
+ *
+ * @param {() => void} func - The function to debounce.
+ * @param {number} [timeout] - The timeout for the debounce in milliseconds.
+ * @param {number} [maxWaitTime] - The max time to debounce before forcing execution in milliseconds.
+ * @returns {() => void} The debounced function.
+ */
+function debounce(func: () => void, timeout = oneMinute, maxWaitTime = fiveMinutes) {
   let timer: NodeJS.Timeout | undefined;
-  return () => {
-    if (timer) {
-      return;
+  let lastExecutionTime: number | undefined;
+  return (...args: unknown[]) => {
+    clearTimeout(timer);
+    if (lastExecutionTime && lastExecutionTime + maxWaitTime < Date.now()) {
+      lastExecutionTime = Date.now();
+      func(...(args as []));
     }
-    func();
     timer = setTimeout(() => {
-      clearTimeout(timer);
-      timer = undefined;
+      lastExecutionTime = Date.now();
+      func(...(args as []));
     }, timeout);
   };
 }
 
-document.body.addEventListener(
-  'click',
-  debounce(() => init()),
-  true,
-);
-
-document.body.addEventListener(
-  'keypress',
-  debounce(() => init()),
-  true,
-);
-
-chrome.runtime.onMessage.addListener((request: { message: string }, sender, sendResponse) => {
-  if (request.message === 'get_html') {
-    sendResponse({ html: document.documentElement.outerHTML });
-  }
+const sendHeartbeat = debounce(async () => {
+  chrome.runtime.sendMessage({ task: 'handleActivity' });
 });
+
+chrome.runtime.onMessage.addListener(
+  (request: { task: string; url: string }, sender, sendResponse) => {
+    if (request.task === 'getHeartbeatFromPage') {
+      const site = getSite(request.url);
+      if (!site) {
+        sendResponse({ heartbeat: undefined });
+        return;
+      }
+
+      sendResponse({ heartbeat: site.parser(request.url) });
+    }
+  },
+);
+
+document.body.addEventListener('click', sendHeartbeat, true);
+
+document.body.addEventListener('keypress', sendHeartbeat, true);
+
+const checkIfInAMeeting = () => {
+  const isActiveMeeting = !!document.querySelector('[data-meeting-title]');
+  if (isActiveMeeting) {
+    sendHeartbeat();
+  }
+
+  setTimeout(checkIfInAMeeting, oneMinute);
+};
+
+// Google Meet
+if (window.location.href.startsWith('https://meet.google.com/')) {
+  checkIfInAMeeting();
+}

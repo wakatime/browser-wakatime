@@ -44,6 +44,7 @@
     "react-redux": "^8.0.5",
     "react-transition-group": "^4.4.5",
     "redux-logger": "^4.0.0",
+    "uuid": "^10.0.0",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
@@ -70,6 +71,7 @@
     "@types/redux-logger": "^3.0.9",
     "@types/shelljs": "^0.8.8",
     "@types/sinon-chrome": "^2.2.11",
+    "@types/uuid": "^10.0.0",
     "@types/wait-on": "^5.2.0",
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",

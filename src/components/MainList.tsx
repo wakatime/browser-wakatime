@@ -4,7 +4,7 @@ import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
 import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
-import changeExtensionState from '../utils/changeExtensionState';
+import changeExtensionState from '../utils/changeExtensionStatus';
 
 export interface MainListProps {
   loggingEnabled: boolean;
@@ -40,7 +40,7 @@ export default function MainList({
   const disableLogging = async (): Promise<void> => {
     dispatch(setLoggingEnabled(false));
     await browser.storage.sync.set({ loggingEnabled: false });
-    await changeExtensionState('notLogging');
+    await changeExtensionState('trackingDisabled');
   };
 
   return (
