@@ -29,7 +29,7 @@ describe('wakatime config', () => {
         "colors": {
           "allGood": "",
           "lightTheme": "white",
-          "notLogging": "gray",
+          "trackingDisabled": "gray",
           "notSignedIn": "red",
         },
         "currentUserApiEndPoint": "/users/current",
@@ -46,7 +46,7 @@ describe('wakatime config', () => {
           "udemy.com",
           "w3schools.com",
         ],
-        "heartbeatApiEndPoint": "/users/current/heartbeats",
+        "heartbeatApiEndPoint": "/users/current/heartbeats.bulk",
         "hostname": "",
         "loggingEnabled": true,
         "loggingStyle": "deny",
@@ -71,7 +71,7 @@ describe('wakatime config', () => {
         ],
         "states": [
           "allGood",
-          "notLogging",
+          "trackingDisabled",
           "notSignedIn",
           "ignored",
         ],
@@ -80,7 +80,7 @@ describe('wakatime config', () => {
         "tooltips": {
           "allGood": "",
           "ignored": "This URL is ignored",
-          "notLogging": "Not logging",
+          "trackingDisabled": "Not logging",
           "notSignedIn": "Not signed In",
         },
         "trackSocialMedia": true,

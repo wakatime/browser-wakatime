@@ -3,7 +3,7 @@ import browser from 'webextension-polyfill';
 /**
  * Logging
  */
-export type ExtensionStatus = 'allGood' | 'notLogging' | 'notSignedIn' | 'ignored';
+export type ExtensionStatus = 'allGood' | 'trackingDisabled' | 'notSignedIn' | 'ignored';
 /**
  * Supported logging style
  */
@@ -35,7 +35,7 @@ interface SuccessOrFailAlert {
 interface Colors {
   allGood: '';
   lightTheme: 'white';
-  notLogging: 'gray';
+  trackingDisabled: 'gray';
   notSignedIn: 'red';
 }
 /**
@@ -44,7 +44,7 @@ interface Colors {
 interface Tooltips {
   allGood: string;
   ignored: string;
-  notLogging: string;
+  trackingDisabled: string;
   notSignedIn: string;
 }
 
@@ -126,7 +126,7 @@ const config: Config = {
   colors: {
     allGood: '',
     lightTheme: 'white',
-    notLogging: 'gray',
+    trackingDisabled: 'gray',
     notSignedIn: 'red',
   },
 
@@ -176,7 +176,7 @@ const config: Config = {
     'youtube.com',
   ],
 
-  states: ['allGood', 'notLogging', 'notSignedIn', 'ignored'],
+  states: ['allGood', 'trackingDisabled', 'notSignedIn', 'ignored'],
 
   summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/users/current/summaries',
 
@@ -185,7 +185,7 @@ const config: Config = {
   tooltips: {
     allGood: '',
     ignored: 'This URL is ignored',
-    notLogging: 'Not logging',
+    trackingDisabled: 'Not logging',
     notSignedIn: 'Not signed In',
   },
   trackSocialMedia: true,

@@ -8,6 +8,7 @@ export enum KnownSite {
   github = 'github',
   gitlab = 'gitlab',
   googlemeet = 'googlemeet',
+  slack = 'slack',
   stackoverflow = 'stackoverflow',
   travisci = 'travisci',
   vercel = 'vercel',

@@ -2,9 +2,11 @@ export interface Heartbeat {
   branch?: string | null;
   category?: Category | null;
   entity: string;
-  entityType: EntityType;
+  id: string;
   language?: string | null;
   project?: string | null;
+  time: string;
+  type: EntityType;
 }
 
 export enum Category {
@@ -30,3 +32,7 @@ export interface ProjectDetails {
   language: string;
   project: string;
 }
+
+export type HeartbeatsBulkResponse = { error?: string; responses?: HeartbeatResponse[] };
+
+export type HeartbeatResponse = [{ data?: { id: string }; error?: string }, number];

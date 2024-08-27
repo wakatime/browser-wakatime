@@ -39,7 +39,7 @@ export const logUserIn = async (apiKey: string): Promise<void> => {
     if (items.loggingEnabled === true) {
       await changeExtensionState('allGood');
     } else {
-      await changeExtensionState('notLogging');
+      await changeExtensionState('trackingDisabled');
     }
   } catch (err: unknown) {
     await changeExtensionState('notSignedIn');
@@ -121,7 +121,7 @@ export const fetchUserData = async (
     if (items.loggingEnabled === true) {
       await changeExtensionState('allGood');
     } else {
-      await changeExtensionState('notLogging');
+      await changeExtensionState('trackingDisabled');
     }
 
     dispatch(setLoggingEnabled(items.loggingEnabled as boolean));

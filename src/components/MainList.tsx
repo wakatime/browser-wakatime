@@ -40,7 +40,7 @@ export default function MainList({
   const disableLogging = async (): Promise<void> => {
     dispatch(setLoggingEnabled(false));
     await browser.storage.sync.set({ loggingEnabled: false });
-    await changeExtensionState('notLogging');
+    await changeExtensionState('trackingDisabled');
   };
 
   return (

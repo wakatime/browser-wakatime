@@ -13,16 +13,16 @@ export async function changeExtensionStatus(status: ExtensionStatus): Promise<vo
       await changeExtensionIcon(config.colors.allGood);
       await changeExtensionTooltip(config.tooltips.allGood);
       break;
-    case 'notLogging':
-      await changeExtensionIcon(config.colors.notLogging);
-      await changeExtensionTooltip(config.tooltips.notLogging);
+    case 'trackingDisabled':
+      await changeExtensionIcon(config.colors.trackingDisabled);
+      await changeExtensionTooltip(config.tooltips.trackingDisabled);
       break;
     case 'notSignedIn':
       await changeExtensionIcon(config.colors.notSignedIn);
       await changeExtensionTooltip(config.tooltips.notSignedIn);
       break;
     case 'ignored':
-      await changeExtensionIcon(config.colors.notLogging);
+      await changeExtensionIcon(config.colors.trackingDisabled);
       await changeExtensionTooltip(config.tooltips.ignored);
       break;
     default:
