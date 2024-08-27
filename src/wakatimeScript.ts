@@ -1,4 +1,4 @@
-import { getHeartbeatFromPage } from './utils/heartbeat';
+import { getSite } from './utils/heartbeat';
 
 const oneMinute = 60000;
 const fiveMinutes = 300000;
@@ -56,16 +56,6 @@ const parseMeet = (): DesignProject | undefined => {
   };
 };
 
-const getParser: {
-  [key: string]:
-    | (() => { editor: string; language: string; project: string } | undefined)
-    | undefined;
-} = {
-  'meet.google.com': parseMeet,
-  'www.canva.com': parseCanva,
-  'www.figma.com': parseFigma,
-};
-
 /**
  * Debounces the execution of a function.
  *
@@ -91,15 +81,22 @@ function debounce(func: () => void, timeout = oneMinute, maxWaitTime = fiveMinut
 }
 
 const sendHeartbeat = debounce(async () => {
-  const heartbeat = getHeartbeatFromPage();
-  chrome.runtime.sendMessage({ heartbeat: heartbeat, task: 'sendHeartbeat' });
+  chrome.runtime.sendMessage({ task: 'handleActivity' });
 });
 
-chrome.runtime.onMessage.addListener((request: { message: string }, sender, sendResponse) => {
-  if (request.message === 'get_html') {
-    sendResponse({ html: document.documentElement.outerHTML });
-  }
-});
+chrome.runtime.onMessage.addListener(
+  (request: { task: string; url: string }, sender, sendResponse) => {
+    if (request.task === 'getHeartbeatFromPage') {
+      const site = getSite(request.url);
+      if (!site) {
+        sendResponse({ heartbeat: undefined });
+        return;
+      }
+
+      sendResponse({ heartbeat: site.parser(request.url) });
+    }
+  },
+);
 
 document.body.addEventListener('click', sendHeartbeat, true);
 

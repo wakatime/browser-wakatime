@@ -3,16 +3,15 @@ import browser, { Tabs } from 'webextension-polyfill';
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
 import moment from 'moment';
-import { getOperatingSystem, isCodeReviewing } from '../utils';
+import { SiteInfo } from 'src/types/sites';
+import { getOperatingSystem } from '../utils';
 import { changeExtensionStatus } from '../utils/changeExtensionStatus';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
 import { getSettings, Settings } from '../utils/settings';
 
 import config, { ExtensionStatus } from '../config/config';
-import { Heartbeat } from '../types/heartbeats';
+import { EntityType, Heartbeat } from '../types/heartbeats';
 import { getApiKey } from '../utils/apiKey';
-import contains from '../utils/contains';
-import { getHeartbeatFromPage } from '../utils/heartbeat';
 import { getLoggingType } from '../utils/logging';
 
 class WakaTimeCore {
@@ -58,6 +57,13 @@ class WakaTimeCore {
   }
 
   canSendHeartbeat(url: string, settings: Settings): boolean {
+    for (const site of config.nonTrackableSites) {
+      if (url.startsWith(site)) {
+        // Don't send a heartbeat on sites like 'chrome://newtab/' or 'about:newtab'
+        return false;
+      }
+    }
+
     if (!settings.trackSocialMedia) {
       const domain = getDomain(url);
       if (
@@ -86,12 +92,17 @@ class WakaTimeCore {
     );
   }
 
-  async handleActivity(url: string, heartbeat: Heartbeat) {
+  async handleActivity(tabId: number) {
     const settings = await getSettings();
     if (!settings.loggingEnabled) {
       await changeExtensionStatus('notLogging');
       return;
     }
+
+    const activeTab = await this.getCurrentTab(tabId);
+    if (!activeTab) return;
+
+    const url = activeTab.url as string;
 
     if (!this.canSendHeartbeat(url, settings)) {
       await changeExtensionStatus('ignored');
@@ -102,173 +113,44 @@ class WakaTimeCore {
       await changeExtensionStatus('allGood');
     }
 
+    const heartbeat = await this.buildHeartbeat(url, settings, activeTab);
+
     if (!this.shouldSendHeartbeat(heartbeat)) return;
 
     // append heartbeat to queue
     await this.db?.add('cacheHeartbeats', heartbeat);
   }
 
-  /**
-   * Depending on various factors detects the current active tab URL or domain,
-   * and sends it to WakaTime for logging.
-   */
-  async recordHeartbeat(html: string, payload: Record<string, unknown> = {}): Promise<void> {
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-      return changeExtensionStatus('notLogging');
-    }
-    const items = await browser.storage.sync.get({
-      allowList: '',
-      denyList: '',
-      hostname: config.hostname,
-      loggingEnabled: config.loggingEnabled,
-      loggingStyle: config.loggingStyle,
-      socialMediaSites: config.socialMediaSites,
-      trackSocialMedia: config.trackSocialMedia,
+  async getCurrentTab(tabId: number): Promise<browser.Tabs.Tab | undefined> {
+    const tabs: browser.Tabs.Tab[] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
     });
-    if (items.loggingEnabled === true) {
-      await changeExtensionStatus('allGood');
+    const activeTab = tabs[0];
+    if (tabId !== activeTab.id) return;
 
-      let newState = '';
-      // Detects we are running this code in the extension scope
-      if (browser.idle as browser.Idle.Static | undefined) {
-        newState = await browser.idle.queryState(config.detectionIntervalInSeconds);
-        if (newState !== 'active') {
-          return changeExtensionStatus('notLogging');
-        }
-      }
-
-      // Get current tab URL.
-      let url = '';
-      if (browser.tabs as browser.Tabs.Static | undefined) {
-        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tabs.length == 0) return;
-        const currentActiveTab = tabs[0];
-        url = currentActiveTab.url as string;
-      } else {
-        url = document.URL;
-      }
-
-      for (const site of config.nonTrackableSites) {
-        if (url.startsWith(site)) {
-          // Don't send a heartbeat on sites like 'chrome://newtab/' or 'about:newtab'
-          return;
-        }
-      }
-
-      const hostname = getDomain(url);
-      if (!items.trackSocialMedia) {
-        if ((items.socialMediaSites as string[]).includes(hostname)) {
-          return changeExtensionStatus('ignored');
-        }
-      }
-
-      // Checks dev websites
-      const project = getHeartbeatFromPage(url, html);
-
-      // Check if code reviewing
-      const codeReviewing = isCodeReviewing(url);
-      if (codeReviewing) {
-        payload.category = 'code reviewing';
-      }
-
-      if (items.loggingStyle == 'deny') {
-        if (!contains(url, items.denyList as string)) {
-          await this.sendHeartbeat(
-            {
-              branch: null,
-              hostname: items.hostname as string,
-              project,
-              url,
-            },
-            apiKey,
-            payload,
-          );
-        } else {
-          await changeExtensionStatus('ignored');
-          console.log(`${url} is on denyList.`);
-        }
-      } else if (items.loggingStyle == 'allow') {
-        const heartbeat = this.getHeartbeat(url, items.allowList as string);
-        if (heartbeat.url) {
-          await this.sendHeartbeat(
-            {
-              ...heartbeat,
-              branch: null,
-              hostname: items.hostname as string,
-              project: heartbeat.project ?? project,
-            },
-            apiKey,
-            payload,
-          );
-        } else {
-          await changeExtensionStatus('ignored');
-          console.log(`${url} is not on allowList.`);
-        }
-      } else {
-        throw Error(`Unknown logging styel: ${items.loggingStyle}`);
-      }
-    }
+    return activeTab;
   }
 
-  /**
-   * Creates an array from list using \n as delimiter
-   * and checks if any element in list is contained in the url.
-   * Also checks if element is assigned to a project using @@ as delimiter
-   *
-   * @param url
-   * @param list
-   * @returns {object}
-   */
-  getHeartbeat(url: string, list: string) {
-    const projectIndicatorCharacters = '@@';
-
-    const lines = list.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-      // strip (http:// or https://) and trailing (`/` or `@@`)
-      const cleanLine = lines[i]
-        .trim()
-        .replace(/(\/|@@)$/, '')
-        .replace(/^(?:https?:\/\/)?/i, '');
-      if (cleanLine === '') continue;
-
-      const projectIndicatorIndex = cleanLine.lastIndexOf(projectIndicatorCharacters);
-      const projectIndicatorExists = projectIndicatorIndex > -1;
-      let projectName = null;
-      let urlFromLine = cleanLine;
-      if (projectIndicatorExists) {
-        const start = projectIndicatorIndex + projectIndicatorCharacters.length;
-        projectName = cleanLine.substring(start);
-        urlFromLine = cleanLine
-          .replace(cleanLine.substring(projectIndicatorIndex), '')
-          .replace(/\/$/, '');
-      }
-      const cleanUrl = url
-        .trim()
-        .replace(/(\/|@@)$/, '')
-        .replace(/^(?:https?:\/\/)?/i, '');
-      const startsWithUrl = cleanUrl.toLowerCase().includes(urlFromLine.toLowerCase());
-      if (startsWithUrl) {
-        return {
-          project: projectName,
-          url,
-        };
-      }
-
-      const lineRe = new RegExp(cleanLine.replace('.', '.').replace('*', '.*'));
-
-      // If url matches the current line return true
-      if (lineRe.test(url)) {
-        return {
-          project: null,
-          url,
-        };
-      }
+  async buildHeartbeat(url: string, settings: Settings, tab: browser.Tabs.Tab): Promise<Heartbeat> {
+    if (!tab.id) {
+      throw Error('Missing tab id.');
     }
 
+    const heartbeat = (
+      (await browser.tabs.sendMessage(tab.id, { task: 'getHeartbeatFromPage', url })) as {
+        heartbeat?: SiteInfo;
+      }
+    ).heartbeat;
+
+    const entity = settings.loggingType === 'domain' ? getDomainFromUrl(url) : url;
     return {
-      project: null,
-      url: null,
+      branch: heartbeat?.branch,
+      category: heartbeat?.category,
+      entity: heartbeat?.entity ?? entity,
+      entityType: heartbeat?.entityType ?? (settings.loggingType as EntityType),
+      language: heartbeat?.language,
+      project: heartbeat?.project,
     };
   }
 

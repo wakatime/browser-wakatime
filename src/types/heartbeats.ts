@@ -30,8 +30,3 @@ export interface ProjectDetails {
   language: string;
   project: string;
 }
-
-export interface PostHeartbeatMessage {
-  projectDetails?: ProjectDetails;
-  recordHeartbeat: boolean;
-}

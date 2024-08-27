@@ -1,7 +1,5 @@
 import browser from 'webextension-polyfill';
 import WakaTimeCore from './core/WakaTimeCore';
-import { PostHeartbeatMessage } from './types/heartbeats';
-import { getHtmlContentByTabId } from './utils';
 
 // Add a listener to resolve alarms
 browser.alarms.onAlarm.addListener(async (alarm) => {
@@ -24,13 +22,7 @@ browser.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
  * Whenever a active tab is changed it records a heartbeat with that tab url.
  */
 browser.tabs.onActivated.addListener(async (activeInfo) => {
-  console.log('recording a heartbeat - active tab changed');
-  let html = '';
-  try {
-    html = await getHtmlContentByTabId(activeInfo.tabId);
-    // eslint-disable-next-line no-empty
-  } catch (error: unknown) {}
-  await WakaTimeCore.recordHeartbeat(html);
+  await WakaTimeCore.handleActivity(activeInfo.tabId);
 });
 
 /**
@@ -44,15 +36,10 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
       currentWindow: true,
     });
 
-    let html = '';
     const tabId = tabs[0]?.id;
     if (tabId) {
-      try {
-        html = await getHtmlContentByTabId(tabId);
-        // eslint-disable-next-line no-empty
-      } catch (error: unknown) {}
+      await WakaTimeCore.handleActivity(tabId);
     }
-    await WakaTimeCore.recordHeartbeat(html);
   }
 });
 
@@ -69,12 +56,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     });
     // If tab updated is the same as active tab
     if (tabId == tabs[0]?.id) {
-      let html = '';
-      try {
-        html = await getHtmlContentByTabId(tabId);
-        // eslint-disable-next-line no-empty
-      } catch (error: unknown) {}
-      await WakaTimeCore.recordHeartbeat(html);
+      await WakaTimeCore.handleActivity(tabs[0].id);
     }
   }
 });
@@ -87,16 +69,10 @@ self.addEventListener('activate', async () => {
   await WakaTimeCore.createDB();
 });
 
-browser.runtime.onMessage.addListener(async (request: PostHeartbeatMessage, sender) => {
-  if (request.recordHeartbeat === true) {
-    if (sender.tab?.id) {
-      let html = '';
-      try {
-        html = await getHtmlContentByTabId(sender.tab.id);
-        // eslint-disable-next-line no-empty
-      } catch (error: unknown) {}
-      await WakaTimeCore.recordHeartbeat(html, request.projectDetails);
-    }
+browser.runtime.onMessage.addListener(async (request: { task: string }, sender) => {
+  if (request.task === 'handleActivity') {
+    if (!sender.tab?.id) return;
+    await WakaTimeCore.handleActivity(sender.tab.id);
   }
 });
 

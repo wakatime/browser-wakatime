@@ -1,8 +1,7 @@
-import { parse } from 'node-html-parser';
+import { HeartbeatParser, KnownSite, SiteParser, StackExchangeSite } from '../types/sites';
+import { STACKEXCHANGE_SITES } from './stackexchange-sites';
 
-type ProjectNameExtractor = (url: string, html: string) => string | null;
-
-const GitHub: ProjectNameExtractor = (url: string, html: string): string | null => {
+const GitHub: HeartbeatParser = (url: string) => {
   const { hostname } = new URL(url);
   const match = url.match(/(?<=github\.(?:com|dev)\/[^/]+\/)([^/?#]+)/);
 
@@ -22,7 +21,7 @@ const GitHub: ProjectNameExtractor = (url: string, html: string): string | null 
   return null;
 };
 
-const GitLab: ProjectNameExtractor = (url: string, html: string): string | null => {
+const GitLab: HeartbeatParser = (url: string, html: string): string | null => {
   const match = url.match(/(?<=gitlab\.com\/[^/]+\/)([^/?#]+)/);
 
   if (match) {
@@ -37,7 +36,7 @@ const GitLab: ProjectNameExtractor = (url: string, html: string): string | null 
   return null;
 };
 
-const BitBucket: ProjectNameExtractor = (url: string, html: string): string | null => {
+const BitBucket: HeartbeatParser = (url: string, html: string): string | null => {
   const match = url.match(/(?<=bitbucket\.org\/[^/]+\/)([^/?#]+)/);
 
   if (match) {
@@ -53,7 +52,7 @@ const BitBucket: ProjectNameExtractor = (url: string, html: string): string | nu
   return null;
 };
 
-const TravisCI: ProjectNameExtractor = (url: string, html: string): string | null => {
+const TravisCI: HeartbeatParser = (url: string, html: string): string | null => {
   const match = url.match(/(?<=app\.travis-ci\.com\/[^/]+\/[^/]+\/)([^/?#]+)/);
 
   if (match) {
@@ -67,7 +66,7 @@ const TravisCI: ProjectNameExtractor = (url: string, html: string): string | nul
   return null;
 };
 
-const CircleCI: ProjectNameExtractor = (url: string, html: string): string | null => {
+const CircleCI: HeartbeatParser = (url: string, html: string): string | null => {
   const projectPageMatch = url.match(
     /(?<=app\.circleci\.com\/projects\/[^/]+\/[^/]+\/[^/]+\/)([^/?#]+)/,
   );
@@ -104,7 +103,7 @@ const CircleCI: ProjectNameExtractor = (url: string, html: string): string | nul
   return null;
 };
 
-const Vercel: ProjectNameExtractor = (url: string, html: string): string | null => {
+const Vercel: HeartbeatParser = (url: string, html: string): string | null => {
   const match = url.match(/(?<=vercel\.com\/[^/]+\/)([^/?#]+)/);
 
   if (match) {
@@ -120,22 +119,19 @@ const Vercel: ProjectNameExtractor = (url: string, html: string): string | null 
   return null;
 };
 
-const ProjectNameExtractors: ProjectNameExtractor[] = [
-  GitHub,
-  GitLab,
-  BitBucket,
-  TravisCI,
-  CircleCI,
-  Vercel,
-];
+const StackOverflow: HeartbeatParser = (url: string, html: string): string | null => {
+  const match = url.match(/(?<=vercel\.com\/[^/]+\/)([^/?#]+)/);
 
-export const getHeartbeatFromPage = (): string | null => {
-  for (const projectNameExtractor of ProjectNameExtractors) {
-    const projectName = projectNameExtractor(url, html);
-    if (projectName) {
-      return projectName;
+  if (match) {
+    const root = parse(html);
+    // this regex extracts the project name from the title
+    // eg. title: test-website - Overview – Vercel
+    const match2 = root.querySelector('title')?.textContent.match(/^[^\s]+(?=\s-\s)/);
+    if (match2 && match2[0] === match[0]) {
+      return match[0];
     }
   }
+
   return null;
 };
 
@@ -155,4 +151,82 @@ export const getHtmlContentByTabId = async (tabId: number): Promise<string> => {
     html: string;
   };
   return response.html;
+};
+
+const _normalizeUrl = (url?: string | null) => {
+  if (!url) {
+    return '';
+  }
+  if (url.startsWith('http://')) {
+    url = url.substring('http://'.length);
+  }
+  if (url.startsWith('https://')) {
+    url = url.substring('https://'.length);
+  }
+  if (url.startsWith('www.')) {
+    url = url.substring('www.'.length);
+  }
+  if (url.endsWith('/')) {
+    url = url.substring(0, url.length - 1);
+  }
+  return url;
+};
+
+const stackExchangeDomains = (STACKEXCHANGE_SITES as StackExchangeSite[]).map((site) => {
+  return _normalizeUrl(site.site_url);
+});
+
+const SITES: Record<KnownSite, SiteParser> = {
+  bitbucket: {
+    parser: BitBucket,
+    urls: [/^https?:\/\/(.+\.)?bitbucket.org\//],
+  },
+  circleci: {
+    parser: CircleCI,
+    urls: [/^https?:\/\/(.+\.)?circleci.com\//],
+  },
+  github: {
+    parser: GitHub,
+    urls: [
+      /^https?:\/\/(.+\.)?github.com\//,
+      /^https?:\/\/(.+\.)?github.dev\//,
+      /^https?:\/\/(.+\.)?github.blog\//,
+      /^https?:\/\/(.+\.)?github.io\//,
+      /^https?:\/\/(.+\.)?github.community\//,
+      // /^https?:\/\/(.+\.)?ghcr.io\//,
+      // /^https?:\/\/(.+\.)?githubapp.com\//,
+      // /^https?:\/\/(.+\.)?githubassets.com\//,
+      // /^https?:\/\/(.+\.)?githubusercontent.com\//,
+      // /^https?:\/\/(.+\.)?githubnext.com\//,
+    ],
+  },
+  gitlab: {
+    parser: GitLab,
+    urls: [/^https?:\/\/(.+\.)?gitlab.com\//],
+  },
+  stackoverflow: {
+    parser: StackOverflow,
+    urls: stackExchangeDomains,
+  },
+  travisci: {
+    parser: TravisCI,
+    urls: [/^https?:\/\/(.+\.)?travis-ci.com\//],
+  },
+  vercel: {
+    parser: Vercel,
+    urls: [/^https?:\/\/(.+\.)?vercel.com\//],
+  },
+};
+
+const match = (url: string, pattern: RegExp | string): boolean => {
+  if (typeof pattern === 'string') {
+    return _normalizeUrl(url).startsWith(_normalizeUrl(pattern));
+  }
+  return pattern.test(url);
+};
+
+export const getSite = (url: string): SiteParser | undefined => {
+  return Object.values(SITES).find((site) => {
+    return site.urls.some((re) => match(url, re));
+  });
 };
