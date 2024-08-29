@@ -177,8 +177,8 @@ export default function Options(): JSX.Element {
                 value={state.loggingStyle}
                 onChange={(e) => updateLoggingStyle(e.target.value)}
               >
-                <option value="denyList">All except excluded sites</option>
-                <option value="allowList">Only allowed sites</option>
+                <option value="deny">All except excluded sites</option>
+                <option value="allow">Only allowed sites</option>
               </select>
             </div>
 
