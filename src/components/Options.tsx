@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { IS_CHROME } from '../utils/operatingSystem';
@@ -33,17 +33,17 @@ export default function Options(): JSX.Element {
 
   const loggingStyleRef = useRef(null);
 
-  const restoreSettings = async (): Promise<void> => {
+  const restoreSettings = useCallback(async (): Promise<void> => {
     const settings = await getSettings();
     setState({
       ...state,
       ...settings,
     });
-  };
+  }, [state]);
 
   useEffect(() => {
     void restoreSettings();
-  }, []);
+  }, [restoreSettings]);
 
   const handleSubmit = async () => {
     if (state.loading) return;
@@ -72,19 +72,25 @@ export default function Options(): JSX.Element {
     }
   };
 
-  const updateDenyListState = (sites: string) => {
-    setState({
-      ...state,
-      denyList: sites.trim().split('\n'),
-    });
-  };
+  const updateDenyListState = useCallback(
+    (sites: string) => {
+      setState({
+        ...state,
+        denyList: sites.trim().split('\n'),
+      });
+    },
+    [state],
+  );
 
-  const updateAllowListState = (sites: string) => {
-    setState({
-      ...state,
-      allowList: sites.trim().split('\n'),
-    });
-  };
+  const updateAllowListState = useCallback(
+    (sites: string) => {
+      setState({
+        ...state,
+        allowList: sites.trim().split('\n'),
+      });
+    },
+    [state],
+  );
 
   const updateLoggingStyle = (style: string) => {
     setState({
@@ -111,7 +117,7 @@ export default function Options(): JSX.Element {
     setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
   };
 
-  const loggingStyle = function () {
+  const loggingStyle = useCallback(() => {
     // TODO: rewrite SitesList to be structured inputs instead of textarea
 
     if (state.loggingStyle == 'deny') {
@@ -133,7 +139,13 @@ export default function Options(): JSX.Element {
         helpText="Only track these sites. You can assign URL to project by adding @@YourProject at the end of line."
       />
     );
-  };
+  }, [
+    state.allowList,
+    state.denyList,
+    state.loggingStyle,
+    updateAllowListState,
+    updateDenyListState,
+  ]);
 
   const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
 

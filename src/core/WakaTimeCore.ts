@@ -147,6 +147,7 @@ class WakaTimeCore {
       branch: heartbeat?.branch ?? '<<LAST_BRANCH>>',
       category: heartbeat?.category,
       entity: heartbeat?.entity ?? entity,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       id: uuid4(),
       language: heartbeat?.language,
       plugin: heartbeat?.plugin,

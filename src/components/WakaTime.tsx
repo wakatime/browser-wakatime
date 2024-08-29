@@ -21,10 +21,16 @@ export default function WakaTime(): JSX.Element {
   useEffect(() => {
     const fetchData = async () => {
       await fetchUserData(apiKeyFromRedux, dispatch);
+    };
+    void fetchData();
+  }, [apiKeyFromRedux, dispatch]);
+
+  useEffect(() => {
+    const init = async () => {
       const items = await browser.storage.sync.get({ extensionStatus: '' });
       setExtensionStatus(items.extensionStatus as string);
     };
-    void fetchData();
+    void init();
   }, []);
 
   const isApiKeyValid = apiKeyInvalid(apiKeyFromRedux) === '';
