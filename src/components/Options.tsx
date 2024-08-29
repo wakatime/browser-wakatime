@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { IS_CHROME } from '../utils/operatingSystem';
@@ -31,15 +31,17 @@ export default function Options(): JSX.Element {
     trackSocialMedia: config.trackSocialMedia,
   });
 
+  const isApiKeyValid = useMemo(() => apiKeyInvalid(state.apiKey) === '', [state.apiKey]);
+
   const loggingStyleRef = useRef(null);
 
-  const restoreSettings = useCallback(async (): Promise<void> => {
+  const restoreSettings = useCallback(async () => {
     const settings = await getSettings();
-    setState({
-      ...state,
+    setState((oldState) => ({
+      ...oldState,
       ...settings,
-    });
-  }, [state]);
+    }));
+  }, []);
 
   useEffect(() => {
     void restoreSettings();
@@ -47,7 +49,7 @@ export default function Options(): JSX.Element {
 
   const handleSubmit = async () => {
     if (state.loading) return;
-    setState({ ...state, loading: true });
+    setState((oldState) => ({ ...oldState, loading: true }));
     if (state.apiUrl.endsWith('/')) {
       state.apiUrl = state.apiUrl.slice(0, -1);
     }
@@ -72,50 +74,47 @@ export default function Options(): JSX.Element {
     }
   };
 
-  const updateDenyListState = useCallback(
-    (sites: string) => {
-      setState({
-        ...state,
-        denyList: sites.trim().split('\n'),
-      });
-    },
-    [state],
-  );
+  const updateDenyListState = useCallback((sites: string) => {
+    setState((oldState) => ({
+      ...oldState,
+      denyList: sites.trim().split('\n'),
+    }));
+  }, []);
 
-  const updateAllowListState = useCallback(
-    (sites: string) => {
-      setState({
-        ...state,
-        allowList: sites.trim().split('\n'),
-      });
-    },
-    [state],
-  );
+  const updateAllowListState = useCallback((sites: string) => {
+    setState((oldState) => ({
+      ...oldState,
+      allowList: sites.trim().split('\n'),
+    }));
+  }, []);
 
-  const updateLoggingStyle = (style: string) => {
-    setState({
-      ...state,
+  const updateLoggingStyle = useCallback((style: string) => {
+    setState((oldState) => ({
+      ...oldState,
       loggingStyle: style === 'allow' ? 'allow' : 'deny',
-    });
-  };
+    }));
+  }, []);
 
-  const updateLoggingType = (type: string) => {
-    setState({
-      ...state,
+  const updateLoggingType = useCallback((type: string) => {
+    setState((oldState) => ({
+      ...oldState,
       loggingType: type === 'url' ? 'url' : 'domain',
-    });
-  };
+    }));
+  }, []);
 
-  const updateTheme = (theme: string) => {
-    setState({
-      ...state,
+  const updateTheme = useCallback((theme: string) => {
+    setState((oldState) => ({
+      ...oldState,
       theme: theme === 'light' ? 'light' : 'dark',
-    });
-  };
+    }));
+  }, []);
 
-  const toggleSocialMedia = () => {
-    setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
-  };
+  const toggleSocialMedia = useCallback(() => {
+    setState((oldState) => ({
+      ...oldState,
+      trackSocialMedia: !oldState.trackSocialMedia,
+    }));
+  }, []);
 
   const loggingStyle = useCallback(() => {
     // TODO: rewrite SitesList to be structured inputs instead of textarea
@@ -146,8 +145,6 @@ export default function Options(): JSX.Element {
     updateAllowListState,
     updateDenyListState,
   ]);
-
-  const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
 
   return (
     <div className="container">
