@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { IS_CHROME } from '../utils/operatingSystem';
-import { getSettings, saveSettings, Settings } from '../utils/settings';
+import { getSettings, ProjectName, saveSettings, Settings } from '../utils/settings';
 import { logUserIn } from '../utils/user';
+import CustomProjectNameList from './CustomProjectNameList';
 import SitesList from './SitesList';
 
 interface State extends Settings {
@@ -19,6 +20,7 @@ export default function Options(): JSX.Element {
     allowList: [],
     apiKey: '',
     apiUrl: config.apiUrl,
+    customProjectNames: [],
     denyList: [],
     extensionStatus: 'allGood',
     hostname: '',
@@ -54,16 +56,19 @@ export default function Options(): JSX.Element {
       state.apiUrl = state.apiUrl.slice(0, -1);
     }
     await saveSettings({
-      allowList: state.allowList,
+      allowList: state.allowList.filter((item) => !!item.trim()),
       apiKey: state.apiKey,
       apiUrl: state.apiUrl,
-      denyList: state.denyList,
+      customProjectNames: state.customProjectNames.filter(
+        (item) => !!item.url.trim() && !!item.projectName.trim(),
+      ),
+      denyList: state.denyList.filter((item) => !!item.trim()),
       extensionStatus: state.extensionStatus,
       hostname: state.hostname,
       loggingEnabled: state.loggingEnabled,
       loggingStyle: state.loggingStyle,
       loggingType: state.loggingType,
-      socialMediaSites: state.socialMediaSites,
+      socialMediaSites: state.socialMediaSites.filter((item) => !!item.trim()),
       theme: state.theme,
       trackSocialMedia: state.trackSocialMedia,
     });
@@ -74,17 +79,24 @@ export default function Options(): JSX.Element {
     }
   };
 
-  const updateDenyListState = useCallback((sites: string) => {
+  const updateDenyListState = useCallback((denyList: string[]) => {
     setState((oldState) => ({
       ...oldState,
-      denyList: sites.trim().split('\n'),
+      denyList,
     }));
   }, []);
 
-  const updateAllowListState = useCallback((sites: string) => {
+  const updateAllowListState = useCallback((allowList: string[]) => {
     setState((oldState) => ({
       ...oldState,
-      allowList: sites.trim().split('\n'),
+      allowList,
+    }));
+  }, []);
+
+  const updateCustomProjectNamesState = useCallback((customProjectNames: ProjectName[]) => {
+    setState((oldState) => ({
+      ...oldState,
+      customProjectNames,
     }));
   }, []);
 
@@ -124,7 +136,7 @@ export default function Options(): JSX.Element {
         <SitesList
           handleChange={updateDenyListState}
           label="Exclude"
-          sites={state.denyList.join('\n')}
+          sites={state.denyList}
           helpText="Sites that you don't want to show in your reports."
         />
       );
@@ -133,9 +145,9 @@ export default function Options(): JSX.Element {
       <SitesList
         handleChange={updateAllowListState}
         label="Include"
-        sites={state.allowList.join('\n')}
-        placeholder="http://google.com&#10;http://myproject.com/MyProject"
-        helpText="Only track these sites. You can assign URL to project by adding @@YourProject at the end of line."
+        sites={state.allowList}
+        projectNamePlaceholder="http://google.com&#10;http://myproject.com/MyProject"
+        helpText="Only track these sites."
       />
     );
   }, [
@@ -230,6 +242,13 @@ export default function Options(): JSX.Element {
               </span>
             </div>
 
+            <CustomProjectNameList
+              sites={state.customProjectNames}
+              label="Custom Project Names"
+              handleChange={updateCustomProjectNamesState}
+              helpText=""
+            />
+
             <div className="form-group mb-4">
               <label htmlFor="apiUrl" className="form-label mb-0">
                 API Url
@@ -286,16 +305,15 @@ export default function Options(): JSX.Element {
                       </div>
                       <div className="modal-body">
                         <SitesList
-                          handleChange={(sites: string) => {
-                            setState({
-                              ...state,
-                              socialMediaSites: sites.split('\n'),
-                            });
+                          handleChange={(socialMediaSites) => {
+                            setState((oldState) => ({
+                              ...oldState,
+                              socialMediaSites,
+                            }));
                           }}
                           label="Social"
-                          sites={state.socialMediaSites.join('\n')}
+                          sites={state.socialMediaSites}
                           helpText="Sites that you don't want to show in your reports."
-                          rows={5}
                         />
                       </div>
                       <div className="modal-footer">

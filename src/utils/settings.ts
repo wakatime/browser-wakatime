@@ -1,10 +1,16 @@
 import browser from 'webextension-polyfill';
 import config, { ExtensionStatus, LoggingStyle, LoggingType, Theme } from '../config/config';
 
+export interface ProjectName {
+  projectName: string;
+  url: string;
+}
+
 export interface Settings {
   allowList: string[];
   apiKey: string;
   apiUrl: string;
+  customProjectNames: ProjectName[];
   denyList: string[];
   extensionStatus: ExtensionStatus;
   hostname: string;
@@ -22,6 +28,7 @@ export const getSettings = async (): Promise<Settings> => {
     apiKey: config.apiKey,
     apiUrl: config.apiUrl,
     blacklist: null,
+    customProjectNames: [],
     denyList: [],
     hostname: config.hostname,
     loggingStyle: config.loggingStyle,
@@ -47,6 +54,7 @@ export const getSettings = async (): Promise<Settings> => {
     await browser.storage.sync.set({ denyList: settings.denyList });
     await browser.storage.sync.remove('blacklist');
   }
+
   if (typeof settings.socialMediaSites === 'string') {
     settings.socialMediaSites = settings.socialMediaSites.trim().split('\n');
     await browser.storage.sync.set({
@@ -58,6 +66,7 @@ export const getSettings = async (): Promise<Settings> => {
     allowList: settings.allowList,
     apiKey: settings.apiKey,
     apiUrl: settings.apiUrl,
+    customProjectNames: settings.customProjectNames,
     denyList: settings.denyList,
     extensionStatus: settings.extensionStatus,
     hostname: settings.hostname,
