@@ -29,18 +29,10 @@ class WakaTimeCore {
    */
   async createDB() {
     const dbConnection = await openDB('wakatime', 1, {
-      upgrade(db, oldVersion) {
-        // Create a store of objects
-        const store = db.createObjectStore('heartbeatQueue', {
+      upgrade(db) {
+        db.createObjectStore(config.queueName, {
           keyPath: 'id',
         });
-        // Switch over the oldVersion, *without breaks*, to allow the database to be incrementally upgraded.
-        switch (oldVersion) {
-          case 0:
-          // Placeholder to execute when database is created (oldVersion is 0)
-          case 1:
-            store.createIndex('id', 'id');
-        }
       },
     });
     this.db = dbConnection;
@@ -115,7 +107,7 @@ class WakaTimeCore {
     if (!this.shouldSendHeartbeat(heartbeat)) return;
 
     // append heartbeat to queue
-    await this.db?.add('heartbeatQueue', heartbeat);
+    await this.db?.add(config.queueName, heartbeat);
 
     await this.sendHeartbeats();
   }
@@ -173,14 +165,15 @@ class WakaTimeCore {
       return;
     }
 
-    const heartbeats = (await this.db?.getAll('heartbeatQueue', undefined, 50)) as
+    const heartbeats = (await this.db?.getAll(config.queueName, undefined, 50)) as
       | Heartbeat[]
       | undefined;
     if (!heartbeats || heartbeats.length === 0) return;
 
-    await this.db?.delete(
-      'heartbeatQueue',
-      heartbeats.map((heartbeat) => heartbeat.id),
+    await Promise.all(
+      heartbeats.map((heartbeat) => {
+        return this.db?.delete(config.queueName, heartbeat.id);
+      }),
     );
 
     const userAgent = await this.getUserAgent();
@@ -214,7 +207,7 @@ class WakaTimeCore {
         console.error(data.error);
         return;
       }
-      if (response.status === 201) {
+      if (response.status === 202) {
         await Promise.all(
           (data.responses ?? []).map(async (resp, respNumber) => {
             if (resp[0].error) {
@@ -222,7 +215,7 @@ class WakaTimeCore {
               console.error(resp[0].error);
             } else if (resp[1] === 201 && resp[0].data?.id) {
               await changeExtensionStatus('allGood');
-              // await this.db?.delete('heartbeatQueue', resp[0].data.id);
+              // await this.db?.delete(config.queueName, resp[0].data.id);
             } else {
               if (resp[1] !== 400) {
                 await this.putHeartbeatsBackInQueue(heartbeats.filter((h, i) => i === respNumber));
@@ -246,7 +239,7 @@ class WakaTimeCore {
 
   async putHeartbeatsBackInQueue(heartbeats: Heartbeat[]): Promise<void> {
     await Promise.all(
-      heartbeats.map(async (heartbeat) => this.db?.add('heartbeatQueue', heartbeat)),
+      heartbeats.map(async (heartbeat) => this.db?.add(config.queueName, heartbeat)),
     );
   }
 

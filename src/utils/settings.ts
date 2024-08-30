@@ -24,6 +24,7 @@ export const getSettings = async (): Promise<Settings> => {
     blacklist: null,
     denyList: [],
     hostname: config.hostname,
+    loggingEnabled: config.loggingEnabled,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
     socialMediaSites: config.socialMediaSites,

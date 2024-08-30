@@ -70,10 +70,7 @@ const GitHub: HeartbeatParser = (url: string) => {
     };
   }
 
-  const body = document.getElementsByTagName('body').item(0);
-  if (!body) return;
-
-  const repo = body
+  const repo = document
     .querySelector('meta[name=octolytics-dimension-repository_nwo]')
     ?.getAttribute('content');
   if (repo?.split('/')[1] !== match[0]) return;
