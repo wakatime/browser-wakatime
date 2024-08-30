@@ -53,7 +53,7 @@ export interface Config {
   /**
    * API key use to query wakatime  api
    */
-  apiKey: '';
+  apiKey: string;
   apiUrl: string;
   colors: Colors;
   /**
@@ -66,14 +66,14 @@ export interface Config {
    * no activity in the browser for x second
    */
   detectionIntervalInSeconds: number;
-
   devSites: string[];
+
   /**
    * Url to which to send the heartbeat
    */
   heartbeatApiEndPoint: string;
-
   hostname: string;
+
   /**
    * Is logging enabled
    */
@@ -89,6 +89,7 @@ export interface Config {
    */
   name: string;
   nonTrackableSites: string[];
+  queueName: string;
   socialMediaSites: string[];
   states: ExtensionStatus[];
   /**
@@ -162,6 +163,8 @@ const config: Config = {
   name: 'WakaTime',
 
   nonTrackableSites: ['chrome://', 'about:'],
+
+  queueName: 'heartbeatQueue',
 
   socialMediaSites: [
     'facebook.com',

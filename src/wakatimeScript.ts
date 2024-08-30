@@ -40,6 +40,8 @@ chrome.runtime.onMessage.addListener(
         return;
       }
 
+      const heartbeat = site.parser(request.url);
+
       sendResponse({ heartbeat: site.parser(request.url) });
     }
   },
@@ -50,6 +52,10 @@ document.body.addEventListener('click', sendHeartbeat, true);
 document.body.addEventListener('keypress', sendHeartbeat, true);
 
 const checkIfInAMeeting = () => {
+  if (!window.location.href.startsWith('https://meet.google.com/')) {
+    return;
+  }
+
   const isActiveMeeting = !!document.querySelector('[data-meeting-title]');
   if (isActiveMeeting) {
     sendHeartbeat();
@@ -59,6 +65,4 @@ const checkIfInAMeeting = () => {
 };
 
 // Google Meet
-if (window.location.href.startsWith('https://meet.google.com/')) {
-  checkIfInAMeeting();
-}
+checkIfInAMeeting();
