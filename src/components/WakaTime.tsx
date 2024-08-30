@@ -38,18 +38,18 @@ export default function WakaTime(): JSX.Element {
   return (
     <div className="py-4 px-2 pt-0">
       <NavBar />
-      {isApiKeyValid && extensionStatus === 'notSignedIn' && (
+      {isApiKeyValid && extensionStatus === 'notSignedIn' ? (
         <Alert
           type={config.alert.failure.type}
-          text={'Invalid API key or API url'}
+          text="Invalid API key or API url"
           onClick={() => browser.runtime.openOptionsPage()}
           style={{ cursor: 'pointer' }}
         />
-      )}
-      {!isApiKeyValid && (
+      ) : null}
+      {isApiKeyValid ? null : (
         <Alert
           type={config.alert.failure.type}
-          text={'Please update your api key'}
+          text="Please update your api key"
           onClick={() => browser.runtime.openOptionsPage()}
           style={{ cursor: 'pointer' }}
         />

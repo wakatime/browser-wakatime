@@ -1,7 +1,5 @@
-import type { PreloadedState } from '@reduxjs/toolkit';
 import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
-import type { RenderOptions } from '@testing-library/react';
-import { render } from '@testing-library/react';
+import { render, type RenderOptions } from '@testing-library/react';
 import React, { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { RootState } from '../stores/createStore';
@@ -13,7 +11,9 @@ import userReducer, { initialState as InitalCurrentUser } from '../reducers/curr
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
-  preloadedState?: PreloadedState<RootState>;
+  // TODO: Fix Type as `PreloadedState` is not exported in the latest version of `@redux/toolkit`
+  // preloadedState?: PreloadedState<RootState>;
+  preloadedState?: object;
   store?: Store<RootState>;
 }
 

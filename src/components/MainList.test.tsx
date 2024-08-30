@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithProviders } from '../utils/test-utils';
 import MainList from './MainList';
 
-jest.mock('webextension-polyfill', () => {
+jest.mock<typeof import('webextension-polyfill')>('webextension-polyfill', () => {
   return {
     runtime: {
       getManifest: () => {
@@ -13,8 +13,7 @@ jest.mock('webextension-polyfill', () => {
 });
 
 describe('MainList', () => {
-  let loggingEnabled: boolean;
-  let totalTimeLoggedToday: string;
+  let loggingEnabled: boolean, totalTimeLoggedToday: string;
   beforeEach(() => {
     loggingEnabled = false;
     totalTimeLoggedToday = '1/1/1999';

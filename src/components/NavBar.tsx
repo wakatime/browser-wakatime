@@ -30,7 +30,7 @@ export default function NavBar(): JSX.Element {
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
-            <i className="fa fa-fw fa-filter me-2"></i>
+            <i className="fa fa-fw fa-filter me-2" />
             Custom Rules
           </a>
         </li>
@@ -50,7 +50,7 @@ export default function NavBar(): JSX.Element {
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
-            <i className="fa fa-fw fa-tachometer me-2"></i>
+            <i className="fa fa-fw fa-tachometer me-2" />
             Dashboard
           </a>
         </li>
@@ -77,7 +77,7 @@ export default function NavBar(): JSX.Element {
           aria-label="Toggle navigation"
         >
           <span className="sr-only">Toggle navigation</span>
-          <i className="fa fa-fw fa-cogs"></i>
+          <i className="fa fa-fw fa-cogs" />
         </button>
       </div>
 
@@ -94,9 +94,9 @@ export default function NavBar(): JSX.Element {
               role="button"
               aria-expanded="false"
             >
-              <i className="fa fa-fw fa-info me-2"></i>
+              <i className="fa fa-fw fa-info me-2" />
               About
-              <span className="caret"></span>
+              <span className="caret" />
             </a>
             <ul className="dropdown-menu shadow-none ms-4" role="menu">
               <li className="mb-2">
@@ -106,7 +106,7 @@ export default function NavBar(): JSX.Element {
                   rel="noreferrer"
                   className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
                 >
-                  <i className="fa fa-fw fa-bug me-2"></i>
+                  <i className="fa fa-fw fa-bug me-2" />
                   Report an Issue
                 </a>
               </li>
@@ -117,7 +117,7 @@ export default function NavBar(): JSX.Element {
                   rel="noreferrer"
                   className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
                 >
-                  <i className="fa fa-fw fa-github me-2"></i>
+                  <i className="fa fa-fw fa-github me-2" />
                   View on GitHub
                 </a>
               </li>

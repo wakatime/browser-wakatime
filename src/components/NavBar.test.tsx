@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithProviders } from '../utils/test-utils';
 import NavBar from './NavBar';
 
-jest.mock('webextension-polyfill', () => {
+jest.mock<typeof import('webextension-polyfill')>('webextension-polyfill', () => {
   return {
     runtime: {
       getManifest: () => {

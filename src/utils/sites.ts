@@ -202,7 +202,7 @@ const Canva: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => 
 
   // make sure the page title matches the design input element's value, meaning this is a design file
   const canvaProjectInput = Array.from(
-    document.querySelector('nav')?.querySelectorAll('input')?.values() ?? [],
+    document.querySelector('nav')?.querySelectorAll('input').values() ?? [],
   ).find((inp) => inp.value === projectName);
   if (!canvaProjectInput) return;
 

@@ -1,6 +1,6 @@
 import config from './config';
 
-jest.mock('webextension-polyfill', () => {
+jest.mock<typeof import('webextension-polyfill')>('webextension-polyfill', () => {
   return {
     runtime: {
       getManifest: () => {

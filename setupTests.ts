@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import chrome from 'sinon-chrome';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
