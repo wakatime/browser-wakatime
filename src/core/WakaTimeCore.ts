@@ -81,6 +81,14 @@ class WakaTimeCore {
     );
   }
 
+  getProjectNameFromList(url: string, settings: Settings) {
+    const site = settings.customProjectNames.find((pattern) => {
+      const re = new RegExp(pattern.url);
+      return re.test(url);
+    });
+    return site?.projectName;
+  }
+
   async handleActivity(tabId: number) {
     const settings = await getSettings();
     if (!settings.loggingEnabled) {
@@ -135,14 +143,18 @@ class WakaTimeCore {
     ).heartbeat;
 
     const entity = settings.loggingType === 'domain' ? getDomainFromUrl(url) : url;
+
+    const projectNameFromList = this.getProjectNameFromList(url, settings);
+
     return {
       branch: heartbeat?.branch ?? '<<LAST_BRANCH>>',
       category: heartbeat?.category,
       entity: heartbeat?.entity ?? entity,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       id: uuid4(),
       language: heartbeat?.language,
       plugin: heartbeat?.plugin,
-      project: heartbeat?.project ?? '<<LAST_PROJECT>>',
+      project: projectNameFromList ?? heartbeat?.project ?? '<<LAST_PROJECT>>',
       time: this.getCurrentTime(),
       type: heartbeat?.entityType ?? (settings.loggingType as EntityType),
     };

@@ -1,28 +1,40 @@
 import React, { useCallback } from 'react';
+import { ProjectName } from '../utils/settings';
 
 type Props = {
-  handleChange: (sites: string[]) => void;
+  handleChange: (sites: ProjectName[]) => void;
   helpText: string;
   label: string;
   projectNamePlaceholder?: string;
-  sites: string[];
+  sites: ProjectName[];
   urlPlaceholder?: string;
 };
 
-export default function SitesList({
+export default function CustomProjectNameList({
   handleChange,
   label,
   urlPlaceholder,
+  projectNamePlaceholder,
   sites,
-  helpText,
 }: Props): JSX.Element {
   const handleAddNewSite = useCallback(() => {
-    handleChange([...sites, '']);
+    handleChange([...sites, { projectName: '', url: '' }]);
   }, [handleChange, sites]);
 
   const handleUrlChangeForSite = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-      handleChange(sites.map((item, i) => (i === index ? event.target.value : item)));
+      handleChange(
+        sites.map((item, i) => (i === index ? { ...item, url: event.target.value } : item)),
+      );
+    },
+    [handleChange, sites],
+  );
+
+  const handleOnProjectNameChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+      handleChange(
+        sites.map((item, i) => (i === index ? { ...item, projectName: event.target.value } : item)),
+      );
     },
     [handleChange, sites],
   );
@@ -35,7 +47,7 @@ export default function SitesList({
   );
 
   return (
-    <div className="form-group mb-4 d-flex flex-column gap-2">
+    <div className="form-group mb-4 d-flex flex-column gap-3">
       <label htmlFor={`${label}-siteList`} className="control-label">
         {label}
       </label>
@@ -48,8 +60,16 @@ export default function SitesList({
                 <input
                   placeholder={urlPlaceholder ?? 'https://google.com'}
                   className="form-control"
-                  value={site}
+                  value={site.url}
                   onChange={(e) => handleUrlChangeForSite(e, i)}
+                />
+              </div>
+              <div className="flex-fill">
+                <input
+                  placeholder={projectNamePlaceholder ?? 'Project Name'}
+                  value={site.projectName}
+                  className="form-control"
+                  onChange={(e) => handleOnProjectNameChange(e, i)}
                 />
               </div>
               <button
@@ -66,9 +86,8 @@ export default function SitesList({
 
       <button type="button" onClick={handleAddNewSite} className="btn btn-default col-12">
         <i className="fa fa-fw fa-plus me-2"></i>
-        Add Site
+        Add Project Name
       </button>
-      <span className="text-secondary">{helpText}</span>
     </div>
   );
 }

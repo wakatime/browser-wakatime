@@ -21,6 +21,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:typescript-sort-keys/recommended',
+    'plugin:react-hooks/recommended',
   ],
   globals: {
     browser: true,

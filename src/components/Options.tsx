@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { IS_CHROME } from '../utils/operatingSystem';
-import { getSettings, saveSettings, Settings } from '../utils/settings';
+import { getSettings, ProjectName, saveSettings, Settings } from '../utils/settings';
 import { logUserIn } from '../utils/user';
+import CustomProjectNameList from './CustomProjectNameList';
 import SitesList from './SitesList';
 
 interface State extends Settings {
@@ -19,6 +20,7 @@ export default function Options(): JSX.Element {
     allowList: [],
     apiKey: '',
     apiUrl: config.apiUrl,
+    customProjectNames: [],
     denyList: [],
     extensionStatus: 'allGood',
     hostname: '',
@@ -31,37 +33,42 @@ export default function Options(): JSX.Element {
     trackSocialMedia: config.trackSocialMedia,
   });
 
+  const isApiKeyValid = useMemo(() => apiKeyInvalid(state.apiKey) === '', [state.apiKey]);
+
   const loggingStyleRef = useRef(null);
 
-  const restoreSettings = async (): Promise<void> => {
+  const restoreSettings = useCallback(async () => {
     const settings = await getSettings();
-    setState({
-      ...state,
+    setState((oldState) => ({
+      ...oldState,
       ...settings,
-    });
-  };
+    }));
+  }, []);
 
   useEffect(() => {
     void restoreSettings();
-  }, []);
+  }, [restoreSettings]);
 
   const handleSubmit = async () => {
     if (state.loading) return;
-    setState({ ...state, loading: true });
+    setState((oldState) => ({ ...oldState, loading: true }));
     if (state.apiUrl.endsWith('/')) {
       state.apiUrl = state.apiUrl.slice(0, -1);
     }
     await saveSettings({
-      allowList: state.allowList,
+      allowList: state.allowList.filter((item) => !!item.trim()),
       apiKey: state.apiKey,
       apiUrl: state.apiUrl,
-      denyList: state.denyList,
+      customProjectNames: state.customProjectNames.filter(
+        (item) => !!item.url.trim() && !!item.projectName.trim(),
+      ),
+      denyList: state.denyList.filter((item) => !!item.trim()),
       extensionStatus: state.extensionStatus,
       hostname: state.hostname,
       loggingEnabled: state.loggingEnabled,
       loggingStyle: state.loggingStyle,
       loggingType: state.loggingType,
-      socialMediaSites: state.socialMediaSites,
+      socialMediaSites: state.socialMediaSites.filter((item) => !!item.trim()),
       theme: state.theme,
       trackSocialMedia: state.trackSocialMedia,
     });
@@ -72,46 +79,56 @@ export default function Options(): JSX.Element {
     }
   };
 
-  const updateDenyListState = (sites: string) => {
-    setState({
-      ...state,
-      denyList: sites.trim().split('\n'),
-    });
-  };
+  const updateDenyListState = useCallback((denyList: string[]) => {
+    setState((oldState) => ({
+      ...oldState,
+      denyList,
+    }));
+  }, []);
 
-  const updateAllowListState = (sites: string) => {
-    setState({
-      ...state,
-      allowList: sites.trim().split('\n'),
-    });
-  };
+  const updateAllowListState = useCallback((allowList: string[]) => {
+    setState((oldState) => ({
+      ...oldState,
+      allowList,
+    }));
+  }, []);
 
-  const updateLoggingStyle = (style: string) => {
-    setState({
-      ...state,
+  const updateCustomProjectNamesState = useCallback((customProjectNames: ProjectName[]) => {
+    setState((oldState) => ({
+      ...oldState,
+      customProjectNames,
+    }));
+  }, []);
+
+  const updateLoggingStyle = useCallback((style: string) => {
+    setState((oldState) => ({
+      ...oldState,
       loggingStyle: style === 'allow' ? 'allow' : 'deny',
-    });
-  };
+    }));
+  }, []);
 
-  const updateLoggingType = (type: string) => {
-    setState({
-      ...state,
+  const updateLoggingType = useCallback((type: string) => {
+    setState((oldState) => ({
+      ...oldState,
       loggingType: type === 'url' ? 'url' : 'domain',
-    });
-  };
+    }));
+  }, []);
 
-  const updateTheme = (theme: string) => {
-    setState({
-      ...state,
+  const updateTheme = useCallback((theme: string) => {
+    setState((oldState) => ({
+      ...oldState,
       theme: theme === 'light' ? 'light' : 'dark',
-    });
-  };
+    }));
+  }, []);
 
-  const toggleSocialMedia = () => {
-    setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
-  };
+  const toggleSocialMedia = useCallback(() => {
+    setState((oldState) => ({
+      ...oldState,
+      trackSocialMedia: !oldState.trackSocialMedia,
+    }));
+  }, []);
 
-  const loggingStyle = function () {
+  const loggingStyle = useCallback(() => {
     // TODO: rewrite SitesList to be structured inputs instead of textarea
 
     if (state.loggingStyle == 'deny') {
@@ -119,7 +136,7 @@ export default function Options(): JSX.Element {
         <SitesList
           handleChange={updateDenyListState}
           label="Exclude"
-          sites={state.denyList.join('\n')}
+          sites={state.denyList}
           helpText="Sites that you don't want to show in your reports."
         />
       );
@@ -128,14 +145,18 @@ export default function Options(): JSX.Element {
       <SitesList
         handleChange={updateAllowListState}
         label="Include"
-        sites={state.allowList.join('\n')}
-        placeholder="http://google.com&#10;http://myproject.com/MyProject"
-        helpText="Only track these sites. You can assign URL to project by adding @@YourProject at the end of line."
+        sites={state.allowList}
+        projectNamePlaceholder="http://google.com&#10;http://myproject.com/MyProject"
+        helpText="Only track these sites."
       />
     );
-  };
-
-  const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
+  }, [
+    state.allowList,
+    state.denyList,
+    state.loggingStyle,
+    updateAllowListState,
+    updateDenyListState,
+  ]);
 
   return (
     <div className="container">
@@ -168,8 +189,8 @@ export default function Options(): JSX.Element {
                 value={state.loggingStyle}
                 onChange={(e) => updateLoggingStyle(e.target.value)}
               >
-                <option value="denyList">All except excluded sites</option>
-                <option value="allowList">Only allowed sites</option>
+                <option value="deny">All except excluded sites</option>
+                <option value="allow">Only allowed sites</option>
               </select>
             </div>
 
@@ -220,6 +241,13 @@ export default function Options(): JSX.Element {
                 Optional name of local machine. By default &apos;Unknown Hostname&apos;.
               </span>
             </div>
+
+            <CustomProjectNameList
+              sites={state.customProjectNames}
+              label="Custom Project Names"
+              handleChange={updateCustomProjectNamesState}
+              helpText=""
+            />
 
             <div className="form-group mb-4">
               <label htmlFor="apiUrl" className="form-label mb-0">
@@ -277,16 +305,15 @@ export default function Options(): JSX.Element {
                       </div>
                       <div className="modal-body">
                         <SitesList
-                          handleChange={(sites: string) => {
-                            setState({
-                              ...state,
-                              socialMediaSites: sites.split('\n'),
-                            });
+                          handleChange={(socialMediaSites) => {
+                            setState((oldState) => ({
+                              ...oldState,
+                              socialMediaSites,
+                            }));
                           }}
                           label="Social"
-                          sites={state.socialMediaSites.join('\n')}
+                          sites={state.socialMediaSites}
                           helpText="Sites that you don't want to show in your reports."
-                          rows={5}
                         />
                       </div>
                       <div className="modal-footer">
