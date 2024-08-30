@@ -40,8 +40,6 @@ chrome.runtime.onMessage.addListener(
         return;
       }
 
-      const heartbeat = site.parser(request.url);
-
       sendResponse({ heartbeat: site.parser(request.url) });
     }
   },
