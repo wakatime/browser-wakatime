@@ -176,6 +176,7 @@ const config: Config = {
     'tiktok.com',
     'twitter.com',
     'whatsapp.com',
+    'x.com',
     'youtube.com',
   ],
 
