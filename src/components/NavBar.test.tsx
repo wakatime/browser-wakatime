@@ -1,4 +1,5 @@
 import React from 'react';
+import { Browser } from 'webextension-polyfill';
 import { renderWithProviders } from '../utils/test-utils';
 import NavBar from './NavBar';
 
@@ -9,7 +10,7 @@ jest.mock<typeof import('webextension-polyfill')>('webextension-polyfill', () =>
         return { version: 'test-version' };
       },
     },
-  };
+  } as Browser;
 });
 
 describe('NavBar', () => {

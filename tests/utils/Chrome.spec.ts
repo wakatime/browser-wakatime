@@ -1,11 +1,8 @@
-import chai from 'chai';
-import sinon from 'sinon';
+const sinon = require('sinon/pkg/sinon.js');
 import chrome from 'sinon-chrome';
 
-const expect = chai.expect;
-
 describe('Chrome Dev Tools', function () {
-  it('should work', function () {
+  it('should work', async function () {
     chrome.browserAction.setTitle({ title: 'hello' });
     sinon.assert.calledOnce(chrome.browserAction.setTitle);
   });
