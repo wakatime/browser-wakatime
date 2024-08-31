@@ -50,9 +50,9 @@ export async function changeExtensionIcon(color?: ColorIconTypes): Promise<void>
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (IS_FIREFOX && browser.browserAction) {
-    await browser.browserAction.setIcon({ path: path }); // Support for FF with manifest V2
+    await browser.browserAction.setIcon({ path }); // Support for FF with manifest V2
   } else if ((browser.action as browser.Action.Static | undefined) !== undefined) {
-    await browser.action.setIcon({ path: path }); // Support for Chrome with manifest V3
+    await browser.action.setIcon({ path }); // Support for Chrome with manifest V3
   }
 }
 

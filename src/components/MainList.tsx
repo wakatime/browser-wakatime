@@ -45,7 +45,7 @@ export default function MainList({
 
   return (
     <div>
-      {user && (
+      {user ? (
         <div className="row">
           <div className="col-xs-12">
             <blockquote>
@@ -56,8 +56,8 @@ export default function MainList({
             </blockquote>
           </div>
         </div>
-      )}
-      {loggingEnabled && user && (
+      ) : null}
+      {loggingEnabled && user ? (
         <div className="row">
           <div className="col-xs-12">
             <p>
@@ -71,8 +71,8 @@ export default function MainList({
             </p>
           </div>
         </div>
-      )}
-      {!loggingEnabled && user && (
+      ) : null}
+      {!loggingEnabled && user ? (
         <div className="row">
           <div className="col-xs-12">
             <p>
@@ -86,28 +86,28 @@ export default function MainList({
             </p>
           </div>
         </div>
-      )}
+      ) : null}
       <div className="list-group">
         <a href="#" className="list-group-item text-body-secondary" onClick={openOptionsPage}>
-          <i className="fa fa-fw fa-cogs me-2"></i>
+          <i className="fa fa-fw fa-cogs me-2" />
           Options
         </a>
-        {user && (
+        {user ? (
           <div>
             <a href="#" className="list-group-item text-body-secondary" onClick={logoutUser}>
-              <i className="fa fa-fw fa-sign-out me-2"></i>
+              <i className="fa fa-fw fa-sign-out me-2" />
               Logout
             </a>
           </div>
-        )}
-        {!user && (
+        ) : null}
+        {user ? null : (
           <a
             target="_blank"
             rel="noreferrer"
             href="https://wakatime.com/login"
             className="list-group-item text-body-secondary"
           >
-            <i className="fa fa-fw fa-sign-in me-2"></i>
+            <i className="fa fa-fw fa-sign-in me-2" />
             Login
           </a>
         )}

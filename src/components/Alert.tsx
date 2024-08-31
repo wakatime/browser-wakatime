@@ -1,5 +1,5 @@
-import React, { MouseEventHandler, CSSProperties } from 'react';
 import classNames from 'classnames';
+import React, { CSSProperties, MouseEventHandler } from 'react';
 import { SuccessOrFailType } from '../config/config';
 interface AlertProps {
   onClick?: MouseEventHandler<HTMLDivElement>;

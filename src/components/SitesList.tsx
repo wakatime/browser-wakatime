@@ -40,7 +40,7 @@ export default function SitesList({
         {label}
       </label>
 
-      {sites.length > 0 && (
+      {sites.length > 0 ? (
         <div className="d-flex flex-column gap-2">
           {sites.map((site, i) => (
             <div key={i} className="d-flex gap-2">
@@ -57,15 +57,15 @@ export default function SitesList({
                 className="btn btn-sm btn-default"
                 onClick={() => handleRemoveSite(i)}
               >
-                <i className="fa fa-fw fa-times"></i>
+                <i className="fa fa-fw fa-times" />
               </button>
             </div>
           ))}
         </div>
-      )}
+      ) : null}
 
       <button type="button" onClick={handleAddNewSite} className="btn btn-default col-12">
-        <i className="fa fa-fw fa-plus me-2"></i>
+        <i className="fa fa-fw fa-plus me-2" />
         Add Site
       </button>
       <span className="text-secondary">{helpText}</span>

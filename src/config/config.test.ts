@@ -1,13 +1,14 @@
+import { Browser } from 'webextension-polyfill';
 import config from './config';
 
-jest.mock('webextension-polyfill', () => {
+jest.mock<typeof import('webextension-polyfill')>('webextension-polyfill', () => {
   return {
     runtime: {
       getManifest: () => {
         return { version: 'test-version' };
       },
     },
-  };
+  } as Browser;
 });
 
 describe('wakatime config', () => {
@@ -68,6 +69,7 @@ describe('wakatime config', () => {
           "tiktok.com",
           "twitter.com",
           "whatsapp.com",
+          "x.com",
           "youtube.com",
         ],
         "states": [

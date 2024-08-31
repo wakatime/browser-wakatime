@@ -12,8 +12,7 @@ const fiveMinutes = 300000;
  * @returns {() => void} The debounced function.
  */
 function debounce(func: () => void, timeout = oneMinute, maxWaitTime = fiveMinutes) {
-  let timer: NodeJS.Timeout | undefined;
-  let lastExecutionTime: number | undefined;
+  let timer: NodeJS.Timeout | undefined, lastExecutionTime: number | undefined;
   return (...args: unknown[]) => {
     clearTimeout(timer);
     if (lastExecutionTime && lastExecutionTime + maxWaitTime < Date.now()) {
@@ -28,7 +27,7 @@ function debounce(func: () => void, timeout = oneMinute, maxWaitTime = fiveMinut
 }
 
 const sendHeartbeat = debounce(async () => {
-  chrome.runtime.sendMessage({ task: 'handleActivity' });
+  void chrome.runtime.sendMessage({ task: 'handleActivity' });
 });
 
 chrome.runtime.onMessage.addListener(
