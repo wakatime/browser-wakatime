@@ -32,24 +32,9 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 
 ## Development instructions
 
-> For development purposes only.
-
-To get started, install NPM and Bower dependencies, and do an initial build with Gulp:
-
 ```
-npm start
-```
-
-To build the extension once:
-
-```
-npm run gulp
-```
-
-To monitor changes:
-
-```
-npm run watch
+npm i --include=dev
+npm run dev
 ```
 
 Run tests:
@@ -57,16 +42,6 @@ Run tests:
 ```
 npm test
 ```
-
-Lint code _(Both JS and JSX)_:
-
-```
-jsxhint --jsx-only .
-```
-
-### Automatic code linting
-
-There is a precommit hook that lints the code before commiting the changes.
 
 ### Troubleshooting
 
