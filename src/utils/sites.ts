@@ -66,6 +66,7 @@ const GitHub: HeartbeatParser = (url: string) => {
 
   if (hostname.endsWith('.dev')) {
     return {
+      language: '<<LAST_LANGUAGE>>',
       project: match[0],
     };
   }
@@ -73,7 +74,11 @@ const GitHub: HeartbeatParser = (url: string) => {
   const repo = document
     .querySelector('meta[name=octolytics-dimension-repository_nwo]')
     ?.getAttribute('content');
-  if (repo?.split('/')[1] !== match[0]) return;
+  if (repo?.split('/')[1] !== match[0]) {
+    return {
+      language: '<<LAST_LANGUAGE>>',
+    };
+  }
 
   // TODO: parse language associated with this repo from the DOM
   // TODO: parse branch associated with the PR url from the DOM
@@ -83,7 +88,7 @@ const GitHub: HeartbeatParser = (url: string) => {
 
   return {
     category,
-    language: githubLanguage(),
+    language: githubLanguage() ?? '<<LAST_LANGUAGE>>',
     project: match[0],
   };
 };
@@ -93,9 +98,14 @@ const GitLab: HeartbeatParser = (url: string) => {
   if (!match) return;
 
   const repoName = document.querySelector('body')?.getAttribute('data-project-full-path');
-  if (!repoName || repoName.split('/')[1] !== match[0]) return;
+  if (!repoName || repoName.split('/')[1] !== match[0]) {
+    return {
+      language: '<<LAST_LANGUAGE>>',
+    };
+  }
 
   return {
+    language: '<<LAST_LANGUAGE>>',
     project: match[0],
   };
 };
@@ -107,9 +117,14 @@ const BitBucket: HeartbeatParser = (url: string) => {
   // this regex extracts the project name from the title
   // eg. title: jhondoe / my-test-repo — Bitbucket
   const match2 = document.querySelector('title')?.textContent?.match(/(?<=\/\s)([^/\s]+)(?=\s—)/);
-  if (!match2 || match2[0] !== match[0]) return;
+  if (!match2 || match2[0] !== match[0]) {
+    return {
+      language: '<<LAST_LANGUAGE>>',
+    };
+  }
 
   return {
+    language: '<<LAST_LANGUAGE>>',
     project: match[0],
   };
 };
@@ -119,9 +134,14 @@ const TravisCI: HeartbeatParser = (url: string) => {
   if (!match) return;
 
   const projectName = document.querySelector('#ember737')?.textContent;
-  if (projectName !== match[0]) return;
+  if (projectName !== match[0]) {
+    return {
+      language: '<<LAST_LANGUAGE>>',
+    };
+  }
 
   return {
+    language: '<<LAST_LANGUAGE>>',
     project: match[0],
   };
 };
@@ -139,7 +159,10 @@ const CircleCI: HeartbeatParser = (url: string) => {
       '#__next > div:nth-child(2) > div > div > main > div > header > div:nth-child(1) > ol > li:nth-child(2) > div > span',
     )?.textContent;
     if (seconndBreadcrumbLabel === 'Project' && seconndBreadcrumbValue === projectPageMatch[0]) {
-      return { project: projectPageMatch[0] };
+      return {
+        language: '<<LAST_LANGUAGE>>',
+        project: projectPageMatch[0],
+      };
     }
   }
 
@@ -154,11 +177,16 @@ const CircleCI: HeartbeatParser = (url: string) => {
       '#__next > div > div:nth-child(1) > header > div > div:nth-child(2) > div',
     )?.textContent;
     if (pageTitle === 'Project Settings' && pageSubtitle === settingsPageMatch[0]) {
-      return { project: settingsPageMatch[0] };
+      return {
+        language: '<<LAST_LANGUAGE>>',
+        project: settingsPageMatch[0],
+      };
     }
   }
 
-  return undefined;
+  return {
+    language: '<<LAST_LANGUAGE>>',
+  };
 };
 
 const Vercel: HeartbeatParser = (url: string) => {
@@ -168,16 +196,27 @@ const Vercel: HeartbeatParser = (url: string) => {
   // this regex extracts the project name from the title
   // eg. title: test-website - Overview – Vercel
   const match2 = document.querySelector('title')?.textContent?.match(/^[^\s]+(?=\s-\s)/);
-  if (!match2 || match2[0] !== match[0]) return;
+  if (!match2 || match2[0] !== match[0]) {
+    return {
+      language: '<<LAST_LANGUAGE>>',
+    };
+  }
 
-  return { project: match[0] };
+  return {
+    language: '<<LAST_LANGUAGE>>',
+    project: match[0],
+  };
 };
 
 const StackOverflow: HeartbeatParser = (_url: string) => {
   const tags = Array.from(document.querySelectorAll('.post-tag').values())
     .map((el) => el.textContent)
     .filter(Boolean) as string[];
-  if (tags.length === 0) return;
+  if (tags.length === 0) {
+    return {
+      language: '<<LAST_LANGUAGE>>',
+    };
+  }
 
   const languages = Array.from(document.querySelectorAll('code[data-highlighted="yes"]').values())
     .map((code) => {
@@ -192,7 +231,9 @@ const StackOverflow: HeartbeatParser = (_url: string) => {
     }
   }
 
-  return undefined;
+  return {
+    language: '<<LAST_LANGUAGE>>',
+  };
 };
 
 const Canva: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => {
