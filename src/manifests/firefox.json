@@ -14,7 +14,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "addon@wakatime.com",
-      "strict_min_version": "48.0"
+      "strict_min_version": "58.0"
     }
   },
   "content_scripts": [
@@ -39,5 +39,5 @@
     "page": "options.html"
   },
   "permissions": ["<all_urls>", "alarms", "tabs", "storage", "idle", "activeTab", "scripting"],
-  "version": "3.0.22"
+  "version": "3.0.23"
 }
