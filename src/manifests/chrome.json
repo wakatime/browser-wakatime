@@ -33,5 +33,5 @@
     "page": "options.html"
   },
   "permissions": ["<all_urls>", "alarms", "tabs", "storage", "idle", "activeTab", "scripting"],
-  "version": "3.0.22"
+  "version": "3.0.23"
 }
