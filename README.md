@@ -28,8 +28,6 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 
 ![SC open](./screenshots/sc_6-open.png)
 
-![Options SC](./screenshots/sc_8-options.png)
-
 ## Development instructions
 
 ```
