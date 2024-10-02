@@ -18,7 +18,7 @@ class WakaTimeCore {
   lastHeartbeat: Heartbeat | undefined;
   lastHeartbeatSentAt = 0;
   lastExtensionState: ExtensionStatus = 'allGood';
-  db: IDBPDatabase | undefined;
+  _db: IDBPDatabase | undefined;
   constructor() {
     this.tabsWithDevtoolsOpen = [];
   }
@@ -27,15 +27,18 @@ class WakaTimeCore {
    * Creates a IndexDB using idb https://github.com/jakearchibald/idb
    * a library that adds promises to IndexedDB and makes it easy to use
    */
-  async createDB() {
-    const dbConnection = await openDB('wakatime', 1, {
-      upgrade(db) {
-        db.createObjectStore(config.queueName, {
-          keyPath: 'id',
-        });
-      },
-    });
-    this.db = dbConnection;
+  async db() {
+    if (!this._db) {
+      const dbConnection = await openDB('wakatime', 1, {
+        upgrade(db) {
+          db.createObjectStore(config.queueName, {
+            keyPath: 'id',
+          });
+        },
+      });
+      this._db = dbConnection;
+    }
+    return this._db;
   }
 
   shouldSendHeartbeat(heartbeat: Heartbeat): boolean {
@@ -115,7 +118,7 @@ class WakaTimeCore {
     if (!this.shouldSendHeartbeat(heartbeat)) return;
 
     // append heartbeat to queue
-    await this.db?.add(config.queueName, heartbeat);
+    await (await this.db()).add(config.queueName, heartbeat);
 
     await this.sendHeartbeats();
   }
@@ -177,14 +180,14 @@ class WakaTimeCore {
       return;
     }
 
-    const heartbeats = (await this.db?.getAll(config.queueName, undefined, 50)) as
+    const heartbeats = (await (await this.db()).getAll(config.queueName, undefined, 50)) as
       | Heartbeat[]
       | undefined;
     if (!heartbeats || heartbeats.length === 0) return;
 
     await Promise.all(
-      heartbeats.map((heartbeat) => {
-        return this.db?.delete(config.queueName, heartbeat.id);
+      heartbeats.map(async (heartbeat) => {
+        return (await this.db()).delete(config.queueName, heartbeat.id);
       }),
     );
 
@@ -227,7 +230,6 @@ class WakaTimeCore {
               console.error(resp[0].error);
             } else if (resp[1] === 201 && resp[0].data?.id) {
               await changeExtensionStatus('allGood');
-              // await this.db?.delete(config.queueName, resp[0].data.id);
             } else {
               if (resp[1] !== 400) {
                 await this.putHeartbeatsBackInQueue(heartbeats.filter((h, i) => i === respNumber));
@@ -251,7 +253,7 @@ class WakaTimeCore {
 
   async putHeartbeatsBackInQueue(heartbeats: Heartbeat[]): Promise<void> {
     await Promise.all(
-      heartbeats.map(async (heartbeat) => this.db?.add(config.queueName, heartbeat)),
+      heartbeats.map(async (heartbeat) => (await this.db()).add(config.queueName, heartbeat)),
     );
   }
 
