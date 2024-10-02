@@ -38,6 +38,6 @@
     "chrome_style": false,
     "page": "options.html"
   },
-  "permissions": ["<all_urls>", "alarms", "tabs", "storage", "activeTab"],
+  "permissions": ["alarms", "tabs", "storage", "activeTab"],
   "version": "4.0.0"
 }
