@@ -228,7 +228,7 @@ class WakaTimeCore {
             if (resp[0].error) {
               await this.putHeartbeatsBackInQueue(heartbeats.filter((h, i) => i === respNumber));
               console.error(resp[0].error);
-            } else if (resp[1] === 201 && resp[0].data?.id) {
+            } else if ((resp[1] === 201 || resp[1] === 202) && resp[0].data?.id) {
               await changeExtensionStatus('allGood');
             } else {
               if (resp[1] !== 400) {
