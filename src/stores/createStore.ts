@@ -1,5 +1,5 @@
 import { reduxBatch } from '@manaflair/redux-batch';
-import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
+import { Store, combineReducers, configureStore } from '@reduxjs/toolkit';
 import { logger } from 'redux-logger';
 import configReducer, { initialConfigState } from '../reducers/configReducer';
 import currentUserReducer, { initialState as InitalCurrentUser } from '../reducers/currentUser';
@@ -18,11 +18,9 @@ const preloadedState: RootState = {
 };
 
 export default (): Store<RootState> => {
-  const enhancers = [];
-  enhancers.push(reduxBatch);
   const store = configureStore({
     devTools: true,
-    enhancers,
+    enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(reduxBatch),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     preloadedState,
     reducer: rootReducer,
