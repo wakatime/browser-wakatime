@@ -94,11 +94,13 @@ const GitHub: HeartbeatParser = (url: string) => {
 };
 
 const GitLab: HeartbeatParser = (url: string) => {
-  const match = url.match(/(?<=gitlab\.com\/[^/]+\/)([^/?#]+)/);
+  const match = url.match(/([^/]+)(?:\/-\/|\/?$)/);
   if (!match) return;
 
+  const urlRepo = match[1];
   const repoName = document.querySelector('body')?.getAttribute('data-project-full-path');
-  if (!repoName || repoName.split('/')[1] !== match[0]) {
+  const isValidPath = repoName?.split('/').pop() === urlRepo;
+  if (!isValidPath) {
     return {
       language: '<<LAST_LANGUAGE>>',
     };
@@ -106,7 +108,7 @@ const GitLab: HeartbeatParser = (url: string) => {
 
   return {
     language: '<<LAST_LANGUAGE>>',
-    project: match[0],
+    project: urlRepo,
   };
 };
 
@@ -368,7 +370,7 @@ const SITES: Record<KnownSite, SiteParser> = {
   },
   gitlab: {
     parser: GitLab,
-    urls: [/^https?:\/\/(.+\.)?gitlab.com\//],
+    urls: [/^https?:\/\/(.+\.)?gitlab.[\w.]+\//],
   },
   googlemeet: {
     parser: GoogleMeet,
