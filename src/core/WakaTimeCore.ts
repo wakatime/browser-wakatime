@@ -175,7 +175,7 @@ class WakaTimeCore {
       return;
     }
 
-    const heartbeats = (await (await this.db()).getAll(config.queueName, undefined, 50)) as
+    const heartbeats = (await (await this.db()).getAll(config.queueName, undefined, 25)) as
       | Heartbeat[]
       | undefined;
     if (!heartbeats || heartbeats.length === 0) return;
