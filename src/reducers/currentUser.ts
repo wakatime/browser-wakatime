@@ -36,10 +36,12 @@ const currentUser = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCurrentUser.fulfilled, (state, { payload }) => {
       state.user = payload;
+      state.pending = false;
     });
     builder.addCase(fetchCurrentUser.rejected, (state, { error }) => {
       state.user = undefined;
       state.error = error;
+      state.pending = false;
     });
   },
   initialState,

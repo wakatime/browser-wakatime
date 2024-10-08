@@ -28,6 +28,27 @@ describe('MainList', () => {
       <div>
         <div>
           <div
+            class="placeholder-glow"
+          >
+            <span
+              class="placeholder col-12"
+            />
+          </div>
+          <div
+            class="placeholder-glow"
+          >
+            <span
+              class="placeholder col-12"
+            />
+          </div>
+          <div
+            class="placeholder-glow"
+          >
+            <span
+              class="placeholder col-12"
+            />
+          </div>
+          <div
             class="list-group"
           >
             <a
@@ -38,17 +59,6 @@ describe('MainList', () => {
                 class="fa fa-fw fa-cogs me-2"
               />
               Options
-            </a>
-            <a
-              class="list-group-item text-body-secondary"
-              href="https://wakatime.com/login"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <i
-                class="fa fa-fw fa-sign-in me-2"
-              />
-              Login
             </a>
           </div>
         </div>
