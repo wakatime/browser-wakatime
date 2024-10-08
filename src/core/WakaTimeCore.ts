@@ -210,7 +210,7 @@ class WakaTimeCore {
         console.error(data.error);
         return;
       }
-      if (response.status === 202) {
+      if (response.status === 202 || response.status === 201) {
         await Promise.all(
           (data.responses ?? []).map(async (resp, respNumber) => {
             if (resp[0].error) {
