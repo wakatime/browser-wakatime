@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import browser from 'webextension-polyfill';
 import config from '../config/config';
 import { CurrentUser, User, UserPayload } from '../types/user';
+import { getApiUrl } from '../utils/user';
 
 interface setUserAction {
   payload: User | undefined;
@@ -16,11 +17,11 @@ export const fetchCurrentUser = createAsyncThunk<User, string>(
   `[${name}]`,
   async (api_key = '') => {
     const items = await browser.storage.sync.get({
-      apiUrl: config.apiUrl,
       currentUserApiEndPoint: config.currentUserApiEndPoint,
     });
+    const apiUrl = await getApiUrl();
     const userPayload: AxiosResponse<UserPayload> = await axios.get(
-      `${items.apiUrl}${items.currentUserApiEndPoint}`,
+      `${apiUrl}${items.currentUserApiEndPoint}`,
       {
         params: { api_key },
       },
@@ -35,10 +36,12 @@ const currentUser = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCurrentUser.fulfilled, (state, { payload }) => {
       state.user = payload;
+      state.pending = false;
     });
     builder.addCase(fetchCurrentUser.rejected, (state, { error }) => {
       state.user = undefined;
       state.error = error;
+      state.pending = false;
     });
   },
   initialState,

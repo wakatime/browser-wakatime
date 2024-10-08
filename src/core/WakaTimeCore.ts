@@ -1,4 +1,4 @@
-import { IDBPDatabase, openDB } from 'idb';
+import { openDB } from 'idb';
 import browser, { Tabs } from 'webextension-polyfill';
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
@@ -9,6 +9,7 @@ import { changeExtensionStatus } from '../utils/changeExtensionStatus';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
 import { getOperatingSystem, IS_EDGE, IS_FIREFOX } from '../utils/operatingSystem';
 import { getSettings, Settings } from '../utils/settings';
+import { getApiUrl } from '../utils/user';
 
 import config, { ExtensionStatus } from '../config/config';
 import { EntityType, Heartbeat, HeartbeatsBulkResponse } from '../types/heartbeats';
@@ -18,7 +19,6 @@ class WakaTimeCore {
   lastHeartbeat: Heartbeat | undefined;
   lastHeartbeatSentAt = 0;
   lastExtensionState: ExtensionStatus = 'allGood';
-  _db: IDBPDatabase | undefined;
   constructor() {
     this.tabsWithDevtoolsOpen = [];
   }
@@ -28,17 +28,13 @@ class WakaTimeCore {
    * a library that adds promises to IndexedDB and makes it easy to use
    */
   async db() {
-    if (!this._db) {
-      const dbConnection = await openDB('wakatime', 1, {
-        upgrade(db) {
-          db.createObjectStore(config.queueName, {
-            keyPath: 'id',
-          });
-        },
-      });
-      this._db = dbConnection;
-    }
-    return this._db;
+    return openDB('wakatime', 2, {
+      upgrade(db) {
+        db.createObjectStore(config.queueName, {
+          keyPath: 'id',
+        });
+      },
+    });
   }
 
   shouldSendHeartbeat(heartbeat: Heartbeat): boolean {
@@ -171,7 +167,6 @@ class WakaTimeCore {
   async sendHeartbeats(): Promise<void> {
     const settings = await browser.storage.sync.get({
       apiKey: config.apiKey,
-      apiUrl: config.apiUrl,
       heartbeatApiEndPoint: config.heartbeatApiEndPoint,
       hostname: '',
     });
@@ -180,16 +175,8 @@ class WakaTimeCore {
       return;
     }
 
-    const heartbeats = (await (await this.db()).getAll(config.queueName, undefined, 50)) as
-      | Heartbeat[]
-      | undefined;
-    if (!heartbeats || heartbeats.length === 0) return;
-
-    await Promise.all(
-      heartbeats.map(async (heartbeat) => {
-        return (await this.db()).delete(config.queueName, heartbeat.id);
-      }),
-    );
+    const heartbeats = await this.getHeartbeatsFromQueue();
+    if (heartbeats.length === 0) return;
 
     const userAgent = await this.getUserAgent();
 
@@ -209,7 +196,8 @@ class WakaTimeCore {
         };
       }
 
-      const url = `${settings.apiUrl}${settings.heartbeatApiEndPoint}?api_key=${settings.apiKey}`;
+      const apiUrl = await getApiUrl();
+      const url = `${apiUrl}${settings.heartbeatApiEndPoint}?api_key=${settings.apiKey}`;
       const response = await fetch(url, request);
       if (response.status === 401) {
         await this.putHeartbeatsBackInQueue(heartbeats);
@@ -228,7 +216,7 @@ class WakaTimeCore {
             if (resp[0].error) {
               await this.putHeartbeatsBackInQueue(heartbeats.filter((h, i) => i === respNumber));
               console.error(resp[0].error);
-            } else if ((resp[1] === 201 || resp[1] === 202) && resp[0].data?.id) {
+            } else if (resp[1] === 201 || resp[1] === 202) {
               await changeExtensionStatus('allGood');
             } else {
               if (resp[1] !== 400) {
@@ -251,10 +239,38 @@ class WakaTimeCore {
     }
   }
 
-  async putHeartbeatsBackInQueue(heartbeats: Heartbeat[]): Promise<void> {
+  async getHeartbeatsFromQueue(): Promise<Heartbeat[]> {
+    const tx = (await this.db()).transaction(config.queueName, 'readwrite');
+
+    const heartbeats = (await tx.store.getAll(undefined, 25)) as Heartbeat[] | undefined;
+    if (!heartbeats || heartbeats.length === 0) return [];
+
     await Promise.all(
-      heartbeats.map(async (heartbeat) => (await this.db()).add(config.queueName, heartbeat)),
+      heartbeats.map(async (heartbeat) => {
+        return tx.store.delete(heartbeat.id);
+      }),
     );
+
+    await tx.done;
+
+    return heartbeats;
+  }
+
+  async putHeartbeatsBackInQueue(heartbeats: Heartbeat[]): Promise<void> {
+    await Promise.all(heartbeats.map(async (heartbeat) => this.putHeartbeatBackInQueue(heartbeat)));
+  }
+
+  async putHeartbeatBackInQueue(heartbeat: Heartbeat, tries = 0): Promise<void> {
+    try {
+      await (await this.db()).add(config.queueName, heartbeat);
+    } catch (err: unknown) {
+      if (tries < 10) {
+        return await this.putHeartbeatBackInQueue(heartbeat, tries + 1);
+      }
+      console.error(err);
+      console.error(`Unable to add heartbeat back into queue: ${heartbeat.id}`);
+      console.error(JSON.stringify(heartbeat));
+    }
   }
 
   async getUserAgent(): Promise<string> {

@@ -58,7 +58,7 @@ describe('wakatime config', () => {
           "chrome://",
           "about:",
         ],
-        "queueName": "heartbeatQueue",
+        "queueName": "heartbeatsQueue",
         "socialMediaSites": [
           "facebook.com",
           "instagram.com",

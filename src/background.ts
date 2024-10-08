@@ -60,14 +60,6 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   }
 });
 
-/**
- * Creates IndexedDB
- * https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
- */
-self.addEventListener('activate', async () => {
-  await WakaTimeCore.db();
-});
-
 browser.runtime.onMessage.addListener(async (request: { task: string }, sender) => {
   if (request.task === 'handleActivity') {
     if (!sender.tab?.id) return;

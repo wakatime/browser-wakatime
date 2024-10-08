@@ -164,7 +164,7 @@ const config: Config = {
 
   nonTrackableSites: ['chrome://', 'about:'],
 
-  queueName: 'heartbeatQueue',
+  queueName: 'heartbeatsQueue',
 
   socialMediaSites: [
     'facebook.com',

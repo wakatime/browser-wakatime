@@ -1,5 +1,6 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import React from 'react';
 import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
 import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
@@ -23,6 +24,9 @@ export default function MainList({
   const user: User | undefined = useSelector(
     (selector: ReduxSelector) => selector.currentUser.user,
   );
+  const isLoading: boolean = useSelector(
+    (selector: ReduxSelector) => selector.currentUser.pending ?? true,
+  );
 
   const logoutUser = async (): Promise<void> => {
     await browser.storage.sync.set({ apiKey: '' });
@@ -43,6 +47,12 @@ export default function MainList({
     await changeExtensionState('trackingDisabled');
   };
 
+  const loading = isLoading ? (
+    <div className="placeholder-glow">
+      <span className="placeholder col-12"></span>
+    </div>
+  ) : null;
+
   return (
     <div>
       {user ? (
@@ -56,7 +66,9 @@ export default function MainList({
             </blockquote>
           </div>
         </div>
-      ) : null}
+      ) : (
+        loading
+      )}
       {loggingEnabled && user ? (
         <div className="row">
           <div className="col-xs-12">
@@ -71,7 +83,9 @@ export default function MainList({
             </p>
           </div>
         </div>
-      ) : null}
+      ) : (
+        loading
+      )}
       {!loggingEnabled && user ? (
         <div className="row">
           <div className="col-xs-12">
@@ -86,21 +100,22 @@ export default function MainList({
             </p>
           </div>
         </div>
-      ) : null}
+      ) : (
+        loading
+      )}
       <div className="list-group">
         <a href="#" className="list-group-item text-body-secondary" onClick={openOptionsPage}>
           <i className="fa fa-fw fa-cogs me-2" />
           Options
         </a>
-        {user ? (
+        {isLoading ? null : user ? (
           <div>
             <a href="#" className="list-group-item text-body-secondary" onClick={logoutUser}>
               <i className="fa fa-fw fa-sign-out me-2" />
               Logout
             </a>
           </div>
-        ) : null}
-        {user ? null : (
+        ) : (
           <a
             target="_blank"
             rel="noreferrer"
