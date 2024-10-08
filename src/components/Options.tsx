@@ -52,9 +52,6 @@ export default function Options(): JSX.Element {
   const handleSubmit = async () => {
     if (state.loading) return;
     setState((oldState) => ({ ...oldState, loading: true }));
-    if (state.apiUrl.endsWith('/')) {
-      state.apiUrl = state.apiUrl.slice(0, -1);
-    }
     await saveSettings({
       allowList: state.allowList.filter((item) => !!item.trim()),
       apiKey: state.apiKey,
