@@ -1,4 +1,4 @@
-import { IDBPDatabase, openDB } from 'idb';
+import { openDB } from 'idb';
 import browser, { Tabs } from 'webextension-polyfill';
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
@@ -18,7 +18,6 @@ class WakaTimeCore {
   lastHeartbeat: Heartbeat | undefined;
   lastHeartbeatSentAt = 0;
   lastExtensionState: ExtensionStatus = 'allGood';
-  _db: IDBPDatabase | undefined;
   constructor() {
     this.tabsWithDevtoolsOpen = [];
   }
@@ -28,17 +27,13 @@ class WakaTimeCore {
    * a library that adds promises to IndexedDB and makes it easy to use
    */
   async db() {
-    if (!this._db) {
-      const dbConnection = await openDB('wakatime', 1, {
-        upgrade(db) {
-          db.createObjectStore(config.queueName, {
-            keyPath: 'id',
-          });
-        },
-      });
-      this._db = dbConnection;
-    }
-    return this._db;
+    return openDB('wakatime', 1, {
+      upgrade(db) {
+        db.createObjectStore(config.queueName, {
+          keyPath: 'id',
+        });
+      },
+    });
   }
 
   shouldSendHeartbeat(heartbeat: Heartbeat): boolean {
