@@ -15,14 +15,7 @@ export const getApiUrl = async () => {
     apiUrl: config.apiUrl,
   });
   let apiUrl = (settings.apiUrl as string) || config.apiUrl;
-  const suffixes = [
-    '/',
-    '.bulk',
-    '.bulk',
-    '/users/current/heartbeats',
-    '/heartbeats',
-    '/heartbeat',
-  ];
+  const suffixes = ['/', '.bulk', '/users/current/heartbeats', '/heartbeats', '/heartbeat'];
   for (const suffix of suffixes) {
     if (apiUrl.endsWith(suffix)) {
       apiUrl = apiUrl.slice(0, -suffix.length);
