@@ -27,7 +27,7 @@ class WakaTimeCore {
    * a library that adds promises to IndexedDB and makes it easy to use
    */
   async db() {
-    return openDB('wakatime', 1, {
+    return openDB('wakatime', 2, {
       upgrade(db) {
         db.createObjectStore(config.queueName, {
           keyPath: 'id',
