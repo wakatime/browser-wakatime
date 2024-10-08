@@ -21,9 +21,6 @@ export const getApiUrl = async () => {
       apiUrl = apiUrl.slice(0, -suffix.length);
     }
   }
-  if (!apiUrl.endsWith('/api/v1')) {
-    apiUrl = `${apiUrl}/api/v1`;
-  }
   return apiUrl;
 };
 
