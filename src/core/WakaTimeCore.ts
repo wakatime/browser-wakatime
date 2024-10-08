@@ -213,17 +213,19 @@ class WakaTimeCore {
       if (response.status === 202 || response.status === 201) {
         await Promise.all(
           (data.responses ?? []).map(async (resp, respNumber) => {
-            if (resp[0].error) {
+            const nestedResp = resp[0];
+            const nestedStatus = resp[1];
+            if (nestedResp.error) {
               await this.putHeartbeatsBackInQueue(heartbeats.filter((h, i) => i === respNumber));
               console.error(resp[0].error);
-            } else if (resp[1] === 201 || resp[1] === 202) {
+            } else if (nestedStatus >= 200 && nestedStatus <= 299) {
               await changeExtensionStatus('allGood');
             } else {
-              if (resp[1] !== 400) {
+              if (nestedStatus !== 400) {
                 await this.putHeartbeatsBackInQueue(heartbeats.filter((h, i) => i === respNumber));
               }
               console.error(
-                `Heartbeat ${resp[0].data?.id ?? respNumber} returned status: ${resp[1]}`,
+                `Heartbeat ${nestedResp.data?.id ?? respNumber} returned status: ${nestedStatus}`,
               );
             }
             return resp;
