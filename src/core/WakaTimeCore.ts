@@ -196,13 +196,6 @@ class WakaTimeCore {
         };
       }
 
-      try {
-        await getApiUrl();
-      } catch (err: unknown) {
-        console.error(err);
-        return;
-      }
-
       const apiUrl = await getApiUrl();
       const url = `${apiUrl}${settings.heartbeatApiEndPoint}?api_key=${settings.apiKey}`;
       const response = await fetch(url, request);
