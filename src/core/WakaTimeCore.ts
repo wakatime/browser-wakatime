@@ -12,7 +12,12 @@ import { getSettings, Settings } from '../utils/settings';
 import { getApiUrl } from '../utils/user';
 
 import config, { ExtensionStatus } from '../config/config';
-import { EntityType, Heartbeat, HeartbeatsBulkResponse } from '../types/heartbeats';
+import {
+  EntityType,
+  Heartbeat,
+  HeartbeatsBulkResponse,
+  HeartbeatThirdParty,
+} from '../types/heartbeats';
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
@@ -179,11 +184,25 @@ class WakaTimeCore {
     if (heartbeats.length === 0) return;
 
     const userAgent = await this.getUserAgent();
+    const apiUrl = await getApiUrl();
 
     try {
       const request: RequestInit = {
         body: JSON.stringify(
           heartbeats.map((heartbeat) => {
+            if (!apiUrl.includes('wakatime.com')) {
+              const hb = {
+                branch: heartbeat.branch,
+                category: heartbeat.category,
+                entity: heartbeat.entity,
+                language: heartbeat.language,
+                plugin: heartbeat.plugin,
+                project: heartbeat.project,
+                time: parseFloat(heartbeat.time),
+                type: heartbeat.type,
+              } as HeartbeatThirdParty;
+              return { ...hb, userAgent };
+            }
             return { ...heartbeat, userAgent };
           }),
         ),
@@ -196,7 +215,6 @@ class WakaTimeCore {
         };
       }
 
-      const apiUrl = await getApiUrl();
       const url = `${apiUrl}${settings.heartbeatApiEndPoint}?api_key=${settings.apiKey}`;
       const response = await fetch(url, request);
       if (response.status === 401) {
