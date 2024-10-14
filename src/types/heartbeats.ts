@@ -10,10 +10,6 @@ export interface Heartbeat {
   type: EntityType;
 }
 
-export interface HeartbeatThirdParty extends Omit<Heartbeat, 'id' | 'time'> {
-  time: number;
-}
-
 export enum Category {
   browsing = 'browsing',
   code_reviewing = 'code reviewing',
