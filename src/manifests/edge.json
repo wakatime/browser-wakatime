@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://meet.google.com/*"],
       "js": ["wakatimeScript.js"],
       "run_at": "document_end"
     }
@@ -22,6 +22,7 @@
   "devtools_page": "devtools.html",
   "homepage_url": "https://wakatime.com",
   "host_permissions": ["https://api.wakatime.com/*", "https://wakatime.com/*"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
   "icons": {
     "16": "graphics/wakatime-logo-16.png",
     "48": "graphics/wakatime-logo-48.png",
