@@ -122,7 +122,7 @@ const config: Config = {
 
   apiKey: '',
 
-  apiUrl: process.env.API_URL ?? 'https://api.wakatime.com/api/v1',
+  apiUrl: process.env.API_URL ?? 'https://waka.hackclub.com/api',
 
   colors: {
     allGood: '',
@@ -136,16 +136,10 @@ const config: Config = {
   detectionIntervalInSeconds: 60,
 
   devSites: [
-    'codepen.io',
-    'codewars.com',
-    'dev.to',
-    'github.com',
-    'hackerrank.com',
-    'leetcode.com',
-    'developer.mozilla.org',
-    'stackoverflow.com',
-    'udemy.com',
-    'w3schools.com',
+    'scratch.mit.edu',
+    'turbowarp.org',
+    'penguinmod.com',
+    'studio.penguinmod.com'
   ],
 
   heartbeatApiEndPoint: process.env.HEARTBEAT_API_URL ?? '/users/current/heartbeats.bulk',
@@ -158,9 +152,9 @@ const config: Config = {
 
   loggingType: 'domain',
 
-  logoutUserUrl: process.env.LOGOUT_USER_URL ?? 'https://wakatime.com/logout',
+  logoutUserUrl: process.env.LOGOUT_USER_URL ?? 'https://waka.hackclub.com/',
 
-  name: 'WakaTime',
+  name: 'Hackatime Scratch Tracking',
 
   nonTrackableSites: ['chrome://', 'about:'],
 
