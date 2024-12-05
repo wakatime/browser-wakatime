@@ -1,12 +1,12 @@
+import React from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 
-import React from 'react';
 import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
-import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
 import changeExtensionState from '../utils/changeExtensionStatus';
-import { getWebsiteUrl } from '../utils/settings';
+import { userLogout } from '../reducers/currentUser';
 
 export interface MainListProps {
   loggingEnabled: boolean;
@@ -16,10 +16,10 @@ const openOptionsPage = async (): Promise<void> => {
   await browser.runtime.openOptionsPage();
 };
 
-export default async function MainList({
+export default function MainList({
   loggingEnabled,
   totalTimeLoggedToday,
-}: MainListProps): Promise<JSX.Element> {
+}: MainListProps): JSX.Element {
   const dispatch = useDispatch();
 
   const user: User | undefined = useSelector(
@@ -53,8 +53,6 @@ export default async function MainList({
       <span className="placeholder col-12"></span>
     </div>
   ) : null;
-
-  const url = await getWebsiteUrl();
 
   return (
     <div>
@@ -122,7 +120,7 @@ export default async function MainList({
           <a
             target="_blank"
             rel="noreferrer"
-            href={`${url}/login`}
+            href="https://wakatime.com/login"
             className="list-group-item text-body-secondary"
           >
             <i className="fa fa-fw fa-sign-in me-2" />
