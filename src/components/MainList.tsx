@@ -6,6 +6,7 @@ import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
 import changeExtensionState from '../utils/changeExtensionStatus';
+import { getWebsiteUrl } from '../utils/settings';
 
 export interface MainListProps {
   loggingEnabled: boolean;
@@ -15,10 +16,10 @@ const openOptionsPage = async (): Promise<void> => {
   await browser.runtime.openOptionsPage();
 };
 
-export default function MainList({
+export default async function MainList({
   loggingEnabled,
   totalTimeLoggedToday,
-}: MainListProps): JSX.Element {
+}: MainListProps): Promise<JSX.Element> {
   const dispatch = useDispatch();
 
   const user: User | undefined = useSelector(
@@ -52,6 +53,8 @@ export default function MainList({
       <span className="placeholder col-12"></span>
     </div>
   ) : null;
+
+  const url = await getWebsiteUrl();
 
   return (
     <div>
@@ -119,7 +122,7 @@ export default function MainList({
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://wakatime.com/login"
+            href={`${url}/login`}
             className="list-group-item text-body-secondary"
           >
             <i className="fa fa-fw fa-sign-in me-2" />

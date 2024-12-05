@@ -1,18 +1,18 @@
-import { openDB } from 'idb';
 import browser, { Tabs } from 'webextension-polyfill';
-/* eslint-disable no-fallthrough */
-/* eslint-disable default-case */
+import { openDB } from 'idb';
 import moment from 'moment';
 import { v4 as uuid4 } from 'uuid';
-import { OptionalHeartbeat } from '../types/sites';
-import { changeExtensionStatus } from '../utils/changeExtensionStatus';
-import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
-import { getOperatingSystem, IS_EDGE, IS_FIREFOX } from '../utils/operatingSystem';
-import { getSettings, Settings } from '../utils/settings';
-import { getApiUrl } from '../utils/user';
-
 import config, { ExtensionStatus } from '../config/config';
 import { EntityType, Heartbeat, HeartbeatsBulkResponse } from '../types/heartbeats';
+import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
+import { IS_EDGE, IS_FIREFOX, getOperatingSystem } from '../utils/operatingSystem';
+import { Settings, getApiUrl, getSettings } from '../utils/settings';
+
+import { OptionalHeartbeat } from '../types/sites';
+import { changeExtensionStatus } from '../utils/changeExtensionStatus';
+
+/* eslint-disable no-fallthrough */
+/* eslint-disable default-case */
 
 class WakaTimeCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
@@ -185,7 +185,7 @@ class WakaTimeCore {
       const request: RequestInit = {
         body: JSON.stringify(
           heartbeats.map((heartbeat) => {
-            return { ...heartbeat, userAgent };
+            return { ...heartbeat, plugin: userAgent };
           }),
         ),
         credentials: 'omit',

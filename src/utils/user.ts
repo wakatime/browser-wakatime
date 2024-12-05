@@ -1,28 +1,15 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
-import browser from 'webextension-polyfill';
-
 import moment from 'moment';
-import config from '../config/config';
+import browser from 'webextension-polyfill';
 import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reducers/configReducer';
-import { setUser } from '../reducers/currentUser';
 import { GrandTotal, Summaries } from '../types/summaries';
 import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
-import changeExtensionState from './changeExtensionStatus';
 
-export const getApiUrl = async () => {
-  const settings = await browser.storage.sync.get({
-    apiUrl: config.apiUrl,
-  });
-  let apiUrl = (settings.apiUrl as string) || config.apiUrl;
-  const suffixes = ['/', '.bulk', '/users/current/heartbeats', '/heartbeats', '/heartbeat'];
-  for (const suffix of suffixes) {
-    if (apiUrl.endsWith(suffix)) {
-      apiUrl = apiUrl.slice(0, -suffix.length);
-    }
-  }
-  return apiUrl;
-};
+import config from '../config/config';
+import { setUser } from '../reducers/currentUser';
+import changeExtensionState from './changeExtensionStatus';
+import { getApiUrl } from './settings';
 
 /**
  * Checks if the user is logged in.

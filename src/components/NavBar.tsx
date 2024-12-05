@@ -2,8 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
+import { getWebsiteUrl } from '../utils/settings';
 
-export default function NavBar(): JSX.Element {
+export default async function NavBar(): Promise<Promise<JSX.Element>> {
   const user: User | undefined = useSelector(
     (selector: ReduxSelector) => selector.currentUser.user,
   );
@@ -20,13 +21,14 @@ export default function NavBar(): JSX.Element {
     }
   };
 
-  const customRules = () => {
+  const customRules = async () => {
     if (user) {
+      const url = await getWebsiteUrl();
       return (
         <li className="mb-2">
           <a
             target="_blank"
-            href="https://wakatime.com/settings/rules"
+            href={`${url}/settings/rules`}
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
@@ -40,13 +42,14 @@ export default function NavBar(): JSX.Element {
     }
   };
 
-  const dashboard = () => {
+  const dashboard = async () => {
     if (user) {
+      const url = await getWebsiteUrl();
       return (
         <li className="mb-2">
           <a
             target="_blank"
-            href="https://wakatime.com/dashboard"
+            href={url}
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
@@ -84,8 +87,8 @@ export default function NavBar(): JSX.Element {
       <div className="collapse navbar-collapse mt-4" id="userInfoCollapse">
         {signedInAs()}
         <ul className="nav navbar-nav border-bottom pb-2">
-          {customRules()}
-          {dashboard()}
+          {await customRules()}
+          {await dashboard()}
           <li className="dropdown">
             <a
               href="#"
