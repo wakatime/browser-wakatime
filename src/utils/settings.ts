@@ -88,3 +88,21 @@ export const saveSettings = async (settings: Settings): Promise<void> => {
   });
   await browser.storage.sync.set(settings);
 };
+
+export const getApiUrl = async () => {
+  const settings = await browser.storage.sync.get({
+    apiUrl: config.apiUrl,
+  });
+  let apiUrl = (settings.apiUrl as string) || config.apiUrl;
+  const suffixes = ['/', '.bulk', '/users/current/heartbeats', '/heartbeats', '/heartbeat'];
+  for (const suffix of suffixes) {
+    if (apiUrl.endsWith(suffix)) {
+      apiUrl = apiUrl.slice(0, -suffix.length);
+    }
+  }
+  return apiUrl;
+};
+
+export const getWebsiteUrl = async () => {
+  return (await getApiUrl()).replace('/api/v1', '').replace('://api.', '://');
+};

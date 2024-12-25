@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import browser from 'webextension-polyfill';
-import config from '../config/config';
 import { CurrentUser, User, UserPayload } from '../types/user';
-import { getApiUrl } from '../utils/user';
+
+import config from '../config/config';
+import { getApiUrl } from '../utils/settings';
 
 interface setUserAction {
   payload: User | undefined;

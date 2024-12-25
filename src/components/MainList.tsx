@@ -1,11 +1,12 @@
+import React from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 
-import React from 'react';
 import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
-import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
 import changeExtensionState from '../utils/changeExtensionStatus';
+import { userLogout } from '../reducers/currentUser';
 
 export interface MainListProps {
   loggingEnabled: boolean;

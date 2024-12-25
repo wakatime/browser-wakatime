@@ -22,11 +22,12 @@ export default function NavBar(): JSX.Element {
 
   const customRules = () => {
     if (user) {
+      const url = 'https://wakatime.com';
       return (
         <li className="mb-2">
           <a
             target="_blank"
-            href="https://wakatime.com/settings/rules"
+            href={`${url}/settings/rules`}
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
@@ -42,11 +43,12 @@ export default function NavBar(): JSX.Element {
 
   const dashboard = () => {
     if (user) {
+      const url = 'https://wakatime.com';
       return (
         <li className="mb-2">
           <a
             target="_blank"
-            href="https://wakatime.com/dashboard"
+            href={url}
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
