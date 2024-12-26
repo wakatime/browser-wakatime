@@ -23,22 +23,31 @@ export interface Settings {
 }
 
 export const getSettings = async (): Promise<Settings> => {
-  const settings = (await browser.storage.sync.get({
-    allowList: [],
-    apiKey: config.apiKey,
-    apiUrl: config.apiUrl,
-    blacklist: null,
-    customProjectNames: [],
-    denyList: [],
-    hostname: config.hostname,
-    loggingEnabled: config.loggingEnabled,
-    loggingStyle: config.loggingStyle,
-    loggingType: config.loggingType,
-    socialMediaSites: config.socialMediaSites,
-    theme: config.theme,
-    trackSocialMedia: true,
-    whitelist: null,
-  })) as Omit<Settings, 'socialMediaSites'> & {
+  const [syncSettings, localSettings] = await Promise.all([
+    browser.storage.sync.get({
+      allowList: [],
+      apiKey: config.apiKey,
+      apiUrl: config.apiUrl,
+      blacklist: null,
+      customProjectNames: [],
+      denyList: [],
+      loggingEnabled: config.loggingEnabled,
+      loggingStyle: config.loggingStyle,
+      loggingType: config.loggingType,
+      socialMediaSites: config.socialMediaSites,
+      theme: config.theme,
+      trackSocialMedia: true,
+      whitelist: null,
+    }),
+    browser.storage.local.get({
+      hostname: config.hostname,
+    }),
+  ]);
+
+  const settings = {
+    ...syncSettings,
+    hostname: localSettings.hostname,
+  } as Omit<Settings, 'socialMediaSites'> & {
     blacklist?: string;
     socialMediaSites: string[] | string;
     whitelist?: string;
@@ -81,7 +90,11 @@ export const getSettings = async (): Promise<Settings> => {
 };
 
 export const saveSettings = async (settings: Settings): Promise<void> => {
-  return browser.storage.sync.set(settings);
+  const { hostname, ...syncSettings } = settings;
+  await Promise.all([
+    browser.storage.sync.set(syncSettings),
+    browser.storage.local.set({ hostname }),
+  ]);
 };
 
 export const getApiUrl = async () => {
