@@ -1,8 +1,8 @@
-# chrome-wakatime
+# browser-wakatime
 
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
-Note: Activity from this Chrome extension will not display on leaderboards, so installing this extension may lower your rank.
+Note: Activity from this browser extension will not display on leaderboards, so installing this extension may lower your rank.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 
 2. Login to [WakaTime](https://wakatime.com/).
 
-3. Use Chrome like you normally do and your time will be tracked for you automatically.
+3. Use your browser like you normally do and your time will be tracked for you automatically.
 
 4. Visit https://wakatime.com to see your logged time.
 
