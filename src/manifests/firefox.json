@@ -38,6 +38,7 @@
     "chrome_style": false,
     "page": "options.html"
   },
-  "permissions": ["alarms", "tabs", "storage", "activeTab"],
+  "permissions": ["alarms", "tabs", "storage", "activeTab", "https://api.wakatime.com/*", "https://wakatime.com/*"],
+  "optional_permissions": ["<all_urls>"],
   "version": "4.0.12"
 }

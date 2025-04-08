@@ -81,7 +81,12 @@ export const getSettings = async (): Promise<Settings> => {
 };
 
 export const saveSettings = async (settings: Settings): Promise<void> => {
-  return browser.storage.sync.set(settings);
+  // permissions.request must be the first await, not after the browser.storage.sync.set
+  // See https://stackoverflow.com/a/47729896/12601364
+  await browser.permissions.request({
+    origins: [`${settings.apiUrl}/*`],
+  });
+  await browser.storage.sync.set(settings);
 };
 
 export const getApiUrl = async () => {
