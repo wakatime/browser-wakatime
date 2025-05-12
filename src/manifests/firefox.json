@@ -40,5 +40,5 @@
   },
   "permissions": ["alarms", "tabs", "storage", "activeTab", "https://api.wakatime.com/*", "https://wakatime.com/*"],
   "optional_permissions": ["<all_urls>"],
-  "version": "4.0.12"
+  "version": "4.1.0"
 }

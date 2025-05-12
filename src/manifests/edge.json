@@ -33,5 +33,5 @@
     "page": "options.html"
   },
   "permissions": ["alarms", "tabs", "storage", "activeTab"],
-  "version": "4.0.12"
+  "version": "4.1.0"
 }
