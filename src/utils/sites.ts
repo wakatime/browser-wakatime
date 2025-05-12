@@ -281,6 +281,23 @@ const GoogleMeet: HeartbeatParser = (_url: string): OptionalHeartbeat | undefine
   };
 };
 
+const MicrosoftTeams: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => {
+  const leaveButton = document.querySelector('#hangup-button');
+  if (!leaveButton) return;
+
+  const title = document.querySelector('title')?.innerText;
+  if (!title) return;
+
+  const meetingTitle = title.split(' | ')[1];
+  if (!meetingTitle.trim()) return;
+
+  return {
+    category: Category.meeting,
+    plugin: 'Microsoft Teams',
+    project: meetingTitle.trim(),
+  };
+};
+
 const Slack: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => {
   const title = document.querySelector('title')?.textContent?.split(' - ');
   if (!title || title.length < 3 || title[-1] !== 'Slack') {
@@ -374,7 +391,13 @@ const SITES: Record<KnownSite, SiteParser> = {
   },
   googlemeet: {
     parser: GoogleMeet,
+    trackWithoutMouseMoving: true,
     urls: [/^https?:\/\/meet.google.com\//],
+  },
+  msteams: {
+    parser: MicrosoftTeams,
+    trackWithoutMouseMoving: true,
+    urls: [/^https:\/\/teams.live.com\/v2\//, /^https:\/\/teams.microsoft.com\/v1\//],
   },
   slack: {
     parser: Slack,
@@ -394,6 +417,7 @@ const SITES: Record<KnownSite, SiteParser> = {
   },
   zoom: {
     parser: Zoom,
+    trackWithoutMouseMoving: true,
     urls: [/^https:\/\/(.+\.)?zoom.us\/[^?]+\/join/],
   },
 };

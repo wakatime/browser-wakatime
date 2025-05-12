@@ -1,7 +1,7 @@
-import browser, { Tabs } from 'webextension-polyfill';
 import { openDB } from 'idb';
 import moment from 'moment';
 import { v4 as uuid4 } from 'uuid';
+import browser, { Tabs } from 'webextension-polyfill';
 import config, { ExtensionStatus } from '../config/config';
 import { EntityType, Heartbeat, HeartbeatsBulkResponse } from '../types/heartbeats';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
@@ -88,7 +88,7 @@ class WakaTimeCore {
     return site?.projectName;
   }
 
-  async handleActivity(tabId: number) {
+  async handleActivity(tabId: number, isPassiveActivity: boolean = false) {
     const settings = await getSettings();
     if (!settings.loggingEnabled) {
       await changeExtensionStatus('trackingDisabled');
@@ -109,7 +109,10 @@ class WakaTimeCore {
       await changeExtensionStatus('allGood');
     }
 
-    const heartbeat = await this.buildHeartbeat(url, settings, activeTab);
+    const heartbeat = await this.buildHeartbeat(url, settings, activeTab, isPassiveActivity);
+    if (!heartbeat) {
+      return;
+    }
 
     if (!this.shouldSendHeartbeat(heartbeat)) return;
 
@@ -130,7 +133,12 @@ class WakaTimeCore {
     return activeTab;
   }
 
-  async buildHeartbeat(url: string, settings: Settings, tab: browser.Tabs.Tab): Promise<Heartbeat> {
+  async buildHeartbeat(
+    url: string,
+    settings: Settings,
+    tab: browser.Tabs.Tab,
+    isPassiveActivity: boolean,
+  ): Promise<Heartbeat | undefined> {
     if (!tab.id) {
       throw Error('Missing tab id.');
     }
@@ -140,6 +148,10 @@ class WakaTimeCore {
         heartbeat?: OptionalHeartbeat;
       }
     ).heartbeat;
+
+    if (isPassiveActivity && !heartbeat) {
+      return;
+    }
 
     const entity = settings.loggingType === 'domain' ? getDomainFromUrl(url) : url;
 
