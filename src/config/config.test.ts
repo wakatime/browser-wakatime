@@ -49,6 +49,7 @@ describe('wakatime config', () => {
         ],
         "heartbeatApiEndPoint": "/users/current/heartbeats.bulk",
         "hostname": "",
+        "logOnlyGroupedTabsActivity": false,
         "loggingEnabled": true,
         "loggingStyle": "deny",
         "loggingType": "domain",
@@ -87,6 +88,7 @@ describe('wakatime config', () => {
           "trackingDisabled": "Not logging",
         },
         "trackSocialMedia": true,
+        "useGroupNameAsProjectName": false,
         "version": "test-version",
       }
     `);
