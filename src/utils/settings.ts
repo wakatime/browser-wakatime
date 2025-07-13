@@ -6,6 +6,8 @@ export interface ProjectName {
   url: string;
 }
 
+export type YaBrowserSpaceNameMatch = Record<string, string | undefined>;
+
 export interface Settings {
   allowList: string[];
   apiKey: string;
@@ -14,12 +16,15 @@ export interface Settings {
   denyList: string[];
   extensionStatus: ExtensionStatus;
   hostname: string;
+  logOnlyGroupedTabsActivity: boolean;
   loggingEnabled: boolean;
   loggingStyle: LoggingStyle;
   loggingType: LoggingType;
   socialMediaSites: string[];
   theme: Theme;
   trackSocialMedia: boolean;
+  useGroupNameAsProjectName: boolean;
+  yaBrowserSpaceNameMatch: YaBrowserSpaceNameMatch;
 }
 
 export const getSettings = async (): Promise<Settings> => {
@@ -31,13 +36,16 @@ export const getSettings = async (): Promise<Settings> => {
     customProjectNames: [],
     denyList: [],
     hostname: config.hostname,
+    logOnlyGroupedTabsActivity: false,
     loggingEnabled: config.loggingEnabled,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
     socialMediaSites: config.socialMediaSites,
     theme: config.theme,
     trackSocialMedia: true,
+    useGroupNameAsProjectName: false,
     whitelist: null,
+    yaBrowserSpaceNameMatch: {},
   })) as Omit<Settings, 'socialMediaSites'> & {
     blacklist?: string;
     socialMediaSites: string[] | string;
@@ -71,12 +79,15 @@ export const getSettings = async (): Promise<Settings> => {
     denyList: settings.denyList,
     extensionStatus: settings.extensionStatus,
     hostname: settings.hostname,
+    logOnlyGroupedTabsActivity: settings.logOnlyGroupedTabsActivity,
     loggingEnabled: settings.loggingEnabled,
     loggingStyle: settings.loggingStyle,
     loggingType: settings.loggingType,
     socialMediaSites: settings.socialMediaSites,
     theme: settings.theme,
     trackSocialMedia: settings.trackSocialMedia,
+    useGroupNameAsProjectName: settings.useGroupNameAsProjectName,
+    yaBrowserSpaceNameMatch: settings.yaBrowserSpaceNameMatch,
   };
 };
 

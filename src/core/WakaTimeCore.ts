@@ -5,7 +5,13 @@ import browser, { Tabs } from 'webextension-polyfill';
 import config, { ExtensionStatus } from '../config/config';
 import { EntityType, Heartbeat, HeartbeatsBulkResponse } from '../types/heartbeats';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
-import { IS_EDGE, IS_FIREFOX, getOperatingSystem } from '../utils/operatingSystem';
+import {
+  IS_EDGE,
+  IS_FIREFOX,
+  IS_OPERA,
+  IS_YANDEX,
+  getOperatingSystem,
+} from '../utils/operatingSystem';
 import { Settings, getApiUrl, getSettings } from '../utils/settings';
 
 import { OptionalHeartbeat } from '../types/sites';
@@ -122,6 +128,57 @@ class WakaTimeCore {
     await this.sendHeartbeats();
   }
 
+  /**
+   * Gets the current activity tab's group name if
+   * the current tab is in a group/workspace/space.
+   *
+   * Chromium based browsers have their own API's and namings.
+   * For example:
+   * - Google Chrome: tab group
+   * - Opera: tab island and workspace(Opera offers two type of groups)
+   * - Yandex: space
+   *
+   * @param tab Activity tab
+   */
+  async getGroupName(tab: browser.Tabs.Tab, settings: Settings): Promise<string | undefined> {
+    // Yandex Browser provides a field called "spaceId".
+    // EVERY tab contains this field.
+    // (AFAIK every tab is in a group(called "space" by themself) in Yandex Browser
+    // (either the default one, or created by the user).
+    // Unfortunately, we cannot check whether the tab is in a group created by user, or the default one.
+    // Yandex browser doesn't support the chrome's "groupId" and "chrome.tabGroups" API.
+    // There is no way of getting programmatically the space's name(like in Opera, for example).
+    // So the logic of determining the tab groups is delegated to the user.
+    if (IS_YANDEX) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+      const spaceId = (tab as any).spaceId;
+      const name = settings.yaBrowserSpaceNameMatch[`${spaceId}`];
+      if ((name?.trim() ?? '') === '') return;
+      return name;
+    }
+
+    // For Opera we're using the workspace name.
+    // Despite the fact that tab islands also are available
+    // (much like Chrome's groups https://www.opera.com/features/tab-islands),
+    // we don't use islands because tab islands don't have names(are anonimous, if you like).
+    //
+    // In Opera, like in Yandex Browser, every tab is in a workspace
+    // (either the default one, or created by user)
+    if (IS_OPERA) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      return (tab as any).workspaceName;
+    }
+
+    // On other cases we're using the chrome's default groups API.
+    const tabGroupId = (tab as chrome.tabs.Tab).groupId;
+
+    if (tabGroupId == -1) return;
+
+    const tabGroup = await (browser as unknown as typeof chrome).tabGroups.get(tabGroupId);
+
+    return tabGroup.title;
+  }
+
   async getCurrentTab(tabId: number): Promise<browser.Tabs.Tab | undefined> {
     const tabs: browser.Tabs.Tab[] = await browser.tabs.query({
       active: true,
@@ -157,6 +214,15 @@ class WakaTimeCore {
 
     const projectNameFromList = this.getProjectNameFromList(url, settings);
 
+    let groupName: string | undefined;
+
+    if (settings.useGroupNameAsProjectName || settings.logOnlyGroupedTabsActivity) {
+      const _groupName = await this.getGroupName(tab, settings);
+
+      if (settings.useGroupNameAsProjectName) groupName = _groupName;
+      if (settings.logOnlyGroupedTabsActivity && _groupName === undefined) return;
+    }
+
     return {
       branch: heartbeat?.branch ?? '<<LAST_BRANCH>>',
       category: heartbeat?.category,
@@ -165,7 +231,7 @@ class WakaTimeCore {
       id: uuid4(),
       language: heartbeat?.language,
       plugin: heartbeat?.plugin,
-      project: projectNameFromList ?? heartbeat?.project ?? '<<LAST_PROJECT>>',
+      project: groupName ?? projectNameFromList ?? heartbeat?.project ?? '<<LAST_PROJECT>>',
       time: this.getCurrentTime(),
       type: heartbeat?.entityType ?? (settings.loggingType as EntityType),
     };

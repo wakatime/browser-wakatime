@@ -1,11 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
-import { IS_CHROME } from '../utils/operatingSystem';
-import { getSettings, ProjectName, saveSettings, Settings } from '../utils/settings';
+import { IS_CHROME, IS_OPERA, IS_YANDEX } from '../utils/operatingSystem';
+import {
+  getSettings,
+  ProjectName,
+  saveSettings,
+  Settings,
+  YaBrowserSpaceNameMatch,
+} from '../utils/settings';
 import { logUserIn } from '../utils/user';
 import CustomProjectNameList from './CustomProjectNameList';
 import SitesList from './SitesList';
+import YaBrowserSpaceNameMatchList from './YaBrowserSpaceNameMatchList';
 
 interface State extends Settings {
   alertText: string;
@@ -25,12 +32,15 @@ export default function Options(): JSX.Element {
     extensionStatus: 'allGood',
     hostname: '',
     loading: false,
+    logOnlyGroupedTabsActivity: config.logOnlyGroupedTabsActivity,
     loggingEnabled: true,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
     socialMediaSites: config.socialMediaSites,
     theme: config.theme,
     trackSocialMedia: config.trackSocialMedia,
+    useGroupNameAsProjectName: config.useGroupNameAsProjectName,
+    yaBrowserSpaceNameMatch: {},
   });
 
   const isApiKeyValid = useMemo(() => apiKeyInvalid(state.apiKey) === '', [state.apiKey]);
@@ -62,12 +72,15 @@ export default function Options(): JSX.Element {
       denyList: state.denyList.filter((item) => !!item.trim()),
       extensionStatus: state.extensionStatus,
       hostname: state.hostname,
+      logOnlyGroupedTabsActivity: state.logOnlyGroupedTabsActivity,
       loggingEnabled: state.loggingEnabled,
       loggingStyle: state.loggingStyle,
       loggingType: state.loggingType,
       socialMediaSites: state.socialMediaSites.filter((item) => !!item.trim()),
       theme: state.theme,
       trackSocialMedia: state.trackSocialMedia,
+      useGroupNameAsProjectName: state.useGroupNameAsProjectName,
+      yaBrowserSpaceNameMatch: state.yaBrowserSpaceNameMatch,
     });
     setState(state);
     await logUserIn(state.apiKey);
@@ -97,6 +110,16 @@ export default function Options(): JSX.Element {
     }));
   }, []);
 
+  const updateYaBrowserSpaceNameMatchState = useCallback(
+    (yaBrowserSpaceNameMatch: YaBrowserSpaceNameMatch) => {
+      setState((oldState) => ({
+        ...oldState,
+        yaBrowserSpaceNameMatch,
+      }));
+    },
+    [],
+  );
+
   const updateLoggingStyle = useCallback((style: string) => {
     setState((oldState) => ({
       ...oldState,
@@ -122,6 +145,20 @@ export default function Options(): JSX.Element {
     setState((oldState) => ({
       ...oldState,
       trackSocialMedia: !oldState.trackSocialMedia,
+    }));
+  }, []);
+
+  const toggleUseGroupNameAsProjectName = useCallback(() => {
+    setState((oldState) => ({
+      ...oldState,
+      useGroupNameAsProjectName: !oldState.useGroupNameAsProjectName,
+    }));
+  }, []);
+
+  const toggleLogOnlyGroupedTabsActivity = useCallback(() => {
+    setState((oldState) => ({
+      ...oldState,
+      logOnlyGroupedTabsActivity: !oldState.logOnlyGroupedTabsActivity,
     }));
   }, []);
 
@@ -260,6 +297,63 @@ export default function Options(): JSX.Element {
                 placeholder="https://api.wakatime.com/api/v1"
               />
               <span className="help-block">https://api.wakatime.com/api/v1</span>
+            </div>
+
+            <div className="form-group mb-4">
+              <label className="form-label mb-0">Tab Groups</label>
+
+              <div>
+                <input
+                  type="checkbox"
+                  className="me-2"
+                  checked={state.useGroupNameAsProjectName}
+                  onChange={toggleUseGroupNameAsProjectName}
+                />
+                <span onClick={toggleUseGroupNameAsProjectName}>
+                  Use tab&apos;s group name as project name
+                </span>
+              </div>
+
+              <div>
+                <input
+                  disabled={IS_OPERA}
+                  type="checkbox"
+                  className="me-2"
+                  checked={state.logOnlyGroupedTabsActivity}
+                  onChange={toggleLogOnlyGroupedTabsActivity}
+                />
+                <span onClick={toggleLogOnlyGroupedTabsActivity}>
+                  Log only grouped tabs activity
+                </span>
+              </div>
+
+              {IS_YANDEX && (
+                <details>
+                  <summary style={{ color: 'red' }}>
+                    Required extra setup for Yandex Browser!
+                  </summary>
+
+                  <YaBrowserSpaceNameMatchList
+                    value={state.yaBrowserSpaceNameMatch}
+                    onChange={updateYaBrowserSpaceNameMatchState}
+                  />
+                </details>
+              )}
+
+              {IS_OPERA && (
+                <span style={{ color: 'red' }}>
+                  {
+                    'Be sure to use workspaces, not tab islands, because tab islands have no names. '
+                  }
+                  {"That's why at the moment only workspaces are supported in Opera Browser. "}
+                  {
+                    'Also be aware that in Opera every tab is in a workspace(either the default one, or created by you). '
+                  }
+                  {
+                    'That\'s why the "Log only grouped tabs activity" checkbox is disabled in Opera. It will have no effect'
+                  }
+                </span>
+              )}
             </div>
 
             <div className="form-group row mb-4">
