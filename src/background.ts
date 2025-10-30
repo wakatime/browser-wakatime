@@ -60,12 +60,14 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   }
 });
 
-browser.runtime.onMessage.addListener(async (request: { task: string }, sender) => {
-  if (request.task === 'handleActivity') {
-    if (!sender.tab?.id) return;
-    await WakaTimeCore.handleActivity(sender.tab.id);
-  }
-});
+browser.runtime.onMessage.addListener(
+  async (request: { isPassiveActivity?: boolean; task: string }, sender) => {
+    if (request.task === 'handleActivity') {
+      if (!sender.tab?.id) return;
+      await WakaTimeCore.handleActivity(sender.tab.id, request.isPassiveActivity);
+    }
+  },
+);
 
 /**
  * "Persistent" service worker via bug exploit

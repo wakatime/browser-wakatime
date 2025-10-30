@@ -30,6 +30,10 @@ const sendHeartbeat = debounce(async () => {
   void chrome.runtime.sendMessage({ task: 'handleActivity' });
 });
 
+const sendHeartbeatMeeting = async () => {
+  await chrome.runtime.sendMessage({ isPassiveActivity: true, task: 'handleActivity' });
+};
+
 chrome.runtime.onMessage.addListener(
   (request: { task: string; url: string }, sender, sendResponse) => {
     if (request.task === 'getHeartbeatFromPage') {
@@ -49,17 +53,14 @@ document.body.addEventListener('click', sendHeartbeat, true);
 document.body.addEventListener('keypress', sendHeartbeat, true);
 
 const checkIfInAMeeting = () => {
-  if (!window.location.href.startsWith('https://meet.google.com/')) {
+  const site = getSite(window.location.href);
+  if (!site?.trackWithoutMouseMoving) {
     return;
   }
 
-  const isActiveMeeting = !!document.querySelector('[data-meeting-title]');
-  if (isActiveMeeting) {
-    sendHeartbeat();
-  }
+  void sendHeartbeatMeeting();
 
   setTimeout(checkIfInAMeeting, oneMinute);
 };
 
-// Google Meet
 checkIfInAMeeting();
