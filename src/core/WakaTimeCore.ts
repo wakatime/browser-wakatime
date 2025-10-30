@@ -177,11 +177,21 @@ class WakaTimeCore {
   }
 
   async sendHeartbeats(): Promise<void> {
-    const settings = await browser.storage.sync.get({
-      apiKey: config.apiKey,
-      heartbeatApiEndPoint: config.heartbeatApiEndPoint,
-      hostname: '',
-    });
+    const [syncSettings, localSettings] = await Promise.all([
+      browser.storage.sync.get({
+        apiKey: config.apiKey,
+        heartbeatApiEndPoint: config.heartbeatApiEndPoint,
+      }) as Promise<{ apiKey: string; heartbeatApiEndPoint: string }>,
+      browser.storage.local.get({
+        hostname: '',
+      }) as Promise<{ hostname: string }>,
+    ]);
+  
+    const settings = {
+      ...syncSettings,
+      hostname: localSettings.hostname,
+    };
+
     if (!settings.apiKey) {
       await changeExtensionStatus('notSignedIn');
       return;
