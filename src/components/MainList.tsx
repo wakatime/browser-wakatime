@@ -82,6 +82,7 @@ export default function MainList({
       ) : (
         loading
       )}
+
       {!isDomainIgnored && user && !hideIgnoreButton ? (
         <div className="row">
           <div className="col-xs-12">
