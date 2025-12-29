@@ -22,7 +22,12 @@ describe('MainList', () => {
   it('should render properly', () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { container } = renderWithProviders(
-      <MainList loggingEnabled={loggingEnabled} totalTimeLoggedToday={totalTimeLoggedToday} />,
+      <MainList
+        isDomainIgnored={false}
+        loggingEnabled={loggingEnabled}
+        totalTimeLoggedToday={totalTimeLoggedToday}
+        currentTabUrl={''}
+      />,
     );
     expect(container).toMatchInlineSnapshot(`
       <div>

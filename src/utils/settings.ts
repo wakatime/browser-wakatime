@@ -89,6 +89,20 @@ export const saveSettings = async (settings: Settings): Promise<void> => {
   await browser.storage.sync.set(settings);
 };
 
+export const ignoreSite = async (site: string): Promise<void> => {
+  const settings = await getSettings();
+  if (settings.loggingStyle === 'deny') {
+    const url = new URL(site).host;
+    settings.denyList.push(url);
+  } else {
+    settings.allowList = settings.allowList.filter((regex) => {
+      const re = new RegExp(regex.replace(/\*/g, '.*'));
+      return !re.test(site);
+    });
+  }
+  await saveSettings(settings);
+};
+
 export const getApiUrl = async () => {
   const settings = await browser.storage.sync.get({
     apiUrl: config.apiUrl,
