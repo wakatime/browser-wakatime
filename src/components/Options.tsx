@@ -1,11 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
-import { IS_CHROME } from '../utils/operatingSystem';
-import { getSettings, ProjectName, saveSettings, Settings } from '../utils/settings';
+import { IS_CHROME, IS_OPERA, IS_YANDEX } from '../utils/operatingSystem';
+import {
+  getSettings,
+  ProjectName,
+  saveSettings,
+  Settings,
+  YaBrowserSpaceNameMatch,
+} from '../utils/settings';
 import { logUserIn } from '../utils/user';
 import CustomProjectNameList from './CustomProjectNameList';
 import SitesList from './SitesList';
+import YaBrowserSpaceNameMatchList from './YaBrowserSpaceNameMatchList';
 
 interface State extends Settings {
   alertText: string;
@@ -25,12 +32,17 @@ export default function Options(): JSX.Element {
     extensionStatus: 'allGood',
     hostname: '',
     loading: false,
+    logOnlyGroupedTabsActivity: config.logOnlyGroupedTabsActivity,
     loggingEnabled: true,
     loggingStyle: config.loggingStyle,
     loggingType: config.loggingType,
     socialMediaSites: config.socialMediaSites,
+    tabGroupNameFilterList: [],
+    tabGroupNameFilterMode: 'deny',
     theme: config.theme,
     trackSocialMedia: config.trackSocialMedia,
+    useGroupNameAsProjectName: config.useGroupNameAsProjectName,
+    yaBrowserSpaceNameMatch: {},
   });
 
   const isApiKeyValid = useMemo(() => apiKeyInvalid(state.apiKey) === '', [state.apiKey]);
@@ -62,12 +74,17 @@ export default function Options(): JSX.Element {
       denyList: state.denyList.filter((item) => !!item.trim()),
       extensionStatus: state.extensionStatus,
       hostname: state.hostname,
+      logOnlyGroupedTabsActivity: state.logOnlyGroupedTabsActivity,
       loggingEnabled: state.loggingEnabled,
       loggingStyle: state.loggingStyle,
       loggingType: state.loggingType,
       socialMediaSites: state.socialMediaSites.filter((item) => !!item.trim()),
+      tabGroupNameFilterList: state.tabGroupNameFilterList.filter((item) => !!item.trim()),
+      tabGroupNameFilterMode: state.tabGroupNameFilterMode,
       theme: state.theme,
       trackSocialMedia: state.trackSocialMedia,
+      useGroupNameAsProjectName: state.useGroupNameAsProjectName,
+      yaBrowserSpaceNameMatch: state.yaBrowserSpaceNameMatch,
     });
     setState(state);
     await logUserIn(state.apiKey);
@@ -97,6 +114,16 @@ export default function Options(): JSX.Element {
     }));
   }, []);
 
+  const updateYaBrowserSpaceNameMatchState = useCallback(
+    (yaBrowserSpaceNameMatch: YaBrowserSpaceNameMatch) => {
+      setState((oldState) => ({
+        ...oldState,
+        yaBrowserSpaceNameMatch,
+      }));
+    },
+    [],
+  );
+
   const updateLoggingStyle = useCallback((style: string) => {
     setState((oldState) => ({
       ...oldState,
@@ -122,6 +149,34 @@ export default function Options(): JSX.Element {
     setState((oldState) => ({
       ...oldState,
       trackSocialMedia: !oldState.trackSocialMedia,
+    }));
+  }, []);
+
+  const toggleUseGroupNameAsProjectName = useCallback(() => {
+    setState((oldState) => ({
+      ...oldState,
+      useGroupNameAsProjectName: !oldState.useGroupNameAsProjectName,
+    }));
+  }, []);
+
+  const toggleLogOnlyGroupedTabsActivity = useCallback(() => {
+    setState((oldState) => ({
+      ...oldState,
+      logOnlyGroupedTabsActivity: !oldState.logOnlyGroupedTabsActivity,
+    }));
+  }, []);
+
+  const updateTabGroupNameFilterMode = useCallback((style: string) => {
+    setState((oldState) => ({
+      ...oldState,
+      tabGroupNameFilterMode: style === 'allow' ? 'allow' : 'deny',
+    }));
+  }, []);
+
+  const updateTabGroupNameFilterList = useCallback((tabGroupNameFilterList: string[]) => {
+    setState((oldState) => ({
+      ...oldState,
+      tabGroupNameFilterList,
     }));
   }, []);
 
@@ -260,6 +315,109 @@ export default function Options(): JSX.Element {
                 placeholder="https://api.wakatime.com/api/v1"
               />
               <span className="help-block">https://api.wakatime.com/api/v1</span>
+            </div>
+
+            <div className="form-group mb-4">
+              <label className="form-label mb-0">Tab Groups</label>
+
+              <div>
+                <input
+                  type="checkbox"
+                  className="me-2"
+                  checked={state.useGroupNameAsProjectName}
+                  onChange={toggleUseGroupNameAsProjectName}
+                />
+                <span onClick={toggleUseGroupNameAsProjectName}>
+                  Use tab&apos;s group name as project name
+                </span>
+              </div>
+
+              <div>
+                <input
+                  type="checkbox"
+                  className="me-2"
+                  checked={state.logOnlyGroupedTabsActivity}
+                  onChange={toggleLogOnlyGroupedTabsActivity}
+                />
+                <span onClick={toggleLogOnlyGroupedTabsActivity}>
+                  Log only grouped tabs activity
+                </span>
+              </div>
+
+              {(state.useGroupNameAsProjectName || state.logOnlyGroupedTabsActivity) && (
+                <div className="mt-3 ps-3">
+                  <label className="form-label">Tab name filter</label>
+
+                  <div className="form-check mb-3">
+                    <input
+                      id="tabNameFilterDeny"
+                      type="radio"
+                      name="tabGroupNameFilterMode"
+                      className="form-check-input"
+                      checked={state.tabGroupNameFilterMode === 'deny'}
+                      onChange={(_) => updateTabGroupNameFilterMode('deny')}
+                    />
+                    <label className="form-check-label" htmlFor="tabNameFilterDeny">
+                      Log all except tabs from the tab group list
+                    </label>
+                  </div>
+
+                  <div className="form-check mb-3">
+                    <input
+                      id="tabNameFilterAllow"
+                      type="radio"
+                      name="tabGroupNameFilterMode"
+                      className="form-check-input"
+                      checked={state.tabGroupNameFilterMode === 'allow'}
+                      onChange={(_) => updateTabGroupNameFilterMode('allow')}
+                    />
+                    <label className="form-check-label" htmlFor="tabNameFilterAllow">
+                      Log only from the tab group list
+                    </label>
+                  </div>
+
+                  <SitesList
+                    addButtonLabel="Add tab group/workspace name"
+                    handleChange={updateTabGroupNameFilterList}
+                    urlPlaceholder="ExactTabGroupName or *wildcard*"
+                    label="Tab group names"
+                    sites={state.tabGroupNameFilterList}
+                    helpText={
+                      state.tabGroupNameFilterMode === 'deny'
+                        ? 'Tab group names that you want to exclude from logging. Supports wildcards (*): chat* matches "chatroom" or "chat group", *debug* matches any name containing "debug".'
+                        : 'Tab group names that you want to log. Supports wildcards (*): chat* matches "chatroom" or "chat group", *debug* matches any name containing "debug".'
+                    }
+                  />
+                </div>
+              )}
+
+              {IS_YANDEX && (
+                <details>
+                  <summary style={{ color: 'red' }}>
+                    Required extra setup for Yandex Browser!
+                  </summary>
+
+                  <YaBrowserSpaceNameMatchList
+                    value={state.yaBrowserSpaceNameMatch}
+                    onChange={updateYaBrowserSpaceNameMatchState}
+                  />
+                </details>
+              )}
+
+              {IS_OPERA && (
+                <span style={{ color: 'red' }}>
+                  {
+                    'Be sure to use workspaces, not tab islands, because tab islands have no names. '
+                  }
+                  {"That's why at the moment only workspaces are supported in Opera Browser. "}
+                  {
+                    'Also be aware that in Opera every tab is in a workspace(either the default one, or created by you). '
+                  }
+                  {
+                    'That\'s why you may want to set up the "Tab name filter" feature to filter all the unwanted workspaces(for example the default one) from your activity'
+                  }
+                </span>
+              )}
             </div>
 
             <div className="form-group row mb-4">

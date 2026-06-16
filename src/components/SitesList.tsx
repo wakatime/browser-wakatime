@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 type Props = {
+  addButtonLabel?: string;
   handleChange: (sites: string[]) => void;
   helpText: string;
   label: string;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function SitesList({
+  addButtonLabel = 'Add Site',
   handleChange,
   label,
   urlPlaceholder,
@@ -66,7 +68,7 @@ export default function SitesList({
 
       <button type="button" onClick={handleAddNewSite} className="btn btn-default col-12">
         <i className="fa fa-fw fa-plus me-2" />
-        Add Site
+        {addButtonLabel}
       </button>
       <span className="text-secondary">{helpText}</span>
     </div>

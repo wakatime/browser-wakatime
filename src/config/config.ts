@@ -10,6 +10,11 @@ export type ExtensionStatus = 'allGood' | 'trackingDisabled' | 'notSignedIn' | '
 export type LoggingStyle = 'allow' | 'deny';
 
 /**
+ * Tab group name filter mode: 'deny' to exclude tab groups, 'allow' to include only specified tab groups
+ */
+export type TabGroupNameFilterMode = 'allow' | 'deny';
+
+/**
  * Logging type
  */
 export type LoggingType = 'domain' | 'url';
@@ -75,6 +80,10 @@ export interface Config {
   hostname: string;
 
   /**
+   * Whether to log activity only for grouped tabs
+   */
+  logOnlyGroupedTabsActivity: boolean;
+  /**
    * Is logging enabled
    */
   loggingEnabled: boolean;
@@ -97,11 +106,25 @@ export interface Config {
    */
   summariesApiEndPoint: string;
   /**
+   * List of tab names to filter
+   */
+  tabGroupNameFilterList: string[];
+  /**
+   * Tab group name filter mode: 'deny' to exclude tab groups, 'allow' to include only specified tab groups
+   */
+  tabGroupNameFilterMode: TabGroupNameFilterMode;
+  /**
    * Options for theme
    */
   theme: Theme;
   tooltips: Tooltips;
+
   trackSocialMedia: boolean;
+  /**
+   * Whether to use the tab group's name as project name
+   * (if the tab is in a group)
+   */
+  useGroupNameAsProjectName: boolean;
   /**
    * Version of the extension
    */
@@ -152,6 +175,8 @@ const config: Config = {
 
   hostname: '',
 
+  logOnlyGroupedTabsActivity: false,
+
   loggingEnabled: true,
 
   loggingStyle: 'deny',
@@ -184,15 +209,20 @@ const config: Config = {
 
   summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/users/current/summaries',
 
-  theme: 'light',
+  tabGroupNameFilterList: [],
 
+  tabGroupNameFilterMode: 'deny',
+
+  theme: 'light',
   tooltips: {
     allGood: '',
     ignored: 'This URL is ignored',
     notSignedIn: 'Not signed In',
     trackingDisabled: 'Not logging',
   },
+
   trackSocialMedia: true,
+  useGroupNameAsProjectName: false,
 
   version: browser.runtime.getManifest().version,
 };

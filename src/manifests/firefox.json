@@ -34,11 +34,19 @@
   },
   "manifest_version": 2,
   "name": "WakaTime",
+  "optional_permissions": ["<all_urls>"],
   "options_ui": {
     "chrome_style": false,
     "page": "options.html"
   },
-  "permissions": ["alarms", "tabs", "storage", "activeTab", "https://api.wakatime.com/*", "https://wakatime.com/*"],
-  "optional_permissions": ["<all_urls>"],
+  "permissions": [
+    "alarms",
+    "tabs",
+    "storage",
+    "activeTab",
+    "tabGroups",
+    "https://api.wakatime.com/*",
+    "https://wakatime.com/*"
+  ],
   "version": "4.1.0"
 }
