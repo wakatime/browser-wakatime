@@ -270,14 +270,66 @@ const Figma: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => 
   };
 };
 
+const getGoogleMeetCode = (url: string): string | undefined => {
+  const path = new URL(url).pathname;
+  const match = path.match(/^\/([a-z]{3}-[a-z]{4}-[a-z]{3})(?:\/|$)/);
+  return match?.[1];
+};
+
+const getGoogleMeetCodeFromPage = (): string | undefined => {
+  const codePattern = /^[a-z]{3}-[a-z]{4}-[a-z]{3}$/;
+  const headings = Array.from(
+    document.querySelectorAll('[role="heading"][aria-level="1"]').values(),
+  );
+  return headings
+    .map((heading) => heading.textContent?.trim())
+    .find((text) => {
+      return Boolean(text && codePattern.test(text));
+    });
+};
+
+const getGoogleMeetTitle = (): string | undefined => {
+  const title = document.querySelector('title')?.textContent?.trim();
+  if (!title) return;
+
+  const titleWithoutSuffix = title.replace(/\s[-|]\sGoogle Meet$/i, '').trim();
+  return titleWithoutSuffix && !/^Google Meet$/i.test(titleWithoutSuffix)
+    ? titleWithoutSuffix
+    : undefined;
+};
+
+const hasGoogleMeetCallControls = (): boolean => {
+  return Boolean(
+    document.querySelector(
+      [
+        '[aria-label*="Leave call"]',
+        '[aria-label*="Leave meeting"]',
+        '[aria-label*="End call"]',
+        '[aria-label="Call controls"]',
+        '#browser-extension-start-buttons',
+        '#browser-extension-center-buttons',
+        '#browser-extension-end-buttons',
+        '[data-is-muted]',
+      ].join(','),
+    ),
+  );
+};
+
 const GoogleMeet: HeartbeatParser = (_url: string): OptionalHeartbeat | undefined => {
-  const meetId = document.querySelector('[data-meeting-title]')?.getAttribute('data-meeting-title');
-  if (!meetId) return;
+  const meetId = document
+    .querySelector('[data-meeting-title]')
+    ?.getAttribute('data-meeting-title')
+    ?.trim();
+  if (!meetId && !hasGoogleMeetCallControls()) return;
+
+  const project =
+    meetId ?? getGoogleMeetTitle() ?? getGoogleMeetCodeFromPage() ?? getGoogleMeetCode(_url);
+  if (!project) return;
 
   return {
     category: Category.meeting,
     plugin: 'Google Meet',
-    project: meetId,
+    project,
   };
 };
 
