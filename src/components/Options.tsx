@@ -33,7 +33,8 @@ export default function Options(): JSX.Element {
     trackSocialMedia: config.trackSocialMedia,
   });
 
-  const isApiKeyValid = useMemo(() => apiKeyInvalid(state.apiKey) === '', [state.apiKey]);
+  const apiKeyValidationMessage = useMemo(() => apiKeyInvalid(state.apiKey), [state.apiKey]);
+  const shouldShowApiKeyError = state.apiKey.trim().length > 0 && apiKeyValidationMessage !== '';
 
   const loggingStyleRef = useRef(null);
 
@@ -168,11 +169,24 @@ export default function Options(): JSX.Element {
                 id="apiKey"
                 autoFocus={true}
                 type="text"
-                className={`form-control ${isApiKeyValid ? '' : 'is-invalid'}`}
-                placeholder="API key"
+                className={`form-control ${shouldShowApiKeyError ? 'is-invalid' : ''}`}
+                placeholder="waka_xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
                 value={state.apiKey}
+                aria-describedby="apiKeyHelp apiKeyFeedback"
                 onChange={(e) => setState({ ...state, apiKey: e.target.value })}
               />
+              <div id="apiKeyHelp" className="form-text">
+                Paste your WakaTime API key from{' '}
+                <a href="https://wakatime.com/settings/api-key" target="_blank" rel="noreferrer">
+                  Account Settings
+                </a>
+                .
+              </div>
+              {shouldShowApiKeyError ? (
+                <div id="apiKeyFeedback" className="invalid-feedback">
+                  {apiKeyValidationMessage}
+                </div>
+              ) : null}
             </div>
 
             <div className="form-group mb-4">
