@@ -1,32 +1,14 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
-import moment from 'moment';
 import browser from 'webextension-polyfill';
 import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reducers/configReducer';
-import { GrandTotal, Summaries } from '../types/summaries';
-import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
+import { ApiKeyPayload } from '../types/user';
 
 import config from '../config/config';
 import { setUser } from '../reducers/currentUser';
 import changeExtensionState from './changeExtensionStatus';
 import { getApiUrl } from './settings';
-
-/**
- * Checks if the user is logged in.
- *
- * @returns {*}
- */
-const checkAuth = async (api_key = ''): Promise<User> => {
-  const items = await browser.storage.sync.get({
-    currentUserApiEndPoint: config.currentUserApiEndPoint,
-  });
-  const apiUrl = await getApiUrl();
-  const userPayload: AxiosResponse<AxiosUserResponse> = await axios.get(
-    `${apiUrl}${items.currentUserApiEndPoint}`,
-    { params: { api_key } },
-  );
-  return userPayload.data.data;
-};
+import { fetchStatusBarToday } from './statusBar';
 
 export const logUserIn = async (apiKey: string): Promise<void> => {
   if (!apiKey) {
@@ -35,7 +17,7 @@ export const logUserIn = async (apiKey: string): Promise<void> => {
   }
 
   try {
-    await checkAuth(apiKey);
+    await fetchStatusBarToday(apiKey);
     const items = await browser.storage.sync.get({ loggingEnabled: config.loggingEnabled });
 
     if (items.loggingEnabled === true) {
@@ -56,35 +38,16 @@ export const logUserIn = async (apiKey: string): Promise<void> => {
 const fetchApiKey = async (): Promise<string> => {
   try {
     const items = await browser.storage.sync.get({
-      currentUserApiEndPoint: config.currentUserApiEndPoint,
+      apiKeyApiEndPoint: config.apiKeyApiEndPoint,
     });
     const apiUrl = await getApiUrl();
     const apiKeyResponse: AxiosResponse<ApiKeyPayload> = await axios.post(
-      `${apiUrl}${items.currentUserApiEndPoint}/get_api_key`,
+      `${apiUrl}${items.apiKeyApiEndPoint}`,
     );
     return apiKeyResponse.data.data.api_key;
   } catch (err: unknown) {
     return '';
   }
-};
-
-const getTotalTimeLoggedToday = async (api_key = ''): Promise<GrandTotal> => {
-  const items = await browser.storage.sync.get({
-    summariesApiEndPoint: config.summariesApiEndPoint,
-  });
-  const apiUrl = await getApiUrl();
-  const today = moment().format('YYYY-MM-DD');
-  const summariesAxiosPayload: AxiosResponse<Summaries> = await axios.get(
-    `${apiUrl}${items.summariesApiEndPoint}`,
-    {
-      params: {
-        api_key,
-        end: today,
-        start: today,
-      },
-    },
-  );
-  return summariesAxiosPayload.data.data[0].grand_total;
 };
 
 export const fetchUserData = async (
@@ -111,9 +74,8 @@ export const fetchUserData = async (
   }
 
   try {
-    const [data, totalTimeLoggedTodayResponse, items] = await Promise.all([
-      checkAuth(apiKey),
-      getTotalTimeLoggedToday(apiKey),
+    const [data, items] = await Promise.all([
+      fetchStatusBarToday(apiKey),
       browser.storage.sync.get({ loggingEnabled: config.loggingEnabled }),
     ]);
     dispatch(setUser(data));
@@ -125,7 +87,7 @@ export const fetchUserData = async (
     }
 
     dispatch(setLoggingEnabled(items.loggingEnabled as boolean));
-    dispatch(setTotalTimeLoggedToday(totalTimeLoggedTodayResponse.text));
+    dispatch(setTotalTimeLoggedToday(data.grand_total.text));
   } catch (err: unknown) {
     await changeExtensionState('notSignedIn');
   }

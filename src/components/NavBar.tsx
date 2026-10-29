@@ -10,11 +10,7 @@ export default function NavBar(): JSX.Element {
 
   const signedInAs = () => {
     if (user) {
-      return (
-        <p className="text-secondary">
-          Signed in as <b>{user.full_name}</b>
-        </p>
-      );
+      return <p className="text-secondary">Signed in</p>;
     } else {
       return <div />;
     }

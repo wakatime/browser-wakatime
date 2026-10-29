@@ -54,12 +54,12 @@ export interface Config {
    * API key use to query wakatime  api
    */
   apiKey: string;
-  apiUrl: string;
-  colors: Colors;
   /**
    * Url from which to detect if the user is logged in
    */
-  currentUserApiEndPoint: string;
+  apiKeyApiEndPoint: string;
+  apiUrl: string;
+  colors: Colors;
   /**
    * Time for idle state of the browser
    * The user is considered idle if there was
@@ -95,7 +95,7 @@ export interface Config {
   /**
    * Get stats from the wakatime api
    */
-  summariesApiEndPoint: string;
+  statusBarApiEndPoint: string;
   /**
    * Options for theme
    */
@@ -122,6 +122,8 @@ const config: Config = {
 
   apiKey: '',
 
+  apiKeyApiEndPoint: process.env.API_KEY_API_URL ?? '/users/current/get_api_key',
+
   apiUrl: process.env.API_URL ?? 'https://api.wakatime.com/api/v1',
 
   colors: {
@@ -130,8 +132,6 @@ const config: Config = {
     notSignedIn: 'red',
     trackingDisabled: 'gray',
   },
-
-  currentUserApiEndPoint: process.env.CURRENT_USER_API_URL ?? '/users/current',
 
   detectionIntervalInSeconds: 60,
 
@@ -182,7 +182,7 @@ const config: Config = {
 
   states: ['allGood', 'trackingDisabled', 'notSignedIn', 'ignored'],
 
-  summariesApiEndPoint: process.env.SUMMARIES_API_URL ?? '/users/current/summaries',
+  statusBarApiEndPoint: process.env.STATUS_BAR_API_URL ?? '/users/current/statusbar/today',
 
   theme: 'light',
 

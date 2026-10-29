@@ -26,6 +26,7 @@ describe('wakatime config', () => {
           },
         },
         "apiKey": "",
+        "apiKeyApiEndPoint": "/users/current/get_api_key",
         "apiUrl": "https://api.wakatime.com/api/v1",
         "colors": {
           "allGood": "",
@@ -33,7 +34,6 @@ describe('wakatime config', () => {
           "notSignedIn": "red",
           "trackingDisabled": "gray",
         },
-        "currentUserApiEndPoint": "/users/current",
         "detectionIntervalInSeconds": 60,
         "devSites": [
           "codepen.io",
@@ -78,7 +78,7 @@ describe('wakatime config', () => {
           "notSignedIn",
           "ignored",
         ],
-        "summariesApiEndPoint": "/users/current/summaries",
+        "statusBarApiEndPoint": "/users/current/statusbar/today",
         "theme": "light",
         "tooltips": {
           "allGood": "",
